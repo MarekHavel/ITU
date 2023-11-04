@@ -1,3 +1,5 @@
+-- Autor: Robin Volf (xvolfr00)
+
 -- Vyčištění databáze
 DROP TABLE IF EXISTS Orders;
 DROP TABLE IF EXISTS Menus;

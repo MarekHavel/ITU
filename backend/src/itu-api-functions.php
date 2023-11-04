@@ -1,4 +1,7 @@
 <?php
+/*
+Autor: Robin Volf (xvolfr00)
+*/
 
 // Funkce pro autentizaci uživatele pomocí emailu a hesla
 // Heslo se porovnává s uloženým hešem

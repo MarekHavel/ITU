@@ -1,4 +1,9 @@
 <?php
+/*
+Autor: Robin Volf (xvolfr00)
+*/
+
+ini_set("default_charset", "UTF-8");
 
 const STATUS_KEY = "responseStatus";
 const STATUS_VAL_OK = "ok";
