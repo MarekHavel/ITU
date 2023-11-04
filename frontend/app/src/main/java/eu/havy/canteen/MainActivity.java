@@ -38,11 +38,7 @@ public class MainActivity extends AppCompatActivity {
             }
             String str;
             if (msg.what == 200) {
-                try {
-                    str = jsonObject.getString("responseStatus");
-                } catch (JSONException e) {
-                    str = "Invalid JSON response";
-                }
+                str = jsonObject.toString();
             } else {
                 try {
                     str = jsonObject.getString("errorMessage");
