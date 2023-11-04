@@ -71,7 +71,7 @@ CREATE TABLE Orders(
     FOREIGN KEY (DishId, CanteenId, Date) REFERENCES Menus(DishId, CanteenId, Date)
 );
 
-INSERT INTO Users (Name, Email, PasswordHash, Credit) -- Pro přihlášení novak345@gmail.com ahoj
+INSERT INTO Users (Name, Email, PasswordHash, Credit) -- Pro přihlášení novak345@gmail.com heslo
 VALUES ("Jan Novák", "novak345@gmail.com", "$2y$10$Lolv0oYdErm7gVEQGbgBCeq2yWVsORcoEgiupN24RVM0477fORzaG", 1000000);
 
 INSERT INTO Users (Name, Email, PasswordHash, Credit) -- Pro přihlášení novotnyboi829@gmail.com 12345
