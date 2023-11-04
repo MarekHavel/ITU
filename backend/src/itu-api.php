@@ -3,7 +3,9 @@
 Autor: Robin Volf (xvolfr00)
 */
 
+header("content-type: application/json");
 ini_set("default_charset", "UTF-8");
+ini_set("output_encoding", "UTF-8");
 
 const STATUS_KEY = "responseStatus";
 const STATUS_VAL_OK = "ok";
