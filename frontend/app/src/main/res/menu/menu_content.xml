@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_order_food"
+            android:icon="@drawable/order_food"
+            android:title="@string/menu_order_food" />
+        <item
+            android:id="@+id/nav_recharge_credit"
+            android:icon="@drawable/recharge_credit"
+            android:title="@string/menu_recharge_credit" />
+        <item
+            android:id="@+id/nav_order_history"
+            android:icon="@drawable/order_history"
+            android:title="@string/menu_order_history" />
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/settings"
+            android:title="@string/menu_settings" />
+    </group>
+</menu>

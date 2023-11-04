@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_order_food">
+
+    <fragment
+        android:id="@+id/nav_order_food"
+        android:name="eu.havy.canteen.ui.order_food.OrderFoodFragment"
+        android:label="@string/menu_order_food"
+        tools:layout="@layout/fragment_order_food" />
+
+    <fragment
+        android:id="@+id/nav_recharge_credit"
+        android:name="eu.havy.canteen.ui.recharge_credit.RechargeCreditFragment"
+        android:label="@string/menu_recharge_credit"
+        tools:layout="@layout/fragment_recharge_credit" />
+
+    <fragment
+        android:id="@+id/nav_order_history"
+        android:name="eu.havy.canteen.ui.order_history.OrderHistoryFragment"
+        android:label="@string/menu_order_history"
+        tools:layout="@layout/fragment_order_history" />
+</navigation>
