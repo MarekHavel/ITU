@@ -86,3 +86,9 @@ INSERT INTO Dishes(Name, Ingredients, Allergens, Type, Price)
 VALUES ("Kuřecí plátek hodně na divoko", "Kuře, moře, stavení", "Alergen1, alergen2", "Hlavní jídlo", 68);
 INSERT INTO Dishes(Name, Ingredients, Type, Price)
 VALUES ("Kuřecí vývar, vlažný", "Kuře, voda, nudle", "Polévka", 20);
+
+-- Vložení nějakých nabídek jídel pro jídelnu 1
+INSERT INTO Menus(DishId, CanteenId, Date)
+VALUES (1, 1, '2023-11-11');
+INSERT INTO Menus(DishId, CanteenId, Date)
+VALUES (2, 1, '2023-11-11');
