@@ -30,9 +30,9 @@ public class MainActivity extends AppCompatActivity {
     Handler handler = new Handler(Looper.myLooper()) {
         @Override
         public void handleMessage(Message msg) {
-            JSONObject jsonObject = null;
+            JSONObject jsonObject;
             try {
-                jsonObject = new JSONObject((String)msg.obj);
+                jsonObject = new JSONObject((String)((Bundle)(msg.obj)).get("response"));
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
