@@ -6,10 +6,6 @@ const STATUS_VAL_ERR = "error";
 const ERR_MSG_KEY = "errorMessage";
 const REQ_TYPE_KEY = "requestType";
 
-// Citlivé info - v budoucnu ze secret file
-$db_name = "name";
-$db_pass = "password";
-
 /*
 Popis API
 
@@ -61,8 +57,10 @@ Autentizace uživatele
 TODO - další operace
 */
 
+include "secrets.php"; // DB_NAME a DB_PASSWORD
+
 try {
-    $pdo = new PDO("mysql:host=localhost;dbname=$db_name;port=/var/run/mysql/mysql.sock", "$db_name", "$db_pass");
+    $pdo = new PDO("mysql:host=localhost;dbname=".DB_NAME.";port=/var/run/mysql/mysql.sock", DB_NAME, DB_PASSWORD);
 } catch (PDOException $e) {
     $response = array(
         STATUS_KEY => STATUS_VAL_ERR,
