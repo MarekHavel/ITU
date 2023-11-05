@@ -1,4 +1,7 @@
 <?php
+/*
+Autor: Robin Volf (xvolfr00)
+*/
 
 include "common.php";
 
