@@ -18,7 +18,8 @@ public class Api {
     }
 
     //String api_url = "https://canteen.havy.eu/api/";
-    String api_url = "https://www.stud.fit.vutbr.cz/~xvolfr00/itu-api.php";
+    String auth_url = "https://www.stud.fit.vutbr.cz/~xvolfr00/auth.php";
+    String menu_url = "https://www.stud.fit.vutbr.cz/~xvolfr00/get-menu.php";
     ExecutorService executor = Executors.newSingleThreadExecutor();
     Handler handler;
 
@@ -39,7 +40,7 @@ public class Api {
         }
     }
 
-    private String request(Method method, String body) {
+    private String request(Method method, String api_url, String body) {
         try {
             URL url = new URL(api_url);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -77,7 +78,20 @@ public class Api {
     public void authenticateUser() {
         executor.execute(() -> {
             //Background work here
-            String response = request(Method.POST, "requestType=authenticateUser&email=novak345@gmail.com&password=heslo");
+            String response = request(Method.POST, auth_url, "requestType=authenticateUser&email=novak345@gmail.com&password=heslo");
+
+            //UI Thread work here
+            //handler.post(() -> {});
+            Bundle bundle = new Bundle();
+            bundle.putString("response", response);
+            handler.obtainMessage(200, bundle).sendToTarget();
+        });
+    }
+
+    public void getDishes() {
+        executor.execute(() -> {
+            //Background work here
+            String response = request(Method.POST, menu_url, "{\"userId\": 1,\"date\": \"2023-11-13\"}");
 
             //UI Thread work here
             //handler.post(() -> {});
