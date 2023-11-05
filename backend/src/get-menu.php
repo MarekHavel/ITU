@@ -3,7 +3,6 @@
 include "common.php";
 
 if($_SERVER["REQUEST_METHOD"] != "POST") {
-    http_response_code(400);
     returnError("Špatná metoda přístupu", 3);
 }
 
