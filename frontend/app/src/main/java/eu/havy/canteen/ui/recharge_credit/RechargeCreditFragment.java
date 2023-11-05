@@ -1,31 +1,65 @@
 package eu.havy.canteen.ui.recharge_credit;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.material.snackbar.Snackbar;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import eu.havy.canteen.api.Api;
 import eu.havy.canteen.databinding.FragmentRechargeCreditBinding;
 
 public class RechargeCreditFragment extends Fragment {
 
     private FragmentRechargeCreditBinding binding;
 
+    Handler handler = new Handler(Looper.myLooper()) {
+        @Override
+        public void handleMessage(Message msg) {
+
+            if (msg.what == 200) {
+                Toast.makeText(getContext(), "SUCCESS", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), "FAILURE, code: " + msg.what, Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        RechargeCreditViewModel galleryViewModel =
+        RechargeCreditViewModel rechargeCreditViewModel =
                 new ViewModelProvider(this).get(RechargeCreditViewModel.class);
 
         binding = FragmentRechargeCreditBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textRechargeCredit;
-        galleryViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        final EditText creditField = binding.rechargeAmount;
+        final Button submit = binding.rechargeButton;
+
+        submit.setOnClickListener(l -> {
+
+            new Api(handler).addCredits(String.valueOf(creditField.getText()));
+        });
+
+
+
+        //final TextView textView = binding.textRechargeCredit;
+        //rechargeCreditViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 
