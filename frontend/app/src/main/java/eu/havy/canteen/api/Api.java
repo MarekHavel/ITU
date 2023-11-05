@@ -46,7 +46,7 @@ public class Api {
             URL url = new URL(api_url);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(method.toString());
-            connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            connection.setRequestProperty("Content-Type", "application/json");
             connection.setRequestProperty("Accept", "application/json");
             connection.setDoOutput(true);
             connection.getOutputStream().write(body.getBytes());
@@ -79,7 +79,7 @@ public class Api {
     public void authenticateUser() {
         executor.execute(() -> {
             //Background work here
-            String response = request(Method.POST, auth_url, "requestType=authenticateUser&email=novak345@gmail.com&password=heslo");
+            String response = request(Method.POST, auth_url, "{\"email\": \"novak345@gmail.com\", \"password\": \"heslo\"}");
 
             //UI Thread work here
             //handler.post(() -> {});
