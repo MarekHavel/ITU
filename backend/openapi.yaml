@@ -35,32 +35,39 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
   
-  # /auth:
-  #   post:
-  #     operationId: "auth"
-  #     description: "Authentication of a user"
-  #     parameters:
-  #       - in: "query"
-  #         name: "email"
-  #         schema:
-  #           type: "string"
-  #       - in: "query"
-  #         name: "password"
-  #         schema:
-  #           type: "string"
-  #     responses:
-  #       200:
-  #         description: "Id uživatele, které je použité pro budoucí komunikaci"
-  #         content:
-  #           application/json:
-  #             schema:
-  #               type: "integer"
-  #       400:
-  #         description: "Neúspěch při autentizaci"
-  #         content:
-  #           application/json:
-  #             schema:
-  #               $ref: "#/components/schemas/Error"
+  /auth.php:
+    post:
+      summary: "Authentication of a user"
+      requestBody:
+        required: true
+        description: "Authentication details"
+        content:
+          application/json:
+            schema:
+              type: "object"
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: "string"
+                password:
+                  type: "string"
+      responses:
+        200:
+          description: "Id uživatele, které je použité pro budoucí komunikaci"
+          content:
+            application/json:
+              schema:
+                properties:
+                  userId:
+                    type: "integer"
+        400:
+          description: "Neúspěch při autentizaci"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 components:
   schemas:
     Dish:
@@ -82,7 +89,7 @@ components:
     Error:
       properties:
         code:
-          description: "0 = no database, 1 = logic error"
+          description: "0 = no database, 1 = logic error, 2 = bad request, 3 = bad request method"
           nullable: false
           type: "integer"
         message:
