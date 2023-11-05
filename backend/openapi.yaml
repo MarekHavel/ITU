@@ -1,0 +1,90 @@
+openapi: "3.0.0"
+info:
+  version: "1"
+  title: "CanteenAPI"
+  description: "API for Canteens mobile app"
+paths:
+  /get-menu.php:
+    post:
+      summary: "Get menu for a specific user at a specific day"
+      requestBody:
+        required: true
+        description: "userId and optionally a specific day"
+        content:
+          application/json:
+            schema:
+              type: "object"
+              required:
+                - userId
+              properties:
+                userId:
+                  type: "integer"
+                date: # when not specified, current date is used
+                  type: "string"
+      response:
+        200:
+          description: "Array of dishes for the day"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Dishes"
+        400:
+          description: "Non-existent UserId"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  
+  # /auth:
+  #   post:
+  #     operationId: "auth"
+  #     description: "Authentication of a user"
+  #     parameters:
+  #       - in: "query"
+  #         name: "email"
+  #         schema:
+  #           type: "string"
+  #       - in: "query"
+  #         name: "password"
+  #         schema:
+  #           type: "string"
+  #     responses:
+  #       200:
+  #         description: "Id uživatele, které je použité pro budoucí komunikaci"
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: "integer"
+  #       400:
+  #         description: "Neúspěch při autentizaci"
+  #         content:
+  #           application/json:
+  #             schema:
+  #               $ref: "#/components/schemas/Error"
+components:
+  schemas:
+    Dish:
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        category:
+          type: string
+        allergens:
+          type: string
+        itemsLeft:
+          type: integer
+    Dishes:
+      type: array
+      items:
+        $ref: "#/components/schemas/Dish"
+    Error:
+      properties:
+        code:
+          description: "0 = no database, 1 = logic error"
+          nullable: false
+          type: "integer"
+        message:
+          nullable: false
+          type: "string"
