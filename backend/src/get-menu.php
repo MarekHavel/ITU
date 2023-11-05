@@ -25,22 +25,24 @@ if(array_key_exists("date", $request)) {
     $date = date("Y-m-d");
 }
 
+// CanteenId daného uživatele
 $stmt = $pdo->prepare("SELECT CanteenId FROM Users WHERE UserId = ?");
 $stmt->execute(array($userId));
-
 if($stmt->rowCount() == 0) {
     returnError("Nesprávné UserId", 1);
 }
-
 $canteenId = $stmt->fetchColumn();
-// var_dump($canteenId);
+
+// PriceCategoryId daného uživatele
+$stmt = $pdo->prepare("SELECT PriceCategoryId FROM Users WHERE UserId = ?");
+$stmt->execute(array($userId));
+$priceCategoryId = $stmt->fetch(PDO::FETCH_COLUMN, 0);
 
 $stmt = $pdo->prepare("SELECT DishId FROM Menus WHERE CanteenId = ? AND Date = ?");
 $stmt->execute(array($canteenId, $date));
 
 // 0 = DishId
 $dishIdArray = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);  
-// var_dump($dishIdArray);
 
 $pdo->setAttribute(PDO::ATTR_ORACLE_NULLS, PDO::NULL_TO_STRING); // Reprezentace NULL prázdným řetězcem
 $response = array();
@@ -54,14 +56,26 @@ foreach($dishIdArray as $dishId){
     $stmt = $pdo->prepare("SELECT Name FROM DishCategories WHERE DishCategoryId = ?");
     $stmt->execute(array($dish_row["DishCategoryId"]));
     $category_name = $stmt->fetch(PDO::FETCH_COLUMN, 0);
+
+    // Čísla alergenů - zpracování všech kódů do řetězce
+    $stmt = $pdo->prepare("SELECT AllergenId FROM AllergensInDish WHERE DishId= ?");
+    $stmt->execute(array($dishId));
+    $allergen_numbers= $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+    $allergens_string = implode(", ", $allergen_numbers);
+
+    // Cena jídla
+    $stmt = $pdo->prepare("SELECT Price FROM DishPrices WHERE DishId = ? AND PriceCategoryId = ?");
+    $stmt->execute(array($dishId, $priceCategoryId));
+    $price = $stmt->fetch(PDO::FETCH_COLUMN, 0);
     
     $dish = array(
         "id" => (int)$dishId,
         "name" => $dish_row["Name"],
         "category" => $category_name,
-        "allergens" => $dish_row["Allergens"],
+        "allergens" => $allergens_string,
         "itemsLeft" => 100, //TODO
         "weight" => (int)$dish_row["Mass"],
+        "price" => (int)$price,
     );
     array_push($response, $dish);
 }

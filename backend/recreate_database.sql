@@ -35,6 +35,12 @@ CREATE TABLE PriceCategories(
     PRIMARY KEY (PriceCategoryId)
 );
 
+CREATE TABLE Allergens(
+    AllergenId integer AUTO_INCREMENT,
+    Name varchar(255) NOT NULL,
+    PRIMARY KEY (AllergenId)
+);
+
 CREATE TABLE Users (
     UserId integer AUTO_INCREMENT,
     CanteenId integer,
@@ -53,11 +59,18 @@ CREATE TABLE Dishes (
     DishCategoryId integer,
     Name varchar(255) NOT NULL,
     Ingredients varchar(255) NOT NULL,
-    Allergens varchar(255),
     Mass integer NOT NULL,
     -- Image? Našel jsem info, že je lepší uložit jen referenci a mít to ve FS
     PRIMARY KEY (DishId),
     FOREIGN KEY (DishCategoryId) REFERENCES DishCategories(DishCategoryId)
+);
+
+CREATE TABLE AllergensInDish (
+    DishId integer,
+    AllergenId integer,
+    PRIMARY KEY (DishId, AllergenId),
+    FOREIGN KEY (AllergenId) REFERENCES Allergens(AllergenId),
+    FOREIGN KEY (DishId) REFERENCES Dishes(DishId)
 );
 
 CREATE TABLE DishPrices (
@@ -119,18 +132,53 @@ INSERT INTO Users (CanteenId, PriceCategoryID, Name, Email, PasswordHash, Credit
 (2, 1, "Josef Novotný", "novotnyboi829@gmail.com", "$2y$10$U1UFeaYQfxxrdIntnY2x6eWLsKMTJt8z.Oi/Fxipfqt7o5WA1QUky", 78);
 
 -- Kategorie: 1 = hl. jídlo, 2 = polévka, 3 = příloha
-INSERT INTO Dishes(DishCategoryId, Name, Ingredients, Allergens, Mass) VALUES
-(1, "Kuřecí plátek na divoko", "Kuřecí maso, sůl, kmín, řepkový olej", "1", 200),
-(1, "Plněný paprikový lusk", "Paprika, vepřové maso, kmín, cibule", "1", 220),
-(1, "Svíčková na smetaně", "Vepřové maso, mrkev, petržel, smetana, celer", "1, 3, 7, 10", 350),
-(1, "Španělský ptáček", "Hovězí maso, slanina, salám, okurky, vejce, hladká mouka", "1, 3, 10", 250),
-(1, "Dukátové buchtičky s krémem", "Hladká mouka, mléko, cukr, žloutek, skořice", "1, 3, 7", 270),
-(2, "Vývar s nudlemi", "Kuřecí vývar, nudle z pšeničné mouky", "1, 3", 150),
-(2, "Dršťková", "Dršťky, cibule, hladká mouka, česnek", "1", 150),
-(3, "Rýže", "Jasmínová rýže", NULL, 100),
-(3, "Hranolky", "Brambory, olej, sůl", NULL, 100),
-(3, "Bramborová kaše", "Brambory, Mléko", "7", 100),
-(3, "Knedlík", "3, hladká mouka", "3", 100);
+INSERT INTO Dishes(DishCategoryId, Name, Ingredients, Mass) VALUES
+(1, "Kuřecí plátek na divoko", "Kuřecí maso, sůl, kmín, řepkový olej", 200),
+(1, "Plněný paprikový lusk", "Paprika, vepřové maso, kmín, cibule", 220),
+(1, "Svíčková na smetaně", "Vepřové maso, mrkev, petržel, smetana, celer", 350),
+(1, "Španělský ptáček", "Hovězí maso, slanina, salám, okurky, vejce, hladká mouka", 250),
+(1, "Dukátové buchtičky s krémem", "Hladká mouka, mléko, cukr, žloutek, skořice", 270),
+(2, "Vývar s nudlemi", "Kuřecí vývar, nudle z pšeničné mouky", 150),
+(2, "Dršťková", "Dršťky, cibule, hladká mouka, česnek", 150),
+(3, "Rýže", "Jasmínová rýže", 100),
+(3, "Hranolky", "Brambory, olej, sůl", 100),
+(3, "Bramborová kaše", "Brambory, Mléko", 100),
+(3, "Knedlík", "3, hladká mouka", 100);
+
+INSERT INTO Allergens(Name) VALUES
+("Lepek"),
+("Korýši"),
+("Vejce"),
+("Ryby"),
+("Arašídy"),
+("Sója"),
+("Mléko"),
+("Skořápkové plody"),
+("Celer"),
+("Hořčice"),
+("Sezam"),
+("Oxid siřičitý a siřičitany"),
+("Vlčí bob"),
+("Měkkýši");
+
+INSERT INTO AllergensInDish VALUES
+(1, 1),
+(2, 1),
+(3, 1),
+(3, 3),
+(3, 7),
+(3, 10),
+(4, 1),
+(4, 3),
+(4, 10),
+(5, 1),
+(5, 3),
+(5, 7),
+(6, 1),
+(6, 3),
+(7, 1),
+(10, 7),
+(11, 3);
 
 -- Vložení cen jídla pro kategorii "student"
 INSERT INTO DishPrices(DishId, PriceCategoryId, Price) VALUES

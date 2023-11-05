@@ -82,6 +82,10 @@ components:
           type: string
         itemsLeft:
           type: integer
+        price:
+          type: integer
+        weight:
+          type: integer
     Dishes:
       type: array
       items:
