@@ -9,6 +9,9 @@ if($_SERVER["REQUEST_METHOD"] != "POST") {
 // request body
 $json = file_get_contents("php://input");
 $request = json_decode($json, true);
+if(is_null($request)) {
+    returnError("Nelze dekódovat JSON", 2);
+}
 
 if(!array_key_exists("userId", $request)) {
     returnError("Chybí parametr userId", 2);
@@ -57,7 +60,6 @@ foreach($dishIdArray as $dishId){
         "category" => $category_name,
         "allergens" => $dish_row["Allergens"],
         "itemsLeft" => 100, //TODO
-        
     );
     array_push($response, $dish);
 }

@@ -9,6 +9,9 @@ if($_SERVER["REQUEST_METHOD"] != "POST") {
 // request body
 $json = file_get_contents("php://input");
 $request = json_decode($json, true);
+if(is_null($request)) {
+    returnError("Nelze dekódovat JSON", 2);
+}
 
 if(!array_key_exists("email", $request) or !array_key_exists("password", $request)) {
     returnError("Chybí parametry", 2);
