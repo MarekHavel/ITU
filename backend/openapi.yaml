@@ -1,0 +1,144 @@
+openapi: "3.0.0"
+info:
+  version: "1"
+  title: "CanteenAPI"
+  description: "API for Canteens mobile app"
+paths:
+  /get-menu.php:
+    post:
+      summary: "Get menu for a specific user at a specific day"
+      requestBody:
+        required: true
+        description: "userId and optionally a specific day"
+        content:
+          application/json:
+            schema:
+              type: "object"
+              required:
+                - userId
+              properties:
+                userId:
+                  type: "integer"
+                date: # when not specified, current date is used
+                  type: "string"
+      response:
+        200:
+          description: "Array of dishes for the day"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Dishes"
+        400:
+          description: "Non-existent UserId"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    /auth.php:
+    post:
+      summary: "Authentication of a user"
+      requestBody:
+        required: true
+        description: "Authentication details"
+        content:
+          application/json:
+            schema:
+              type: "object"
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: "string"
+                password:
+                  type: "string"
+      responses:
+        200:
+          description: "Returns userId for authorization during future comunication"
+          content:
+            application/json:
+              schema:
+                properties:
+                  userId:
+                    type: "integer"
+        400:
+          description: "Authentication unsuccesful"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    /credit.php:
+    post:
+      summary: "Charge credit"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "object"
+              required:
+                - userId
+                - amount
+              properties:
+                userId:
+                  type: "integer"
+                amount:
+                  type: "integer"
+      responses:
+        200:
+          description: "Credit was successfully charged"
+        400:
+          description: "Neexistuje UserId"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+components:
+  schemas:
+    Dish:
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        category:
+          type: string
+        allergens:
+          type: string
+        itemsLeft:
+          type: integer
+        price:
+          type: integer
+        weight:
+          type: integer
+    Dishes:
+      type: array
+      items:
+        $ref: "#/components/schemas/Dish"
+    # DishDetails: - TODO
+    #   properties:
+    #     id:
+    #       type: integer
+    #     name:
+    #       type: string
+    #     constitutions:
+    #       type: string
+    #     allergens:
+    #       type: string
+    #     price:
+    #       type: integer
+    #     weight:
+    #       type: integer
+    #     rating:
+    #       type: number
+    #       minimum: 0
+    #       minimum: 5
+    Error:
+      properties:
+        code:
+          description: "0 = no database, 1 = logic error, 2 = bad request, 3 = bad request method"
+          nullable: false
+          type: "integer"
+        message:
+          nullable: false
+          type: "string"
