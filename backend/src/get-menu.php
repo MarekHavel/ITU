@@ -42,6 +42,7 @@ $stmt->execute(array($canteenId, $date));
 $dishIdArray = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);  
 // var_dump($dishIdArray);
 
+$pdo->setAttribute(PDO::ATTR_ORACLE_NULLS, PDO::NULL_TO_STRING); // Reprezentace NULL prázdným řetězcem
 $response = array();
 foreach($dishIdArray as $dishId){
     // detaily jídla
@@ -55,11 +56,12 @@ foreach($dishIdArray as $dishId){
     $category_name = $stmt->fetch(PDO::FETCH_COLUMN, 0);
     
     $dish = array(
-        "id" => $dishId,
+        "id" => (int)$dishId,
         "name" => $dish_row["Name"],
         "category" => $category_name,
         "allergens" => $dish_row["Allergens"],
         "itemsLeft" => 100, //TODO
+        "weight" => (int)$dish_row["Mass"],
     );
     array_push($response, $dish);
 }

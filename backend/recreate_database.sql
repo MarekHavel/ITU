@@ -120,17 +120,17 @@ INSERT INTO Users (CanteenId, PriceCategoryID, Name, Email, PasswordHash, Credit
 
 -- Kategorie: 1 = hl. jídlo, 2 = polévka, 3 = příloha
 INSERT INTO Dishes(DishCategoryId, Name, Ingredients, Allergens, Mass) VALUES
-(1, "Kuřecí plátek na divoko", "Kuřecí maso, sůl, kmín, řepkový olej", "Lepek", 200),
-(1, "Plněný paprikový lusk", "Paprika, vepřové maso, kmín, cibule", "Lepek", 220),
-(1, "Svíčková na smetaně", "Vepřové maso, mrkev, petržel, smetana, celer", "Lepek, Vejce, Mléko, Hořčice", 350),
-(1, "Španělský ptáček", "Hovězí maso, slanina, salám, okurky, vejce, hladká mouka", "Lepek, Vejce, Hořčice", 250),
-(1, "Dukátové buchtičky s krémem", "Hladká mouka, mléko, cukr, žloutek, skořice", "Lepek, vejce, mléko", 270),
-(2, "Vývar s nudlemi", "Kuřecí vývar, nudle z pšeničné mouky", "Lepek, vejce", 150),
-(2, "Dršťková", "Dršťky, cibule, hladká mouka, česnek", "Lepek", 150),
+(1, "Kuřecí plátek na divoko", "Kuřecí maso, sůl, kmín, řepkový olej", "1", 200),
+(1, "Plněný paprikový lusk", "Paprika, vepřové maso, kmín, cibule", "1", 220),
+(1, "Svíčková na smetaně", "Vepřové maso, mrkev, petržel, smetana, celer", "1, 3, 7, 10", 350),
+(1, "Španělský ptáček", "Hovězí maso, slanina, salám, okurky, vejce, hladká mouka", "1, 3, 10", 250),
+(1, "Dukátové buchtičky s krémem", "Hladká mouka, mléko, cukr, žloutek, skořice", "1, 3, 7", 270),
+(2, "Vývar s nudlemi", "Kuřecí vývar, nudle z pšeničné mouky", "1, 3", 150),
+(2, "Dršťková", "Dršťky, cibule, hladká mouka, česnek", "1", 150),
 (3, "Rýže", "Jasmínová rýže", NULL, 100),
 (3, "Hranolky", "Brambory, olej, sůl", NULL, 100),
-(3, "Bramborová kaše", "Brambory, Mléko", "Mléko", 100),
-(3, "Knedlík", "Vejce, hladká mouka", "Vejce", 100);
+(3, "Bramborová kaše", "Brambory, Mléko", "7", 100),
+(3, "Knedlík", "3, hladká mouka", "3", 100);
 
 -- Vložení cen jídla pro kategorii "student"
 INSERT INTO DishPrices(DishId, PriceCategoryId, Price) VALUES
