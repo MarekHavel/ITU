@@ -20,6 +20,7 @@ public class Api {
     //String api_url = "https://canteen.havy.eu/api/";
     String auth_url = "https://www.stud.fit.vutbr.cz/~xvolfr00/auth.php";
     String menu_url = "https://www.stud.fit.vutbr.cz/~xvolfr00/get-menu.php";
+    String credits_url = "https://www.stud.fit.vutbr.cz/~xvolfr00/credits.php";
     ExecutorService executor = Executors.newSingleThreadExecutor();
     Handler handler;
 
@@ -92,6 +93,18 @@ public class Api {
         executor.execute(() -> {
             //Background work here
             String response = request(Method.POST, menu_url, "{\"userId\": 1,\"date\": \"2023-11-13\"}");
+
+            //UI Thread work here
+            //handler.post(() -> {});
+            Bundle bundle = new Bundle();
+            bundle.putString("response", response);
+            handler.obtainMessage(200, bundle).sendToTarget();
+        });
+    }
+    public void addCredits(String amount) {
+        executor.execute(() -> {
+            //Background work here
+            String response = request(Method.POST, credits_url, "{\"userId\": 1,\"amount\":" + amount + " }");
 
             //UI Thread work here
             //handler.post(() -> {});
