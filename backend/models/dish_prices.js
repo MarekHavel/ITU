@@ -1,11 +1,10 @@
 const { DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
-	sequelize.define("price_category", {
-		name: {
-			type: DataTypes.STRING,
+	sequelize.define("dish_price", {
+		price: {
+			type: DataTypes.INTEGER,
 			allowNull: false,
 		},
 	});
 };
-
