@@ -23,8 +23,6 @@ for (const modelDefiner of modelDefiners) {
   modelDefiner(sequelize);
 }
 
-console.log(sequelize);
-
 const { allergen, canteen, dish_category, dish, price_category, user, dish_rating, menu, dish_price } = sequelize.models;
 
 // Vytvoření vztahů
