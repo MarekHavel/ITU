@@ -34,3 +34,6 @@ google-services.json
 
 # Sensitive information
 backend/src/secrets.php
+
+# Node modules
+backend/node_modules/**
