@@ -6,7 +6,6 @@ var logger = require('morgan');
 
 // Natáhne do process.env proměnné z .env souboru
 require('dotenv').config();
-console.log(process.env); // TODO odstranit, je to test
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -30,7 +29,11 @@ app.use(session({
   cookie: {
     maxAge: 24 * 60 * 60 * 1000 // 1 den v ms
   }
-}))
+}));
 
+// Vytvoření databáze
+const sequelize = require("./models");
+sequelize.sync({ force: true })
+  .then(() => sequelize.close());
 
 module.exports = app;
