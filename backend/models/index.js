@@ -41,9 +41,6 @@ dish_category.hasMany(dish);
 price_category.belongsToMany(dish, {through: dish_price});
 dish.belongsToMany(price_category, {through: dish_price});
 
-canteen.belongsToMany(dish, {through: menu});
-dish.belongsToMany(canteen, {through: menu});
-
 user.belongsToMany(dish, {through: dish_rating});
 dish.belongsToMany(user, {through: dish_rating});
 
@@ -53,6 +50,10 @@ dish.belongsToMany(allergen, {through: "allergen_in_dish"});
 user.belongsToMany(menu, {through: "order"});
 menu.belongsToMany(user, {through: "order"});
 
-//TODO: Naplnit sample daty (ale tu asi ne)
+// Spešl: modelování N:N vztahu jako 1:N:1 - Sequelize nedovede dělat neunikátní N:N vztahy
+canteen.hasMany(menu);
+menu.belongsTo(canteen);
+dish.hasMany(menu);
+menu.belongsTo(dish);
 
 module.exports = sequelize; // Export připraveného modelu
