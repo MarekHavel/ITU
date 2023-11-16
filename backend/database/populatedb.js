@@ -175,7 +175,5 @@ async function main() {
   await models.menu.create({date: '2023-11-17', dishId: kase.id, canteenId: canteen1.id});
   await models.menu.create({date: '2023-11-17', dishId: vyvar.id, canteenId: canteen1.id});
 
-  //TODO:
-  // Orders?
   await sequelize.close();
 }
