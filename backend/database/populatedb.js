@@ -8,6 +8,13 @@ main().catch((err) => console.log(err));
 async function main() {
   await sequelize.sync({force: true});
 
+  const queryInterface = sequelize.getQueryInterface();
+  queryInterface.addConstraint("menus", {
+    fields: ["canteenId", "dishId", "date"],
+    type: "unique",
+    name: "unique_food_in_canteen_at_a_given_day"
+  });
+
   // Tabulky bez vztahů:
   const canteen1 = await models.canteen.create({
     name: "Jídelna1",
@@ -56,6 +63,7 @@ async function main() {
   });
   await platek.addAllergen(gluten);
   await platek.setDish_category(main);
+  await platek.addPrice_category(studentCategory, {through: { price: 54}});
 
   const lusk = await models.dish.create({name: "Plněný paprikový lusk",
     ingredients: "Paprika, vepřové maso, kmín, cibule",
@@ -63,6 +71,7 @@ async function main() {
   });
   await lusk.addAllergen(gluten);
   await lusk.setDish_category(main);
+  await lusk.addPrice_category(studentCategory, {through: { price: 61}});
 
   const svickova = await models.dish.create({name: "Svíčková na smetaně",
     ingredients: "Vepřové maso, mrkev, petržel, smetana, celer",
@@ -70,6 +79,7 @@ async function main() {
   });
   await svickova.addAllergens([gluten, eggs, milk, mustard]);
   await svickova.setDish_category(main);
+  await svickova.addPrice_category(studentCategory, {through: { price: 80}});
 
   const ptacek = await models.dish.create({name: "Španělský ptáček",
     ingredients: "Hovězí maso, slanina, salám, okurky, vejce, hladká mouka",
@@ -77,6 +87,7 @@ async function main() {
   });
   await ptacek.addAllergens([gluten, eggs, mustard]);
   await ptacek.setDish_category(main);
+  await ptacek.addPrice_category(studentCategory, {through: { price: 57}});
 
   const buchty = await models.dish.create({name: "Dukátové buchtičky s krémem",
     ingredients: "Hladká mouka, mléko, cukr, žloutek, skořice",
@@ -84,6 +95,7 @@ async function main() {
   });
   await buchty.addAllergens([gluten, eggs, milk]);
   await buchty.setDish_category(main);
+  await buchty.addPrice_category(studentCategory, {through: { price: 44}});
 
   const vyvar = await models.dish.create({name: "Vývar s nudlemi",
     ingredients: "Kuřecí vývar, nudle z pšeničné mouky",
@@ -91,6 +103,7 @@ async function main() {
   });
   await vyvar.addAllergens([gluten, eggs]);
   await vyvar.setDish_category(soup);
+  await vyvar.addPrice_category(studentCategory, {through: { price: 20}});
 
   const drstkova = await models.dish.create({name: "Dršťková",
     ingredients: "Dršťky, cibule, hladká mouka, česnek",
@@ -98,6 +111,7 @@ async function main() {
   });
   await drstkova.addAllergens([gluten, eggs]);
   await drstkova.setDish_category(soup);
+  await drstkova.addPrice_category(studentCategory, {through: { price: 20}});
 
   const ryze = await models.dish.create({name: "Rýže",
     ingredients: "Jasmínová rýže",
@@ -105,6 +119,7 @@ async function main() {
   });
   await ryze.addAllergen(gluten);
   await ryze.setDish_category(sideDish);
+  await ryze.addPrice_category(studentCategory, {through: { price: 15}});
 
   const hranolky = await models.dish.create({name: "Hranolky",
     ingredients: "Brambory, olej, sůl",
@@ -112,6 +127,7 @@ async function main() {
   });
   await hranolky.addAllergen(gluten);
   await hranolky.setDish_category(sideDish);
+  await hranolky.addPrice_category(studentCategory, {through: { price: 22}});
 
   const kase = await models.dish.create({name: "Bramborová kaše",
     ingredients: "Brambory, Mléko",
@@ -119,17 +135,47 @@ async function main() {
   });
   await kase.addAllergen(gluten);
   await kase.setDish_category(sideDish);
+  await kase.addPrice_category(studentCategory, {through: { price: 18}});
 
   const knedlik = await models.dish.create({name: "Knedlík",
-    ingredients: "3, hladká mouka",
+    ingredients: "Hladká mouka",
     weight: 100
   });
   await knedlik.addAllergen(gluten);
   await knedlik.setDish_category(sideDish);
+  await knedlik.addPrice_category(studentCategory, {through: { price: 20}});
+
+  await models.menu.create({date: '2023-11-13', dishId: platek.id, canteenId: canteen1.id});
+  await models.menu.create({date: '2023-11-13', dishId: lusk.id, canteenId: canteen1.id});
+  await models.menu.create({date: '2023-11-13', dishId: ryze.id, canteenId: canteen1.id});
+  await models.menu.create({date: '2023-11-13', dishId: kase.id, canteenId: canteen1.id});
+  await models.menu.create({date: '2023-11-13', dishId: vyvar.id, canteenId: canteen1.id});
+
+  await models.menu.create({date: '2023-11-14', dishId: lusk.id, canteenId: canteen1.id});
+  await models.menu.create({date: '2023-11-14', dishId: svickova.id, canteenId: canteen1.id});
+  await models.menu.create({date: '2023-11-14', dishId: hranolky.id, canteenId: canteen1.id});
+  await models.menu.create({date: '2023-11-14', dishId: knedlik.id, canteenId: canteen1.id});
+  await models.menu.create({date: '2023-11-14', dishId: drstkova.id, canteenId: canteen1.id});
+
+  await models.menu.create({date: '2023-11-15', dishId: ptacek.id, canteenId: canteen1.id});
+  await models.menu.create({date: '2023-11-15', dishId: buchty.id, canteenId: canteen1.id});
+  await models.menu.create({date: '2023-11-15', dishId: ryze.id, canteenId: canteen1.id});
+  await models.menu.create({date: '2023-11-15', dishId: kase.id, canteenId: canteen1.id});
+  await models.menu.create({date: '2023-11-15', dishId: vyvar.id, canteenId: canteen1.id});
+
+  await models.menu.create({date: '2023-11-16', dishId: svickova.id, canteenId: canteen1.id});
+  await models.menu.create({date: '2023-11-16', dishId: ptacek.id, canteenId: canteen1.id});
+  await models.menu.create({date: '2023-11-16', dishId: knedlik.id, canteenId: canteen1.id});
+  await models.menu.create({date: '2023-11-16', dishId: hranolky.id, canteenId: canteen1.id});
+  await models.menu.create({date: '2023-11-16', dishId: drstkova.id, canteenId: canteen1.id});
+
+  await models.menu.create({date: '2023-11-17', dishId: platek.id, canteenId: canteen1.id});
+  await models.menu.create({date: '2023-11-17', dishId: lusk.id, canteenId: canteen1.id});
+  await models.menu.create({date: '2023-11-17', dishId: hranolky.id, canteenId: canteen1.id});
+  await models.menu.create({date: '2023-11-17', dishId: kase.id, canteenId: canteen1.id});
+  await models.menu.create({date: '2023-11-17', dishId: vyvar.id, canteenId: canteen1.id});
 
   //TODO:
-  // DishPrices
-  // Menus
   // Orders?
   await sequelize.close();
 }
