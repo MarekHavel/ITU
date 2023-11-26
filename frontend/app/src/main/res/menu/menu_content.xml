@@ -3,7 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
+    <group
+        android:id="@+id/nav_canteen"
+        android:checkableBehavior="single">
+
         <item
             android:id="@+id/nav_order_food"
             android:icon="@drawable/order_food"
@@ -16,6 +19,14 @@
             android:id="@+id/nav_order_history"
             android:icon="@drawable/order_history"
             android:title="@string/menu_order_history" />
+    </group>
+
+    <group
+        android:id="@+id/nav_others"
+        android:checkableBehavior="none"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
         <item
             android:id="@+id/nav_settings"
             android:icon="@drawable/settings"
