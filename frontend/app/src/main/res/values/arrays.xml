@@ -1,0 +1,37 @@
+<resources>
+    <string-array name="color_scheme_entries">
+        <item>System selected</item>
+        <item>Dark mode</item>
+        <item>Light mode</item>
+    </string-array>
+
+    <string-array name="color_scheme_values">
+        <item>system_selected</item>
+        <item>dark_mode</item>
+        <item>light_mode</item>
+    </string-array>
+
+    <string-array name="notification_entries">
+        <item>Food for today</item>
+        <item>Canteen opened</item>
+        <item>Credit charged</item>
+    </string-array>
+
+    <string-array name="notification_values">
+        <item>food_for_today</item>
+        <item>canteen_opened</item>
+        <item>credit_charged</item>
+    </string-array>
+
+    <string-array name="language_entries">
+        <item>English</item>
+        <item>Czech</item>
+        <item>Slovak</item>
+    </string-array>
+
+    <string-array name="language_values">
+        <item>english</item>
+        <item>czech</item>
+        <item>slovak</item>
+    </string-array>
+</resources>

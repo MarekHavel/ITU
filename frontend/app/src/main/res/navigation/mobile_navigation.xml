@@ -22,4 +22,9 @@
         android:name="eu.havy.canteen.ui.order_history.OrderHistoryFragment"
         android:label="@string/menu_order_history"
         tools:layout="@layout/fragment_order_history" />
+
+    <fragment
+        android:id="@+id/nav_settings"
+        android:name="eu.havy.canteen.ui.settings.SettingsFragment"
+        android:label="@string/menu_settings" />
 </navigation>
