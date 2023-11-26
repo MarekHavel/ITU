@@ -18,14 +18,14 @@ public class OrderHistoryFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        OrderHistoryViewModel slideshowViewModel =
+        OrderHistoryViewModel orderHistoryViewModel =
                 new ViewModelProvider(this).get(OrderHistoryViewModel.class);
 
         binding = FragmentOrderHistoryBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         final TextView textView = binding.textOrderHistory;
-        slideshowViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        orderHistoryViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 

@@ -22,7 +22,8 @@
                 android:id="@+id/toolbar_credit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_gravity="right"
+                android:layout_marginEnd="10dp"
                 android:text="@string/credit"
                 android:textSize="20sp"
                 android:textStyle="bold"/>
@@ -31,7 +32,7 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_main" />
+    <include layout="@layout/activity_main_content" />
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/fab"

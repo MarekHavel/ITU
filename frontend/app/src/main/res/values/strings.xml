@@ -5,7 +5,6 @@
     <string name="nav_header_title">John Doe</string>
     <string name="nav_header_subtitle">johndoe@vut.cz</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
 
     <string name="menu_order_food">Order food</string>
     <string name="menu_recharge_credit">Recharge credit</string>

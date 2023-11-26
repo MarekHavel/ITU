@@ -1,3 +1,5 @@
+import com.android.build.gradle.tasks.detectAnnotationProcessors
+
 plugins {
     id("com.android.application")
 }
@@ -27,7 +29,6 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
         tasks.withType(JavaCompile::class.java) {
             options.compilerArgs.add("-Xlint")
-            options.compilerArgs.add("-parameters")
         }
     }
     buildFeatures {
