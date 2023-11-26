@@ -4,10 +4,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.view.Menu;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -23,6 +24,7 @@ import java.util.Objects;
 
 import eu.havy.canteen.api.Api;
 import eu.havy.canteen.databinding.ActivityMainBinding;
+import eu.havy.canteen.ui.order_food.OrderFoodFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -76,6 +78,19 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main_content);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        //hide fab and credit toolbar when not on order food fragment
+        getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_activity_main_content).getChildFragmentManager().addOnBackStackChangedListener(() -> {
+            Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_activity_main_content).getChildFragmentManager().getFragments().get(0);
+
+            if (currentFragment instanceof OrderFoodFragment) {
+                binding.appBarMain.toolbarCredit.setVisibility(View.VISIBLE);
+                binding.appBarMain.fab.setVisibility(View.VISIBLE);
+            } else {
+                binding.appBarMain.toolbarCredit.setVisibility(View.GONE);
+                binding.appBarMain.fab.setVisibility(View.GONE);
+            }
+        });
     }
 
     @Override
