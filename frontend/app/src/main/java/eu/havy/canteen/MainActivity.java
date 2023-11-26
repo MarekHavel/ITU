@@ -19,6 +19,8 @@ import com.google.android.material.snackbar.Snackbar;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Objects;
+
 import eu.havy.canteen.api.Api;
 import eu.havy.canteen.databinding.ActivityMainBinding;
 
@@ -27,12 +29,12 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
 
-    Handler handler = new Handler(Looper.myLooper()) {
+    Handler handler = new Handler(Objects.requireNonNull(Looper.myLooper())) {
         @Override
         public void handleMessage(Message msg) {
             JSONObject jsonObject;
             try {
-                jsonObject = new JSONObject((String)((Bundle)(msg.obj)).get("response"));
+                jsonObject = new JSONObject(Objects.requireNonNull(((Bundle) (msg.obj)).getString("response")));
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
@@ -65,12 +67,12 @@ public class MainActivity extends AppCompatActivity {
                 });
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
+
+        //topbar contains menu button instead of back button for these fragments
+        int[] menuItems = {R.id.nav_order_food, R.id.nav_recharge_credit, R.id.nav_order_history};
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
-        mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_order_food, R.id.nav_recharge_credit, R.id.nav_order_history)
-                .setOpenableLayout(drawer)
-                .build();
+        mAppBarConfiguration = new AppBarConfiguration.Builder(menuItems).setOpenableLayout(drawer).build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);

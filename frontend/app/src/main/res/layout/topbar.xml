@@ -16,7 +16,18 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:popupTheme="@style/Theme.Canteen.PopupOverlay" />
+            app:popupTheme="@style/Theme.Canteen.PopupOverlay">
+
+            <TextView
+                android:id="@+id/toolbar_credit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/credit"
+                android:textSize="20sp"
+                android:textStyle="bold"/>
+
+        </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -28,7 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="@dimen/fab_margin"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="@dimen/fab_margin"
         android:text="@string/orders"
         android:textColor="?attr/colorOnPrimary"
         app:icon="@android:drawable/ic_menu_info_details"

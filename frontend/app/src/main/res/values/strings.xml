@@ -19,4 +19,5 @@
     <string name="notifications">Notifications</string>
     <string name="allowed_notifications">Allowed notifications\n</string>
     <string name="language">Language</string>
+    <string name="credit">credit</string>
 </resources>

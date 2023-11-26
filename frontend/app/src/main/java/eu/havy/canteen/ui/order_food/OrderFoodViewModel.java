@@ -1,7 +1,5 @@
 package eu.havy.canteen.ui.order_food;
 
-import static java.security.AccessController.getContext;
-
 import android.app.Application;
 import android.os.Bundle;
 import android.os.Handler;
@@ -38,7 +36,7 @@ public class OrderFoodViewModel extends AndroidViewModel {
             List<Dish> dishList = new ArrayList<>();
             JSONArray jsonArray;
             try {
-                jsonArray = new JSONArray((String) Objects.requireNonNull(((Bundle) (msg.obj)).get("response")));
+                jsonArray = new JSONArray(Objects.requireNonNull(((Bundle) (msg.obj)).getString("response")));
             } catch (JSONException e) {
                 throw new RuntimeException(e);
             }
