@@ -25,6 +25,7 @@ import java.util.Objects;
 import eu.havy.canteen.api.Api;
 import eu.havy.canteen.databinding.ActivityMainBinding;
 import eu.havy.canteen.ui.order_food.OrderFoodFragment;
+import eu.havy.canteen.ui.settings.SettingsFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -78,19 +79,18 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main_content);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //update color scheme
+        SettingsFragment.updateColorScheme(getSharedPreferences("eu.havy.canteen_preferences", MODE_PRIVATE));
 
         //hide fab and credit toolbar when not on order food fragment
-        getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_activity_main_content).getChildFragmentManager().addOnBackStackChangedListener(() -> {
-            Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_activity_main_content).getChildFragmentManager().getFragments().get(0);
-
-            if (currentFragment instanceof OrderFoodFragment) {
-                binding.appBarMain.toolbarCredit.setVisibility(View.VISIBLE);
-                binding.appBarMain.fab.setVisibility(View.VISIBLE);
-            } else {
-                binding.appBarMain.toolbarCredit.setVisibility(View.GONE);
-                binding.appBarMain.fab.setVisibility(View.GONE);
-            }
-        });
+        getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_activity_main_content).getChildFragmentManager()
+                .addOnBackStackChangedListener(this::updateToolbarView);
+        updateToolbarView();
     }
 
     @Override
@@ -98,5 +98,16 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main_content);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    public void updateToolbarView() {
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_activity_main_content).getChildFragmentManager().getFragments().get(0);
+        if (currentFragment instanceof OrderFoodFragment) {
+            binding.appBarMain.toolbarCredit.setVisibility(View.VISIBLE);
+            binding.appBarMain.fab.setVisibility(View.VISIBLE);
+        } else {
+            binding.appBarMain.toolbarCredit.setVisibility(View.GONE);
+            binding.appBarMain.fab.setVisibility(View.GONE);
+        }
     }
 }

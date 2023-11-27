@@ -24,24 +24,27 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
 
         switch (key) {
             case "color_scheme":
-                String color_scheme = sharedPreferences.getString(key, "system_selected");
-                switch (color_scheme) {
-                    case "system_selected":
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
-                        break;
-                    case "dark_mode":
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                        break;
-                    case "light_mode":
-                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                        break;
-                }
+                updateColorScheme(sharedPreferences);
                 break;
             case "notifications":
                 boolean notifications = sharedPreferences.getBoolean(key, true);
                 if (notifications) {
                     //api call to register for notifications
                 }
+                break;
+        }
+    }
+
+    public static void updateColorScheme(SharedPreferences sharedPreferences) {
+        switch (sharedPreferences.getString("color_scheme", "system_selected")) {
+            case "system_selected":
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+                break;
+            case "dark_mode":
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                break;
+            case "light_mode":
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                 break;
         }
     }
