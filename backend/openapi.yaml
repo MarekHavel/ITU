@@ -4,23 +4,58 @@ info:
   title: "CanteenAPI"
   description: "API for Canteens mobile app"
 paths:
-  /get-menu.php:
-    post:
-      summary: "Get menu for a specific user at a specific day"
-      requestBody:
-        required: true
-        description: "userId and optionally a specific day"
+  /api/auth:
+  post:
+    summary: "Authentication of a user"
+    requestBody:
+      required: true
+      description: "Authentication details"
+      content:
+        application/json:
+          schema:
+            type: "object"
+            required:
+              - email
+              - password
+            properties:
+              email:
+                type: "string"
+              password:
+                type: "string"
+    responses:
+      200:
+        description: "Returns userId for authorization during future comunication"
         content:
           application/json:
             schema:
-              type: "object"
-              required:
-                - userId
               properties:
-                userId:
-                  type: "integer"
-                date: # when not specified, current date is used
+                token:
                   type: "string"
+                  format: "UUID"
+      400:
+        description: "Authentication unsuccesful"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Error"
+  /api/menu:
+    get:
+      summary: "Get menu for a specific user at a specific day"
+      patameters:
+        - name: "token"
+          in: "query"
+          description: "Authorization token"
+          required: true
+          schema:
+            type: "string"
+            format: "UUID"
+        - date: "token"
+          in: "query"
+          description: "Date for the menu, when not specified current date is used"
+          required: false
+          schema:
+            type: "string"
+            format: "date"
       response:
         200:
           description: "Array of dishes for the day"
@@ -29,70 +64,37 @@ paths:
               schema:
                 $ref: "#/components/schemas/Dishes"
         400:
-          description: "Non-existent UserId"
+          description: "Invalid token"
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-    /api/auth:
-    post:
-      summary: "Authentication of a user"
-      requestBody:
-        required: true
-        description: "Authentication details"
+  /credit.php:
+  post:
+    summary: "Charge credit"
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: "object"
+            required:
+              - userId
+              - amount
+            properties:
+              userId:
+                type: "integer"
+              amount:
+                type: "integer"
+    responses:
+      200:
+        description: "Credit was successfully charged"
+      400:
+        description: "Neexistuje UserId"
         content:
           application/json:
             schema:
-              type: "object"
-              required:
-                - email
-                - password
-              properties:
-                email:
-                  type: "string"
-                password:
-                  type: "string"
-      responses:
-        200:
-          description: "Returns userId for authorization during future comunication"
-          content:
-            application/json:
-              schema:
-                properties:
-                  token:
-                    type: "UUID"
-        400:
-          description: "Authentication unsuccesful"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-    /credit.php:
-    post:
-      summary: "Charge credit"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: "object"
-              required:
-                - userId
-                - amount
-              properties:
-                userId:
-                  type: "integer"
-                amount:
-                  type: "integer"
-      responses:
-        200:
-          description: "Credit was successfully charged"
-        400:
-          description: "Neexistuje UserId"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
+              $ref: "#/components/schemas/Error"
 components:
   schemas:
     Dish:
