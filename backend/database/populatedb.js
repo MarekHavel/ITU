@@ -52,6 +52,7 @@ async function main() {
     password: "heslo",  // Custom setter to zahešuje
     credit: "420",  
     role: "customer",  
+    authToken: "7198b575-ba08-4275-884c-89fc85b2732c" // Pro testování
   });
 
   await user1.setCanteen(canteen1);

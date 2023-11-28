@@ -1,9 +1,12 @@
 var express = require('express');
 var router = express.Router();
-var authController = require("../controllers/auth");
+var apiController = require("../controllers/api");
 
 // Autentizace
-router.post("/auth", authController.authenticate);
+router.post("/auth", apiController.authenticate);
+
+// Získání menu
+router.get("/menu", apiController.menuGet);
 
 // router.post("/menu", );
 
