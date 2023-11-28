@@ -34,7 +34,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-    /auth.php:
+    /api/auth:
     post:
       summary: "Authentication of a user"
       requestBody:
@@ -59,8 +59,8 @@ paths:
             application/json:
               schema:
                 properties:
-                  userId:
-                    type: "integer"
+                  token:
+                    type: "UUID"
         400:
           description: "Authentication unsuccesful"
           content:
@@ -136,7 +136,7 @@ components:
     Error:
       properties:
         code:
-          description: "0 = no database, 1 = logic error, 2 = bad request, 3 = bad request method"
+          description: "0 = no database, 1 = logic error, 2 = bad request"
           nullable: false
           type: "integer"
         message:
