@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const sequelize = require("../models");
 const bcrypt = require("bcrypt");
+const { v4: uuidv4 } = require('uuid');
 
 // Zpracování autentikace uživatele
 exports.authenticate = asyncHandler(async (req, res, next) => {
@@ -13,36 +14,29 @@ exports.authenticate = asyncHandler(async (req, res, next) => {
     return;
   }
   
-  sequelize.models.user.findOne({
+  const user = await sequelize.models.user.findOne({
     attributes: ["password", "id"],
     where: {
       email: req.body.email
     }
-  })
-  .then((user) => {
-    if(user != null && bcrypt.compareSync(req.body.password, user.password)) {
-      req.session.user = user.id;
+  });
 
-      // Uložení session a přesměrování na hlavní stránku
-      req.session.save(function (err) {
-        if (err) return next(err);
-        // OK
-        res.sendStatus(200);
-        return;
-      })
-    } else {
-      // ERR
-      res.status(400).json({
-        code: 1,
-        message: "Špatné heslo"
-      });
-      return;
-    }
-  })
-  // .catch(() => {
-  //   res.status(400).json({
-  //     code: 0,
-  //     message: "Nelze se připojit k databázi"
-  //   })
-  // })
+  if(user != null && bcrypt.compareSync(req.body.password, user.password)) {
+    // OK
+    // Vygenerovat token, uložit do db
+    const newAuthToken = uuidv4();
+    await user.update({authToken: newAuthToken});
+    // Poslat OK odpověď s tokenem
+    res.status(200).json({
+      token: newAuthToken
+    });
+    return;
+  } else {
+    // ERR
+    res.status(400).json({
+      code: 1,
+      message: "Špatné heslo"
+    });
+    return;
+  }
 });

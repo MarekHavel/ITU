@@ -30,6 +30,9 @@ module.exports = (sequelize) => {
       type: DataTypes.ENUM("customer", "admin"),
       allowNull: false,
       defaultValue: "customer"
+    },
+    authToken: {
+      type: DataTypes.UUID
     }
 	});
 };
