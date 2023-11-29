@@ -14,6 +14,12 @@ router.get("/credit", apiController.creditGet);
 // Nabití kreditu
 router.post("/credit", apiController.creditPost);
 
+// Vytvoření objednávky jídla
+router.post("/order/create", apiController.orderCreate);
+
+// Zrušení objednávky jídla
+router.post("/order/delete", apiController.orderDelete);
+
 // router.post("/menu", );
 
 // router.post("/credits", );
