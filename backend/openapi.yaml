@@ -69,7 +69,33 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /credit.php:
+  /credit:
+  get:
+    summary: "Get remaining credit"
+    patameters:
+      - name: "token"
+        in: "query"
+        description: "Authorization token"
+        required: true
+        schema:
+          type: "string"
+          format: "UUID"
+    responses:
+      200:
+        description: "Success, responding with credit remaining"
+        content:
+          application/json:
+            schema:
+              properties:
+                credit:
+                  type: integer
+      400:
+        description: "Error, invalid auth token"
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Error"
+  /credit:
   post:
     summary: "Charge credit"
     requestBody:
@@ -79,18 +105,19 @@ paths:
           schema:
             type: "object"
             required:
-              - userId
-              - amount
+              - token
+              - credit
             properties:
-              userId:
-                type: "integer"
+              token:
+                type: "string"
+                format: "UUID"
               amount:
                 type: "integer"
     responses:
       200:
         description: "Credit was successfully charged"
       400:
-        description: "Neexistuje UserId"
+        description: "Invalid token or invalid credit"
         content:
           application/json:
             schema:
