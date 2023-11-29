@@ -96,3 +96,74 @@ exports.menuGet = asyncHandler(async (req, res, next) => {
 
   res.status(200).json(resDishes);
 });
+
+// Získání zbývajícího kreditu uživatele
+exports.creditGet = asyncHandler(async (req, res, next) => {
+
+  if(req.query.token == null) {
+    res.status(400).json({
+      code: 2,
+      message: "Chybějící parametry požadavku"
+    });
+    return;
+  }
+
+  const user = await sequelize.models.user.findOne({
+    attributes: ["credit"],
+    where: {
+      authToken: req.query.token
+    }
+  });
+
+  if(user) {
+    res.status(200).json({
+      credit: user.credit
+    });
+  } else { // Neplatný authToken
+    res.status(400).json({
+      code: 1,
+      message: "Neplatný autentizační token"
+    });
+  }
+});
+
+
+// Nabití kreditu uživatele
+exports.creditPost = asyncHandler(async (req, res, next) => {
+
+  if(req.body.token == null || req.body.credit == null) {
+    res.status(400).json({
+      code: 2,
+      message: "Chybějící parametry požadavku"
+    });
+    return;
+  }
+
+  // Kontrola, jestli je credit kladné celé číslo
+  if(!Number.isInteger(req.body.credit) || req.body.credit < 1) {
+    res.status(400).json({
+      code: 1,
+      message: "Kredit není celé kladné číslo"
+    });
+    return;
+  }
+
+  const user = await sequelize.models.user.findOne({
+    where: {
+      authToken: req.body.token
+    }
+  });
+
+  if(user) {
+    const userCredit = user.credit;
+    await user.update({
+      credit: userCredit + req.body.credit
+    })
+    res.status(200).end();
+  } else { // Neplatný authToken
+    res.status(400).json({
+      code: 1,
+      message: "Neplatný autentizační token"
+    });
+  }
+});

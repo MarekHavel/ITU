@@ -8,6 +8,12 @@ router.post("/auth", apiController.authenticate);
 // Získání menu
 router.get("/menu", apiController.menuGet);
 
+// Získání zbývajícího kreditu
+router.get("/credit", apiController.creditGet);
+
+// Nabití kreditu
+router.post("/credit", apiController.creditPost);
+
 // router.post("/menu", );
 
 // router.post("/credits", );
