@@ -5,43 +5,43 @@ info:
   description: "API for Canteens mobile app"
 paths:
   /api/auth:
-  post:
-    summary: "Authentication of a user"
-    requestBody:
-      required: true
-      description: "Authentication details"
-      content:
-        application/json:
-          schema:
-            type: "object"
-            required:
-              - email
-              - password
-            properties:
-              email:
-                type: "string"
-              password:
-                type: "string"
-    responses:
-      200:
-        description: "Returns userId for authorization during future comunication"
+    post:
+      summary: "Authentication of a user"
+      requestBody:
+        required: true
+        description: "Authentication details"
         content:
           application/json:
             schema:
+              type: "object"
+              required:
+                - email
+                - password
               properties:
-                token:
+                email:
                   type: "string"
-                  format: "UUID"
-      400:
-        description: "Authentication unsuccesful"
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Error"
+                password:
+                  type: "string"
+      responses:
+        200:
+          description: "Returns userId for authorization during future comunication"
+          content:
+            application/json:
+              schema:
+                properties:
+                  token:
+                    type: "string"
+                    format: "UUID"
+        400:
+          description: "Authentication unsuccesful"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
   /api/menu:
     get:
       summary: "Get menu for a specific user at a specific day"
-      patameters:
+      parameters:
         - name: "token"
           in: "query"
           description: "Authorization token"
@@ -49,7 +49,7 @@ paths:
           schema:
             type: "string"
             format: "UUID"
-        - date: "token"
+        - name: "date"
           in: "query"
           description: "Date for the menu, when not specified current date is used"
           required: false
@@ -69,59 +69,119 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /credit:
-  get:
-    summary: "Get remaining credit"
-    patameters:
-      - name: "token"
-        in: "query"
-        description: "Authorization token"
-        required: true
-        schema:
-          type: "string"
-          format: "UUID"
-    responses:
-      200:
-        description: "Success, responding with credit remaining"
-        content:
-          application/json:
-            schema:
-              properties:
-                credit:
-                  type: integer
-      400:
-        description: "Error, invalid auth token"
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Error"
-  /credit:
-  post:
-    summary: "Charge credit"
-    requestBody:
-      required: true
-      content:
-        application/json:
+  /api/credit:
+    get:
+      summary: "Get remaining credit"
+      patameters:
+        - name: "token"
+          in: "query"
+          description: "Authorization token"
+          required: true
           schema:
-            type: "object"
-            required:
-              - token
-              - credit
-            properties:
-              token:
-                type: "string"
-                format: "UUID"
-              amount:
-                type: "integer"
-    responses:
-      200:
-        description: "Credit was successfully charged"
-      400:
-        description: "Invalid token or invalid credit"
+            type: "string"
+            format: "UUID"
+      responses:
+        200:
+          description: "Success, responding with credit remaining"
+          content:
+            application/json:
+              schema:
+                properties:
+                  credit:
+                    type: integer
+        400:
+          description: "Error, invalid auth token"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/credit:
+    post:
+      summary: "Charge credit"
+      requestBody:
+        required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Error"
+              type: "object"
+              required:
+                - token
+                - credit
+              properties:
+                token:
+                  type: "string"
+                  format: "UUID"
+                amount:
+                  type: "integer"
+      responses:
+        200:
+          description: "Credit was successfully charged"
+        400:
+          description: "Invalid token or invalid credit"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/order/create:
+    post:
+      summary: "Create order"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "object"
+              required:
+                - token
+                - dishId
+              properties:
+                token:
+                  type: "string"
+                  format: "UUID"
+                dishId:
+                  type: "integer"
+                date: # When not specified, today is used
+                  type: "string"
+                  format: "date"
+      responses:
+        200:
+          description: "Order was created"
+        400:
+          description: "Invalid token or no such order available"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/order/delete:
+    post:
+      summary: "Delete an order"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "object"
+              required:
+                - token
+                - dishId
+              properties:
+                token:
+                  type: "string"
+                  format: "UUID"
+                dishId:
+                  type: "integer"
+                date: # When not specified, today is used
+                  type: "string"
+                  format: "date"
+      responses:
+        200:
+          description: "Order was deleted"
+        400:
+          description: "Invalid token or no such order"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 components:
   schemas:
     Dish:
@@ -140,6 +200,8 @@ components:
           type: integer
         weight:
           type: integer
+        ordered: # True if user has ordered the specified dish
+          type: bool
     Dishes:
       type: array
       items:

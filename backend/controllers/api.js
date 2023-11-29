@@ -56,7 +56,7 @@ exports.menuGet = asyncHandler(async (req, res, next) => {
   let date = req.query.date ? req.query.date : new Date().toISOString().slice(0, 10);
   
   const user = await sequelize.models.user.findOne({
-    attributes: ["canteenId"],
+    attributes: ["id", "canteenId"],
     where: {
       authToken: req.query.token
     }
@@ -90,6 +90,8 @@ exports.menuGet = asyncHandler(async (req, res, next) => {
 
     const itemsTaken = await menu.countUsers();
     dish.itemsLeft = menu.pieces - itemsTaken;
+
+    dish.ordered = await menu.hasUser(user);
 
     resDishes.push(dish);
   }
@@ -160,6 +162,118 @@ exports.creditPost = asyncHandler(async (req, res, next) => {
       credit: userCredit + req.body.credit
     })
     res.status(200).end();
+  } else { // Neplatný authToken
+    res.status(400).json({
+      code: 1,
+      message: "Neplatný autentizační token"
+    });
+  }
+});
+
+// Objednání jídla
+exports.orderCreate = asyncHandler(async (req, res, next) => {
+
+  if(req.body.token == null || req.body.dishId == null) {
+    res.status(400).json({
+      code: 2,
+      message: "Chybějící parametry požadavku"
+    });
+    return;
+  }
+
+  const user = await sequelize.models.user.findOne({
+    attributes: ["id", "canteenId"],
+    where: {
+      authToken: req.body.token
+    }
+  });
+
+  if(user) {
+    const date = req.body.date ? req.body.date : new Date().toISOString().slice(0, 10);
+    const menu = await sequelize.models.menu.findOne({
+      where: {
+        canteenId: user.canteenId,
+        dishId: req.body.dishId,
+        date: date
+      }
+    })
+
+    if(!menu) {
+      res.status(400).json({
+        code: 1,
+        message: "Takové menu neexistuje"
+      });
+      return;
+    }
+
+    const itemsTaken = await menu.countUsers();
+    if(itemsTaken >= menu.pieces) {
+      res.status(400).json({
+        code: 1,
+        message: "Jídlo je vyprodáno"
+      });
+      return;
+    }
+
+    await menu.addUser(user);
+
+    res.status(200).end();
+  } else { // Neplatný authToken
+    res.status(400).json({
+      code: 1,
+      message: "Neplatný autentizační token"
+    });
+  }
+});
+
+// Objednání jídla
+exports.orderDelete = asyncHandler(async (req, res, next) => {
+
+  if(req.body.token == null || req.body.dishId == null) {
+    res.status(400).json({
+      code: 2,
+      message: "Chybějící parametry požadavku"
+    });
+    return;
+  }
+
+  const user = await sequelize.models.user.findOne({
+    attributes: ["id", "canteenId"],
+    where: {
+      authToken: req.body.token
+    }
+  });
+
+  if(user) {
+    const date = req.body.date ? req.body.date : new Date().toISOString().slice(0, 10);
+    const menu = await sequelize.models.menu.findOne({
+      where: {
+        canteenId: user.canteenId,
+        dishId: req.body.dishId,
+        date: date
+      }
+    })
+
+    if(!menu) {
+      res.status(400).json({
+        code: 1,
+        message: "Takové menu neexistuje"
+      });
+      return;
+    }
+
+    // Pokud objednávka existuje, zrušíme ji, pokud ne, pošleme chybu
+    if(await menu.hasUser(user)) {
+      await menu.removeUser(user);
+      res.status(200).end();
+      return;
+    } else {
+      res.status(400).json({
+        code: 1,
+        message: "Objednávka neexistuje"
+      });
+    }
+
   } else { // Neplatný authToken
     res.status(400).json({
       code: 1,
