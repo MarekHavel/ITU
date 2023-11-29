@@ -11,6 +11,11 @@ module.exports = (sequelize) => {
 			type: DataTypes.DATEONLY,
 			allowNull: false
 		},
+		pieces: {
+			type: DataTypes.INTEGER,
+			defaultValue: 100,
+			allowNull: false
+		},
 	});
 };
 

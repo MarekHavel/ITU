@@ -146,35 +146,35 @@ async function main() {
   await knedlik.setDish_category(sideDish);
   await knedlik.addPrice_category(studentCategory, {through: { price: 20}});
 
-  await models.menu.create({date: '2023-11-13', dishId: platek.id, canteenId: canteen1.id});
-  await models.menu.create({date: '2023-11-13', dishId: lusk.id, canteenId: canteen1.id});
-  await models.menu.create({date: '2023-11-13', dishId: ryze.id, canteenId: canteen1.id});
-  await models.menu.create({date: '2023-11-13', dishId: kase.id, canteenId: canteen1.id});
-  await models.menu.create({date: '2023-11-13', dishId: vyvar.id, canteenId: canteen1.id});
+  await models.menu.create({date: '2023-11-13', dishId: platek.id, canteenId: canteen1.id, pieces: 47});
+  await models.menu.create({date: '2023-11-13', dishId: lusk.id, canteenId: canteen1.id, pieces: 44});
+  await models.menu.create({date: '2023-11-13', dishId: ryze.id, canteenId: canteen1.id, pieces: 40});
+  await models.menu.create({date: '2023-11-13', dishId: kase.id, canteenId: canteen1.id, pieces: 42});
+  await models.menu.create({date: '2023-11-13', dishId: vyvar.id, canteenId: canteen1.id, pieces: 30});
 
-  await models.menu.create({date: '2023-11-14', dishId: lusk.id, canteenId: canteen1.id});
-  await models.menu.create({date: '2023-11-14', dishId: svickova.id, canteenId: canteen1.id});
-  await models.menu.create({date: '2023-11-14', dishId: hranolky.id, canteenId: canteen1.id});
-  await models.menu.create({date: '2023-11-14', dishId: knedlik.id, canteenId: canteen1.id});
-  await models.menu.create({date: '2023-11-14', dishId: drstkova.id, canteenId: canteen1.id});
+  await models.menu.create({date: '2023-11-14', dishId: lusk.id, canteenId: canteen1.id, pieces: 35});
+  await models.menu.create({date: '2023-11-14', dishId: svickova.id, canteenId: canteen1.id, pieces: 35});
+  await models.menu.create({date: '2023-11-14', dishId: hranolky.id, canteenId: canteen1.id, pieces: 38});
+  await models.menu.create({date: '2023-11-14', dishId: knedlik.id, canteenId: canteen1.id, pieces: 32});
+  await models.menu.create({date: '2023-11-14', dishId: drstkova.id, canteenId: canteen1.id, pieces: 42});
 
-  await models.menu.create({date: '2023-11-15', dishId: ptacek.id, canteenId: canteen1.id});
-  await models.menu.create({date: '2023-11-15', dishId: buchty.id, canteenId: canteen1.id});
-  await models.menu.create({date: '2023-11-15', dishId: ryze.id, canteenId: canteen1.id});
-  await models.menu.create({date: '2023-11-15', dishId: kase.id, canteenId: canteen1.id});
-  await models.menu.create({date: '2023-11-15', dishId: vyvar.id, canteenId: canteen1.id});
+  await models.menu.create({date: '2023-11-15', dishId: ptacek.id, canteenId: canteen1.id, pieces: 47});
+  await models.menu.create({date: '2023-11-15', dishId: buchty.id, canteenId: canteen1.id, pieces: 47});
+  await models.menu.create({date: '2023-11-15', dishId: ryze.id, canteenId: canteen1.id, pieces: 50});
+  await models.menu.create({date: '2023-11-15', dishId: kase.id, canteenId: canteen1.id, pieces: 31});
+  await models.menu.create({date: '2023-11-15', dishId: vyvar.id, canteenId: canteen1.id, pieces: 36});
 
-  await models.menu.create({date: '2023-11-16', dishId: svickova.id, canteenId: canteen1.id});
-  await models.menu.create({date: '2023-11-16', dishId: ptacek.id, canteenId: canteen1.id});
-  await models.menu.create({date: '2023-11-16', dishId: knedlik.id, canteenId: canteen1.id});
-  await models.menu.create({date: '2023-11-16', dishId: hranolky.id, canteenId: canteen1.id});
-  await models.menu.create({date: '2023-11-16', dishId: drstkova.id, canteenId: canteen1.id});
+  await models.menu.create({date: '2023-11-16', dishId: svickova.id, canteenId: canteen1.id, pieces: 35});
+  await models.menu.create({date: '2023-11-16', dishId: ptacek.id, canteenId: canteen1.id, pieces: 43});
+  await models.menu.create({date: '2023-11-16', dishId: knedlik.id, canteenId: canteen1.id, pieces: 33});
+  await models.menu.create({date: '2023-11-16', dishId: hranolky.id, canteenId: canteen1.id, pieces: 42});
+  await models.menu.create({date: '2023-11-16', dishId: drstkova.id, canteenId: canteen1.id, pieces: 49});
 
-  await models.menu.create({date: '2023-11-17', dishId: platek.id, canteenId: canteen1.id});
-  await models.menu.create({date: '2023-11-17', dishId: lusk.id, canteenId: canteen1.id});
-  await models.menu.create({date: '2023-11-17', dishId: hranolky.id, canteenId: canteen1.id});
-  await models.menu.create({date: '2023-11-17', dishId: kase.id, canteenId: canteen1.id});
-  await models.menu.create({date: '2023-11-17', dishId: vyvar.id, canteenId: canteen1.id});
+  await models.menu.create({date: '2023-11-17', dishId: platek.id, canteenId: canteen1.id, pieces: 33});
+  await models.menu.create({date: '2023-11-17', dishId: lusk.id, canteenId: canteen1.id, pieces: 33});
+  await models.menu.create({date: '2023-11-17', dishId: hranolky.id, canteenId: canteen1.id, pieces: 44});
+  await models.menu.create({date: '2023-11-17', dishId: kase.id, canteenId: canteen1.id, pieces: 30});
+  await models.menu.create({date: '2023-11-17', dishId: vyvar.id, canteenId: canteen1.id, pieces: 32});
 
   await sequelize.close();
 }

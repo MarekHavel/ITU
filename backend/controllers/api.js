@@ -63,13 +63,14 @@ exports.menuGet = asyncHandler(async (req, res, next) => {
   });
 
   const menus = await sequelize.models.menu.findAll({
-    attributes: ["dishId"],
+    attributes: ["id", "dishId", "pieces"],
     where: {
       canteenId: user.canteenId,
       date: date
     }
   });
 
+  // Naplnění seznamu objektů reprezentující jednotlivé pokrmy
   let resDishes = [];
   for (let menu of menus) {
     const dish = {};
@@ -79,21 +80,19 @@ exports.menuGet = asyncHandler(async (req, res, next) => {
     dish.id = databaseDish.id;
     dish.name = databaseDish.name;
     dish.weight = databaseDish.weight;
-    dish.itemsLeft = databaseDish.itemsLeft;
 
     // Ty složitější
     dish.category = (await databaseDish.getDish_category()).name;
 
     const allergens = await databaseDish.getAllergens();
-    const allergenNames = allergens.map((al) => al.name);
-    dish.allergens = allergenNames.toString().replace(",", ", ");
+    const allergenNames = allergens.map((al) => al.code);
+    dish.allergens = allergenNames.toString().replaceAll(",", ", ");
 
-    // TODO: itemsLeft - nutné upravit i databázi
+    const itemsTaken = await menu.countUsers();
+    dish.itemsLeft = menu.pieces - itemsTaken;
 
     resDishes.push(dish);
   }
-
-  // Mám seznam Id všech jídel - teď je nutné vytáhnout potřebné info pro frontend
 
   res.status(200).json(resDishes);
 });
