@@ -56,7 +56,7 @@ exports.menuGet = asyncHandler(async (req, res, next) => {
   let date = req.query.date ? req.query.date : new Date().toISOString().slice(0, 10);
   
   const user = await sequelize.models.user.findOne({
-    attributes: ["id", "canteenId"],
+    attributes: ["id", "canteenId", "priceCategoryId"],
     where: {
       authToken: req.query.token
     }
@@ -84,12 +84,19 @@ exports.menuGet = asyncHandler(async (req, res, next) => {
     // Ty složitější
     dish.category = (await databaseDish.getDish_category()).name;
 
+    dish.price = (await sequelize.models.dish_price.findOne({where: {
+      priceCategoryId: user.priceCategoryId,
+      dishId: databaseDish.id
+    }})).price;
+
     const allergens = await databaseDish.getAllergens();
     const allergenNames = allergens.map((al) => al.code);
     dish.allergens = allergenNames.toString().replaceAll(",", ", ");
 
     const itemsTaken = await menu.countUsers();
     dish.itemsLeft = menu.pieces - itemsTaken;
+
+    
 
     dish.ordered = await menu.hasUser(user);
 
