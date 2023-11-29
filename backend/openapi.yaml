@@ -56,7 +56,7 @@ paths:
           schema:
             type: "string"
             format: "date"
-      response:
+      responses:
         200:
           description: "Array of dishes for the day"
           content:
@@ -72,7 +72,7 @@ paths:
   /api/credit:
     get:
       summary: "Get remaining credit"
-      patameters:
+      parameters:
         - name: "token"
           in: "query"
           description: "Authorization token"
@@ -95,7 +95,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /api/credit:
     post:
       summary: "Charge credit"
       requestBody:
@@ -201,7 +200,7 @@ components:
         weight:
           type: integer
         ordered: # True if user has ordered the specified dish
-          type: bool
+          type: boolean
     Dishes:
       type: array
       items:
