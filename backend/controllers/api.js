@@ -288,3 +288,39 @@ exports.orderDelete = asyncHandler(async (req, res, next) => {
     });
   }
 });
+
+// Nabití kreditu uživatele
+exports.userGet = asyncHandler(async (req, res, next) => {
+
+  if(req.query.token == null) {
+    res.status(400).json({
+      code: 2,
+      message: "Chybějící parametry požadavku"
+    });
+    return;
+  }
+
+  const user = await sequelize.models.user.findOne({
+    where: {
+      authToken: req.query.token
+    }
+  });
+
+  if(user) {
+    const priceCategory = await user.getPrice_category();
+    const canteen = await user.getCanteen();
+    const userSchema = {
+      username: user.username,
+      email: user.email,
+      priceCategory: priceCategory.name,
+      canteen: canteen.name
+    };
+    res.status(200).json(userSchema);
+  } else { // Neplatný authToken
+    res.status(400).json({
+      code: 1,
+      message: "Neplatný autentizační token"
+    });
+  }
+});
+

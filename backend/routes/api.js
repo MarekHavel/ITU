@@ -20,6 +20,9 @@ router.post("/order/create", apiController.orderCreate);
 // Zrušení objednávky jídla
 router.post("/order/delete", apiController.orderDelete);
 
+// Získání informací o uživateli
+router.get("/user", apiController.userGet);
+
 // router.post("/menu", );
 
 // router.post("/credits", );
