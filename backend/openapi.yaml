@@ -110,7 +110,7 @@ paths:
                 token:
                   type: "string"
                   format: "UUID"
-                amount:
+                credit:
                   type: "integer"
       responses:
         200:
@@ -201,6 +201,109 @@ paths:
                 $ref: "#/components/schemas/User"
         400:
           description: "Invalid token"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/dish/rating:
+    get:
+      summary: "Get user's rating for a dish"
+      parameters:
+        - name: "token"
+          in: "query"
+          description: "Authorization token"
+          required: true
+          schema:
+            type: "string"
+            format: "UUID"
+        - name: "dishId"
+          in: "query"
+          description: "Id of the dish"
+          required: true
+          schema:
+            type: "integer"
+      responses:
+        200:
+          description: "Success, responding with rating"
+          content:
+            application/json:
+              schema:
+                properties:
+                  rating:
+                    type: integer
+                    minimum: 0
+                    maximum: 5
+        400:
+          description: "Error, invalid auth token or bad dish id or this user hasn't rated the dish yet"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      summary: "Rate a dish"
+      description: "If user already rated, his rating will be overwritten with the new one, otherwise it will be newly created"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "object"
+              required:
+                - token
+                - dishId
+                - rating
+              properties:
+                token:
+                  type: "string"
+                  format: "UUID"
+                dishId:
+                  type: "integer"
+                rating:
+                  type: "integer"
+                  minimum: 0
+                  maximum: 5
+      responses:
+        200:
+          description: "Rating has been successfully "
+        400:
+          description: "Invalid token or invalid credit"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/dish/rating/average:
+    get:
+      summary: "Get average rating for a dish"
+      parameters:
+        - name: "token"
+          in: "query"
+          description: "Authorization token"
+          required: true
+          schema:
+            type: "string"
+            format: "UUID"
+        - name: "dishId"
+          in: "query"
+          description: "Id of the dish"
+          required: true
+          schema:
+            type: "integer"
+      responses:
+        200:
+          description: "Success, responding with rating"
+          content:
+            application/json:
+              schema:
+                properties:
+                  averageRating:
+                    type: number
+                    format: float
+                    minimum: 0
+                    maximum: 5
+                  numOfRatings:
+                    type: integer
+        400:
+          description: "Error, invalid auth token or bad dish id"
           content:
             application/json:
               schema:
