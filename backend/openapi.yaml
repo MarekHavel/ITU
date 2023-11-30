@@ -181,6 +181,30 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  /api/user:
+    get:
+      summary: "Get information about a user"
+      parameters:
+        - name: "token"
+          in: "query"
+          description: "Authorization token"
+          required: true
+          schema:
+            type: "string"
+            format: "UUID"
+      responses:
+        200:
+          description: "User info"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        400:
+          description: "Invalid token"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 components:
   schemas:
     Dish:
@@ -201,6 +225,16 @@ components:
           type: integer
         ordered: # True if user has ordered the specified dish
           type: boolean
+    User:
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        priceCategory: # Student, external diner
+          type: string
+        canteenName:
+          type: string
     Dishes:
       type: array
       items:
