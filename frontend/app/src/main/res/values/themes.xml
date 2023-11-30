@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.Canteen" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.Canteen" parent="Theme.Material3.DayNight">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/red_700</item>
         <item name="colorPrimaryVariant">@color/red_900</item>
@@ -8,6 +8,8 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="navigationViewStyle">@style/Widget.Canteen.NavigationView</item>
     </style>
 
     <style name="Theme.Canteen.NoActionBar">
@@ -18,4 +20,19 @@
     <style name="Theme.Canteen.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.Canteen.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="TextAppearance.Canteen.TitleSmall" parent="TextAppearance.Material3.TitleSmall">
+    </style>
+
+    <style name="TextAppearance.Canteen.LabelLarge" parent="TextAppearance.Material3.LabelLarge">
+    </style>
+
+    <style name="Widget.Canteen.NavigationView" parent="Widget.Material3.NavigationView">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.Canteen.NavigationView</item>
+    </style>
+
+    <style name="ThemeOverlay.Canteen.NavigationView" parent="">
+        <item name="textAppearanceTitleSmall">@style/TextAppearance.Canteen.TitleSmall</item>
+        <item name="textAppearanceLabelLarge">@style/TextAppearance.Canteen.LabelLarge</item>
+    </style>
 </resources>
