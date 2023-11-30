@@ -23,8 +23,13 @@ router.post("/order/delete", apiController.orderDelete);
 // Získání informací o uživateli
 router.get("/user", apiController.userGet);
 
-// router.post("/menu", );
+// Získání ohodnocení oběda uživatele
+router.get("/dish/rating", apiController.dishRatingGet);
 
-// router.post("/credits", );
+// Ohodnotit oběd
+router.post("/dish/rating", apiController.dishRatingPost);
+
+// Získání průměrného ohodnocení jídla
+router.get("/dish/rating/average", apiController.dishRatingAverageGet);
 
 module.exports = router;

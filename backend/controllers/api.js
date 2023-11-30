@@ -289,7 +289,7 @@ exports.orderDelete = asyncHandler(async (req, res, next) => {
   }
 });
 
-// Nabití kreditu uživatele
+// Získání informací o uživateli
 exports.userGet = asyncHandler(async (req, res, next) => {
 
   if(req.query.token == null) {
@@ -324,3 +324,133 @@ exports.userGet = asyncHandler(async (req, res, next) => {
   }
 });
 
+// Získání ohodnocení jídla uživatele
+exports.dishRatingGet = asyncHandler(async (req, res, next) => {
+
+  if(req.query.token == null || req.query.dishId == null) {
+    res.status(400).json({
+      code: 2,
+      message: "Chybějící parametry požadavku"
+    });
+    return;
+  }
+
+  const user = await sequelize.models.user.findOne({ where: { authToken: req.query.token } });
+  if(!user) {
+    res.status(400).json({
+      code: 1,
+      message: "Neplatný autentizační token"
+    });
+    return;
+  }
+  
+  const dish = await sequelize.models.dish.findByPk(req.query.dishId);
+  if(!dish) {
+    res.status(400).json({
+      code: 1,
+      message: "Takové jídlo neexistuje"
+    });
+    return;
+  }
+
+  const rating = await sequelize.models.dish_rating.findOne({ where: { userId: user.id, dishId: dish.id}});
+  if(!rating) {
+    res.status(400).json({
+      code: 1,
+      message: "Uživatel jídlo ještě nehodnotil"
+    });
+    return;
+  }
+
+  const responseObject = { rating: rating.stars };
+  res.status(200).json(responseObject);
+});
+
+
+// Ohodnocení jídla uživatelem
+exports.dishRatingPost = asyncHandler(async (req, res, next) => {
+
+  if(req.body.token == null || req.body.dishId  == null || req.body.rating == null) {
+    res.status(400).json({
+      code: 2,
+      message: "Chybějící parametry požadavku"
+    });
+    return;
+  }
+
+  if(!(Number.isInteger(req.body.rating) && req.body.rating >= 0 && req.body.rating <= 5)) {
+    res.status(400).json({
+      code: 1,
+      message: "Neplatná hodnota pro hodnocení jídla"
+    });
+    return;
+  }
+
+  const user = await sequelize.models.user.findOne({ where: { authToken: req.body.token } });
+  if(!user) {
+    res.status(400).json({
+      code: 1,
+      message: "Neplatný autentizační token"
+    });
+    return;
+  }
+  
+  const dish = await sequelize.models.dish.findByPk(req.body.dishId);
+  if(!dish) {
+    res.status(400).json({
+      code: 1,
+      message: "Takové jídlo neexistuje"
+    });
+    return;
+  }
+
+  const [rating, created] = await sequelize.models.dish_rating.findOrBuild({ 
+    where: {
+      userId: user.id,
+      dishId: dish.id,
+    }
+  });
+
+  rating.stars = req.body.rating;
+  await rating.save();
+
+  res.status(200).end();
+});
+
+// Získání průměrného hodnocení jídla
+exports.dishRatingAverageGet = asyncHandler(async (req, res, next) => {
+
+  if(req.query.token == null || req.query.dishId == null) {
+    res.status(400).json({
+      code: 2,
+      message: "Chybějící parametry požadavku"
+    });
+    return;
+  }
+
+  const user = await sequelize.models.user.findOne({ where: { authToken: req.query.token } });
+  if(!user) {
+    res.status(400).json({
+      code: 1,
+      message: "Neplatný autentizační token"
+    });
+    return;
+  }
+  
+  const dish = await sequelize.models.dish.findByPk(req.query.dishId);
+  if(!dish) {
+    res.status(400).json({
+      code: 1,
+      message: "Takové jídlo neexistuje"
+    });
+    return;
+  }
+
+  const numOfRatings = await sequelize.models.dish_rating.count({ where: { dishId: dish.id }})
+  const averageRating = numOfRatings == 0 ? 0 : await sequelize.models.dish_rating.sum("stars", { where: { dishId: dish.id } }) / numOfRatings;
+
+  res.status(200).json({
+    averageRating: averageRating,
+    numOfRatings: numOfRatings
+  });
+})
