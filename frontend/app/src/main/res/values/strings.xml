@@ -2,8 +2,9 @@
     <string name="app_name">Canteen</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">John Doe</string>
-    <string name="nav_header_subtitle">johndoe@vut.cz</string>
+    <string name="nav_header_user_name">John Doe</string>
+    <string name="nav_header_user_email">johndoe@vut.cz</string>
+    <string name="nav_header_user_type">student</string>
     <string name="nav_header_desc">Navigation header</string>
 
     <string name="menu_order_food">Order food</string>
