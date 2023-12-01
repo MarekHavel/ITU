@@ -1,30 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".ui.recharge_credit.RechargeCreditFragment">
+
+    <LinearLayout
+        android:id="@+id/rechargePresets"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="200dp"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/plus100"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="0dp"
+            android:text="+ 100"
+            style="@style/Widget.Material3.Button.OutlinedButton"/>
+
+        <Space android:layout_width="5dp" android:layout_height="0dp"/>
+
+        <Button
+            android:id="@+id/plus200"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="0dp"
+            android:text="+ 200"
+            style="@style/Widget.Material3.Button.OutlinedButton"/>
+
+        <Space android:layout_width="5dp" android:layout_height="0dp"/>
+
+        <Button
+            android:id="@+id/plus500"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="0dp"
+            android:text="+ 500"
+            style="@style/Widget.Material3.Button.OutlinedButton"/>
+
+        <Space android:layout_width="5dp" android:layout_height="0dp"/>
+
+        <Button
+            android:id="@+id/clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="0dp"
+            android:text="Clear"
+            style="@style/Widget.Material3.Button.OutlinedButton"/>
+    </LinearLayout>
 
     <EditText
         android:id="@+id/rechargeAmount"
         android:layout_width="wrap_content"
         android:layout_height="70dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
         android:ems="10"
         android:inputType="number"
         android:autofillHints=""
-        app:layout_constraintBottom_toTopOf="@+id/rechargeButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:hint="Enter Amount"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox" />
 
     <Button
         android:id="@+id/rechargeButton"
         android:layout_width="140dp"
         android:layout_height="70dp"
-        android:text="Add Credits"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rechargeAmount" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_gravity="center"
+        android:layout_marginTop="80dp"
+        android:text="Add Credits"/>
+</LinearLayout>

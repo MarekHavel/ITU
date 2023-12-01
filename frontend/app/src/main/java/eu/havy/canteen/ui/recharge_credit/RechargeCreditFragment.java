@@ -9,17 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-
-import com.google.android.material.snackbar.Snackbar;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import eu.havy.canteen.api.Api;
 import eu.havy.canteen.databinding.FragmentRechargeCreditBinding;
@@ -52,14 +46,30 @@ public class RechargeCreditFragment extends Fragment {
         final Button submit = binding.rechargeButton;
 
         submit.setOnClickListener(l -> {
-
+            if (getIntegerFromString(creditField.getText().toString()) == 0) {
+                Toast.makeText(getContext(), "Please enter a valid amount", Toast.LENGTH_SHORT).show();
+                return;
+            }
             new Api(handler).addCredits(String.valueOf(creditField.getText()));
+            creditField.setText("");
         });
 
+        binding.plus100.setOnClickListener(l -> {
+            creditField.setText(String.valueOf(getIntegerFromString(creditField.getText().toString()) + 100));
+        });
 
+        binding.plus200.setOnClickListener(l -> {
+            creditField.setText(String.valueOf(getIntegerFromString(creditField.getText().toString()) + 200));
+        });
 
-        //final TextView textView = binding.textRechargeCredit;
-        //rechargeCreditViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        binding.plus500.setOnClickListener(l -> {
+            creditField.setText(String.valueOf(getIntegerFromString(creditField.getText().toString()) + 500));
+        });
+
+        binding.clear.setOnClickListener(l -> {
+            creditField.setText("");
+        });
+
         return root;
     }
 
@@ -67,5 +77,13 @@ public class RechargeCreditFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    public static Integer getIntegerFromString(String string) {
+        try {
+            return Integer.parseInt(String.valueOf(string));
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
 }
