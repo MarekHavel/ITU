@@ -1,5 +1,6 @@
 package eu.havy.canteen;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -22,13 +23,15 @@ import org.json.JSONObject;
 
 import java.util.Objects;
 
-import eu.havy.canteen.api.Api;
 import eu.havy.canteen.databinding.ActivityMainBinding;
+import eu.havy.canteen.databinding.MenuHeaderBinding;
+import eu.havy.canteen.model.User;
 import eu.havy.canteen.ui.order_food.OrderFoodFragment;
 import eu.havy.canteen.ui.settings.SettingsFragment;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static Context contextOfApplication;
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
 
@@ -60,13 +63,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        contextOfApplication = getApplicationContext();
+
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.appBarMain.toolbar);
         binding.appBarMain.fab.setOnClickListener(view ->
                 {
-                    new Api(handler).authenticateUser();
+                    User.logout();
+                    User.login("jan@novak.com", "heslo");
                 });
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
@@ -109,5 +115,16 @@ public class MainActivity extends AppCompatActivity {
             binding.appBarMain.toolbarCredit.setVisibility(View.GONE);
             binding.appBarMain.fab.setVisibility(View.GONE);
         }
+    }
+
+    public static Context getContext() {
+        return contextOfApplication;
+    }
+
+    public static void updateUserInfo() {
+        MenuHeaderBinding binding = MenuHeaderBinding.inflate(((MainActivity) contextOfApplication).getLayoutInflater());
+        binding.userName.setText(User.getCurrentUser().getName());
+        binding.userEmail.setText(User.getCurrentUser().getEmail());
+        binding.priceCategory.setText(User.getCurrentUser().getPriceCategory());
     }
 }

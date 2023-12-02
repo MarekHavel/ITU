@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -38,7 +39,8 @@ public class OrderFoodViewModel extends AndroidViewModel {
             try {
                 jsonArray = new JSONArray(Objects.requireNonNull(((Bundle) (msg.obj)).getString("response")));
             } catch (JSONException e) {
-                throw new RuntimeException(e);
+                Log.e("JSON", "Invalid JSON response");
+                return;
             }
             for (int i = 0; i < jsonArray.length(); i++) {
                 try {

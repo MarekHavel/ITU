@@ -62,7 +62,7 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/user_type"
+                android:id="@+id/price_category"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="end|center_vertical"
