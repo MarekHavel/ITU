@@ -17,10 +17,8 @@ public class Api {
         this.handler = handler;
     }
 
-    //String api_url = "https://canteen.havy.eu/api/";
-    String auth_url = "https://www.stud.fit.vutbr.cz/~xvolfr00/auth.php";
-    String menu_url = "https://www.stud.fit.vutbr.cz/~xvolfr00/get-menu.php";
-    String credits_url = "https://www.stud.fit.vutbr.cz/~xvolfr00/credits.php";
+    //String api_url = "https://canteen.havy.eu/api/"; //https://www.stud.fit.vutbr.cz/~xvolfr00
+    String server_api_url = "http://gargi.ddns.net:3000/api/";
     ExecutorService executor = Executors.newSingleThreadExecutor();
     Handler handler;
 
@@ -76,10 +74,23 @@ public class Api {
         }
     }
 
-    public void authenticateUser() {
+    public void authenticateUser(String email, String password) {
         executor.execute(() -> {
             //Background work here
-            String response = request(Method.POST, auth_url, "{\"email\": \"novak345@gmail.com\", \"password\": \"heslo\"}");
+            String response = request(Method.POST, server_api_url+"auth", "{\"email\": \""+email+"\", \"password\": \""+password+"\"}");
+
+            //UI Thread work here
+            //handler.post(() -> {});
+            Bundle bundle = new Bundle();
+            bundle.putString("response", response);
+            handler.obtainMessage(200, bundle).sendToTarget();
+        });
+    }
+
+    public void getUserInfo(String token) {
+        executor.execute(() -> {
+            //Background work here
+            String response = request(Method.GET, server_api_url+"user", "{\"token\": \""+token+"\"}");
 
             //UI Thread work here
             //handler.post(() -> {});
@@ -92,7 +103,7 @@ public class Api {
     public void getDishes() {
         executor.execute(() -> {
             //Background work here
-            String response = request(Method.POST, menu_url, "{\"userId\": 1,\"date\": \"2023-11-13\"}");
+            String response = request(Method.GET, server_api_url+"menu", "{\"userId\": 1,\"date\": \"2023-11-13\"}");
 
             //UI Thread work here
             //handler.post(() -> {});
@@ -104,7 +115,7 @@ public class Api {
     public void addCredits(String amount) {
         executor.execute(() -> {
             //Background work here
-            String response = request(Method.POST, credits_url, "{\"userId\": 1,\"amount\":" + amount + " }");
+            String response = request(Method.POST, server_api_url+"credit", "{\"userId\": 1,\"amount\":" + amount + " }");
 
             //UI Thread work here
             //handler.post(() -> {});
