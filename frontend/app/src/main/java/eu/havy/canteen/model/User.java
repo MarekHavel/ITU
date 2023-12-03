@@ -40,7 +40,7 @@ public class User {
         }
     };
 
-    private Handler handler = new Handler(Objects.requireNonNull(Looper.myLooper())) {
+    private final Handler handler = new Handler(Objects.requireNonNull(Looper.myLooper())) {
         @Override
         public void handleMessage(Message msg) {
             JSONObject jsonObject;
@@ -67,7 +67,7 @@ public class User {
                             credit = jsonObject.getString("credit");
                             MainActivity.updateCredit();
                             creditUpdateLoop.removeCallbacks(creditUpdate);
-                            creditUpdateLoop.post(creditUpdate);
+                            creditUpdateLoop.postDelayed(creditUpdate, 30000);
                             break;
                         case ADD_USER_CREDIT:
                             creditUpdateLoop.removeCallbacks(creditUpdate);
