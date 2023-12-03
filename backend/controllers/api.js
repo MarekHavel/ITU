@@ -62,6 +62,14 @@ exports.menuGet = asyncHandler(async (req, res, next) => {
     }
   });
 
+  if(!user) {
+    res.status(400).json({
+      code: 1,
+      message: "Neznámý token"
+    });
+    return;
+  }
+
   const menus = await sequelize.models.menu.findAll({
     attributes: ["id", "dishId", "pieces"],
     where: {
