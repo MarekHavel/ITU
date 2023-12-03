@@ -9,11 +9,13 @@ import android.widget.Toast;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.HttpURLConnection;
 import java.util.Objects;
 
 import eu.havy.canteen.LoginActivity;
 import eu.havy.canteen.MainActivity;
 import eu.havy.canteen.api.Api;
+import eu.havy.canteen.ui.recharge_credit.RechargeCreditFragment;
 
 /**
  * Represents a user of the application and provides methods for logging in and out.
@@ -29,16 +31,16 @@ public class User {
     private String priceCategory;
     private String credit;
 
-    private Handler creditUpdateLoop = new Handler(Objects.requireNonNull(Looper.myLooper()));
-    private Runnable creditUpdate = new Runnable() {
+    private final Handler creditUpdateLoop = new Handler(Objects.requireNonNull(Looper.myLooper()));
+    private final Runnable creditUpdate = new Runnable() {
         @Override
         public void run() {
-            new Api(handler).getUserCredit(token);
             creditUpdateLoop.postDelayed(this, 30000);
+            new Api(handler).getUserCredit(token);
         }
     };
 
-    public Handler handler = new Handler(Objects.requireNonNull(Looper.myLooper())) {
+    private Handler handler = new Handler(Objects.requireNonNull(Looper.myLooper())) {
         @Override
         public void handleMessage(Message msg) {
             JSONObject jsonObject;
@@ -46,38 +48,49 @@ public class User {
                 jsonObject = (JSONObject) msg.obj;
                 String error = jsonObject.has("exception") ? jsonObject.getString("exception") : (jsonObject.has("message") ? jsonObject.getString("message") : "");
                 if (!error.isEmpty()) {
-                    Log.e("User", "FAILURE, code: " + msg.what + " message: " + error);
                     Toast.makeText(MainActivity.getInstance() != null ? MainActivity.getInstance() : LoginActivity.getInstance(), "Failed to load data", Toast.LENGTH_SHORT).show();
-                    if (LoginActivity.getInstance() != null) {
-                        LoginActivity.getInstance().logInFailed();
-                        User.logout();
-                    }
-                    return;
-                }
-                if (jsonObject.has("credit")) {
-                    credit = jsonObject.getString("credit");
-                    MainActivity.updateCredit();
-                    creditUpdateLoop.removeCallbacks(creditUpdate);
-                    creditUpdateLoop.post(creditUpdate);
-                } else if (jsonObject.has("email")) {
-                    canteenName = jsonObject.getString("canteen");
-                    priceCategory = jsonObject.getString("priceCategory");
-                    email = jsonObject.getString("email");
-                    username = jsonObject.getString("username");
-                    MainActivity.updateUserInfo();
-                } else if (jsonObject.has("token")){
-                    token = jsonObject.getString("token");
-                    LoginActivity.logIn();
+                    Log.e("User", "FAILURE, request: " + Api.Request.toString(msg.what) +" code: " + msg.arg1 + " message: " + error);
                 } else {
-                    creditUpdateLoop.removeCallbacks(creditUpdate);
-                    creditUpdateLoop.post(creditUpdate);
+                    switch (Api.Request.getEnum(msg.what)) {
+                        case AUTHENTICATE_USER:
+                            token = jsonObject.getString("token");
+                            LoginActivity.logIn();
+                            break;
+                        case GET_USER_INFO:
+                            canteenName = jsonObject.getString("canteen");
+                            priceCategory = jsonObject.getString("priceCategory");
+                            email = jsonObject.getString("email");
+                            username = jsonObject.getString("username");
+                            MainActivity.updateUserInfo();
+                            break;
+                        case GET_USER_CREDIT:
+                            credit = jsonObject.getString("credit");
+                            MainActivity.updateCredit();
+                            creditUpdateLoop.removeCallbacks(creditUpdate);
+                            creditUpdateLoop.post(creditUpdate);
+                            break;
+                        case ADD_USER_CREDIT:
+                            creditUpdateLoop.removeCallbacks(creditUpdate);
+                            creditUpdateLoop.post(creditUpdate);
+                            break;
+                    }
                 }
             } catch (JSONException e) {
                 Toast.makeText(MainActivity.getInstance() != null ? MainActivity.getInstance() : LoginActivity.getInstance(), "Request failed", Toast.LENGTH_SHORT).show();
-                Log.e("User", "FAILURE, code: " + msg.what + " message: " + msg.obj);
-                if (LoginActivity.getInstance() != null) {
-                    LoginActivity.getInstance().logInFailed();
-                    User.logout();
+                Log.e("User", "FAILURE, request: " + Api.Request.toString(msg.what) +" code: " + msg.arg1 + " message: " + msg.obj);
+            } finally {
+                switch (Api.Request.getEnum(msg.what)) {
+                    case AUTHENTICATE_USER:
+                        if (msg.arg1 != HttpURLConnection.HTTP_OK) {
+                            if (LoginActivity.getInstance() != null) {
+                                LoginActivity.getInstance().logInFailed();
+                                User.logout();
+                            }
+                        }
+                        break;
+                    case ADD_USER_CREDIT:
+                        RechargeCreditFragment.requestFinished();
+                        break;
                 }
             }
         }
@@ -154,6 +167,11 @@ public class User {
      */
     public void addCredit(int amount) {
         new Api(handler).addUserCredit(token, amount);
+    }
+
+    public void updateData() {
+        new Api(handler).getUserInfo(token);
+        new Api(handler).getUserCredit(token);
     }
 
     /**

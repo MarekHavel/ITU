@@ -3,17 +3,16 @@ package eu.havy.canteen.ui.recharge_credit;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+
+import java.util.Objects;
 
 import eu.havy.canteen.databinding.FragmentRechargeCreditBinding;
 import eu.havy.canteen.model.User;
@@ -21,56 +20,41 @@ import eu.havy.canteen.model.User;
 public class RechargeCreditFragment extends Fragment {
 
     private FragmentRechargeCreditBinding binding;
-
-    Handler handler = new Handler(Looper.myLooper()) {
-        @Override
-        public void handleMessage(Message msg) {
-
-            if (msg.what == 200) {
-                Toast.makeText(getContext(), "SUCCESS", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(getContext(), "FAILURE, code: " + msg.what, Toast.LENGTH_SHORT).show();
-            }
-        }
+    private static RechargeCreditViewModel viewModel;
+    private static final Handler viewHandler =  new Handler(Objects.requireNonNull(Looper.myLooper()));
+    private static final Runnable showProgress = () -> {
+        viewModel.showProgress();
+        visibleFrom = System.currentTimeMillis();
     };
+    private static long visibleFrom = 0;
+    private static final long MINIMUM_VISIBLE_TIME = 500;
+    private static final long WAIT_BEFORE_SHOWING_PROGRESS = 0;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        RechargeCreditViewModel rechargeCreditViewModel =
-                new ViewModelProvider(this).get(RechargeCreditViewModel.class);
-
+        viewModel = new ViewModelProvider(this).get(RechargeCreditViewModel.class);
         binding = FragmentRechargeCreditBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
 
-        final EditText creditField = binding.rechargeAmount;
-        final Button submit = binding.rechargeButton;
-
-        submit.setOnClickListener(l -> {
-            if (getIntegerFromString(creditField.getText().toString()) == 0) {
+        binding.rechargeButton.setOnClickListener(l -> {
+            if (viewModel.getRechargeAmountValue() == 0) {
                 Toast.makeText(getContext(), "Please enter a valid amount", Toast.LENGTH_SHORT).show();
                 return;
             }
-            User.getCurrentUser().addCredit(Integer.parseInt(String.valueOf(creditField.getText())));
-            creditField.setText("");
+            viewHandler.postDelayed(showProgress, WAIT_BEFORE_SHOWING_PROGRESS);
+            User.getCurrentUser().addCredit(viewModel.getRechargeAmountValue());
+            viewModel.setRechargeAmountValue(0);
         });
 
-        binding.plus100.setOnClickListener(l -> {
-            creditField.setText(String.valueOf(getIntegerFromString(creditField.getText().toString()) + 100));
-        });
+        binding.plus100.setOnClickListener(l -> viewModel.addToRechargeAmountValue(100));
+        binding.plus200.setOnClickListener(l -> viewModel.addToRechargeAmountValue(200));
+        binding.plus500.setOnClickListener(l -> viewModel.addToRechargeAmountValue(500));
+        binding.clear.setOnClickListener(l -> viewModel.setRechargeAmountValue(0));
 
-        binding.plus200.setOnClickListener(l -> {
-            creditField.setText(String.valueOf(getIntegerFromString(creditField.getText().toString()) + 200));
-        });
+        viewModel.getRechargeAmount().observe(getViewLifecycleOwner(), value -> binding.rechargeAmount.setText(getStringFromInteger(value)));
+        viewModel.getRechargeProgressVisibility().observe(getViewLifecycleOwner(), visibility -> binding.progressBar.setVisibility(visibility));
+        viewModel.getRechargeButtonVisibility().observe(getViewLifecycleOwner(), visibility -> binding.rechargeButton.setVisibility(visibility));
 
-        binding.plus500.setOnClickListener(l -> {
-            creditField.setText(String.valueOf(getIntegerFromString(creditField.getText().toString()) + 500));
-        });
-
-        binding.clear.setOnClickListener(l -> {
-            creditField.setText("");
-        });
-
-        return root;
+        return binding.getRoot();
     }
 
     @Override
@@ -79,11 +63,19 @@ public class RechargeCreditFragment extends Fragment {
         binding = null;
     }
 
-    public static Integer getIntegerFromString(String string) {
-        try {
-            return Integer.parseInt(String.valueOf(string));
-        } catch (NumberFormatException e) {
-            return 0;
+    public static void requestFinished() {
+        long timePassed = System.currentTimeMillis() - visibleFrom;
+        viewHandler.postDelayed(() -> {
+            viewHandler.removeCallbacks(showProgress);
+            viewModel.hideProgress();
+        }, MINIMUM_VISIBLE_TIME - timePassed < 0 ? 0 : MINIMUM_VISIBLE_TIME - timePassed);
+    }
+
+    private static String getStringFromInteger(Integer integer) {
+        if (integer == null || integer == 0) {
+            return "";
+        } else {
+            return String.valueOf(integer);
         }
     }
 }

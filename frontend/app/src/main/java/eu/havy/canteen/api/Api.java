@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -18,8 +19,7 @@ public class Api {
         this.handler = handler;
     }
 
-    //String api_url = "https://canteen.havy.eu/api/"; //https://www.stud.fit.vutbr.cz/~xvolfr00
-    String server_api_url = "http://gargi.ddns.net:3000/api/";
+    String server_api_url = "http://gargi.ddns.net:3000/api/"; //"https://canteen.havy.eu/api/"
     ExecutorService executor = Executors.newSingleThreadExecutor();
     Handler handler;
 
@@ -40,16 +40,32 @@ public class Api {
         }
     }
 
-    private JSONObject request(Method method, String api_url, String body) {
+    public enum Request {
+        AUTHENTICATE_USER,
+        GET_USER_INFO,
+        GET_MENU,
+        GET_USER_CREDIT,
+        ADD_USER_CREDIT;
+
+        public static Request getEnum(int i) {
+            return Request.values()[i];
+        }
+
+        public static String toString(int i) {
+            return Request.values()[i].name();
+        }
+    }
+
+    private JSONObject request(Method method, String api_url, JSONObject body) {
         try {
             URL url = new URL(api_url);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(method.toString());
             connection.setRequestProperty("Accept", "application/json");
-            if (!body.isEmpty()) {
+            if (body != null) {
                 connection.setRequestProperty("Content-Type", "application/json");
                 connection.setDoOutput(true);
-                connection.getOutputStream().write(body.getBytes());
+                connection.getOutputStream().write(body.toString().getBytes());
             }
             connection.connect();
 
@@ -88,83 +104,79 @@ public class Api {
     public void authenticateUser(String email, String password) {
         executor.execute(() -> {
             //Background work here
-            JSONObject response = request(Method.POST, server_api_url+"auth", "{\"email\": \""+email+"\", \"password\": \""+password+"\"}");
+            JSONObject body = buildBody(Map.of("email", email, "password", password));
+            JSONObject response = request(Method.POST, server_api_url+"auth", body);
 
             //UI Thread work here
-            //handler.post(() -> {});
-            try {
-                handler.obtainMessage(response.getInt("responseCode"), response).sendToTarget();
-            } catch (JSONException e) {
-                handler.obtainMessage(HttpURLConnection.HTTP_INTERNAL_ERROR, response).sendToTarget();
-            }
+            //handler.post(() -> {})
+            handler.obtainMessage(Request.AUTHENTICATE_USER.ordinal(), getResponseCode(response), 0, response).sendToTarget();
         });
     }
 
     public void getUserInfo(String token) {
         executor.execute(() -> {
             //Background work here
-            JSONObject response = request(Method.GET, server_api_url+"user?token="+token, "");
+            JSONObject response = request(Method.GET, server_api_url+"user?token="+token, null);
 
             //UI Thread work here
-            //handler.post(() -> {});
-            try {
-                handler.obtainMessage(response.getInt("responseCode"), response).sendToTarget();
-            } catch (JSONException e) {
-                handler.obtainMessage(HttpURLConnection.HTTP_INTERNAL_ERROR, response).sendToTarget();
-            }
+            //handler.post(() -> {})
+            handler.obtainMessage(Request.GET_USER_INFO.ordinal(), getResponseCode(response), 0, response).sendToTarget();
         });
     }
 
-    public void getDishes(String token, String date) {
+    public void getMenu(String token, String date) {
         executor.execute(() -> {
             //Background work here
-            JSONObject response = request(Method.GET, server_api_url+"menu?token="+token+"&date="+date, "");
+            JSONObject response = request(Method.GET, server_api_url+"menu?token="+token+"&date="+date, null);
 
             //UI Thread work here
             //handler.post(() -> {});
-            try {
-                handler.obtainMessage(response.getInt("responseCode"), response).sendToTarget();
-            } catch (JSONException e) {
-                handler.obtainMessage(HttpURLConnection.HTTP_INTERNAL_ERROR, response).sendToTarget();
-            }
+            handler.obtainMessage(Request.GET_MENU.ordinal(), getResponseCode(response), 0, response).sendToTarget();
         });
     }
 
     public void getUserCredit(String token) {
         executor.execute(() -> {
             //Background work here
-            JSONObject response = request(Method.GET, server_api_url+"credit?token="+token, "");
+            JSONObject response = request(Method.GET, server_api_url+"credit?token="+token, null);
 
             //UI Thread work here
             //handler.post(() -> {});
-            try {
-                handler.obtainMessage(response.getInt("responseCode"), response).sendToTarget();
-            } catch (JSONException e) {
-                handler.obtainMessage(HttpURLConnection.HTTP_INTERNAL_ERROR, response).sendToTarget();
-            }
+            handler.obtainMessage(Request.GET_USER_CREDIT.ordinal(), getResponseCode(response), 0, response).sendToTarget();
         });
     }
 
     public void addUserCredit(String token, int amount) {
         executor.execute(() -> {
             //Background work here
-            JSONObject jsonObject = new JSONObject();
-            try {
-                jsonObject.put("token", token);
-                jsonObject.put("credit", amount);
-            } catch (JSONException e) {
-                throw new RuntimeException(e);
-            }
-            JSONObject response = request(Method.POST, server_api_url+"credit", jsonObject.toString());
+            JSONObject body = buildBody(Map.of("token", token, "credit", amount));
+            JSONObject response = request(Method.POST, server_api_url+"credit", body);
 
             //UI Thread work here
             //handler.post(() -> {});
-            try {
-                handler.obtainMessage(response.getInt("responseCode"), response).sendToTarget();
-            } catch (JSONException e) {
-                handler.obtainMessage(HttpURLConnection.HTTP_INTERNAL_ERROR, response).sendToTarget();
-            }
+            handler.obtainMessage(Request.ADD_USER_CREDIT.ordinal(), getResponseCode(response), 0, response).sendToTarget();
         });
     }
 
+    private JSONObject buildBody(Map<String, Object> params) {
+        JSONObject body = new JSONObject();
+        for (Map.Entry<String, Object> entry : params.entrySet()) {
+            try {
+                body.put(entry.getKey(), entry.getValue());
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return body;
+    }
+
+    private int getResponseCode(JSONObject response) {
+        int responseCode = HttpURLConnection.HTTP_INTERNAL_ERROR;
+        try {
+            response.getInt("responseCode");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return responseCode;
+    }
 }

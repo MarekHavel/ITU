@@ -3,20 +3,33 @@ package eu.havy.canteen;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.widget.ArrayAdapter;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.HashSet;
+import java.util.Objects;
 
 import eu.havy.canteen.databinding.ActivityLoginBinding;
 import eu.havy.canteen.model.User;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private ActivityLoginBinding binding;
+    private static ActivityLoginBinding binding;
     private static LoginActivity instance;
+    private static final Handler viewHandler =  new Handler(Objects.requireNonNull(Looper.myLooper()));
+    private static final Runnable showProgress = () -> {
+        binding.progressBar.setVisibility(View.VISIBLE);
+        binding.loginButton.setVisibility(View.GONE);
+        visibleFrom = System.currentTimeMillis();
+    };
+
+    private static long visibleFrom = 0;
+    private static final long MINIMUM_VISIBLE_TIME = 500;
+    private static final long WAIT_BEFORE_SHOWING_PROGRESS = 0;
 
     public static LoginActivity getInstance() {
         return instance;
@@ -36,9 +49,13 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void logInFailed() {
-        binding.progressBar.setVisibility(View.GONE);
-        binding.loginButton.setVisibility(View.VISIBLE);
-        binding.loginError.setText("Invalid email or password");
+        long timePassed = System.currentTimeMillis() - visibleFrom;
+        viewHandler.postDelayed(() -> {
+            viewHandler.removeCallbacks(showProgress);
+            binding.progressBar.setVisibility(View.GONE);
+            binding.loginButton.setVisibility(View.VISIBLE);
+            binding.loginError.setText("Invalid email or password");
+        }, MINIMUM_VISIBLE_TIME - timePassed < 0 ? 0 : MINIMUM_VISIBLE_TIME - timePassed);
     }
 
     @Override
@@ -68,8 +85,7 @@ public class LoginActivity extends AppCompatActivity {
                 binding.loginError.setText("Login and password must not be empty");
                 return;
             }
-            binding.progressBar.setVisibility(View.VISIBLE);
-            binding.loginButton.setVisibility(View.GONE);
+            viewHandler.postDelayed(showProgress, WAIT_BEFORE_SHOWING_PROGRESS);
             binding.loginError.setText("");
             User.login(binding.loginEmail.getText().toString(), binding.loginPassword.getText().toString());
         });

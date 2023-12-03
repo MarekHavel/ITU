@@ -24,4 +24,10 @@
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="log_out">LOG OUT</string>
+    <string name="add_credits">Add Credits</string>
+    <string name="enter_amount">Enter Amount</string>
+    <string name="_100">+ 100</string>
+    <string name="_200">+ 200</string>
+    <string name="_500">+ 500</string>
+    <string name="clear">Clear</string>
 </resources>
