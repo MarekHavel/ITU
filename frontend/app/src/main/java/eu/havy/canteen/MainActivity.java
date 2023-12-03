@@ -1,11 +1,13 @@
 package eu.havy.canteen;
 
-import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -21,17 +23,20 @@ import com.google.android.material.snackbar.Snackbar;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.HttpURLConnection;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
+import eu.havy.canteen.api.Api;
 import eu.havy.canteen.databinding.ActivityMainBinding;
 import eu.havy.canteen.databinding.MenuHeaderBinding;
 import eu.havy.canteen.model.User;
-import eu.havy.canteen.ui.order_food.OrderFoodFragment;
 import eu.havy.canteen.ui.settings.SettingsFragment;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static Context contextOfApplication;
+    private static MainActivity instance;
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
 
@@ -40,9 +45,17 @@ public class MainActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             JSONObject jsonObject;
             try {
-                jsonObject = new JSONObject(Objects.requireNonNull(((Bundle) (msg.obj)).getString("response")));
+                jsonObject = (JSONObject) msg.obj;
+                if (msg.what != HttpURLConnection.HTTP_OK) {
+                    Toast.makeText(MainActivity.getInstance(), "FAILURE, code: " + msg.what + " message: " + jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (jsonObject.has("exception")) {
+                    Toast.makeText(MainActivity.getInstance(), "FAILURE, code: " + msg.what + " message: " + jsonObject.getString("exception"), Toast.LENGTH_SHORT).show();
+                    return;
+                }
             } catch (JSONException e) {
-                throw new RuntimeException(e);
+                Toast.makeText(MainActivity.getInstance(), "FAILURE, code: " + msg.what + " message: " + msg.obj, Toast.LENGTH_SHORT).show();
+                return;
             }
             String str;
             if (msg.what == 200) {
@@ -59,11 +72,33 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    public static MainActivity getInstance() {
+        return instance;
+    }
+
+    public static void logOut() {
+        SharedPreferences sharedPreferences = instance.getSharedPreferences("eu.havy.canteen", MODE_PRIVATE);
+
+        //remove token from shared preferences, so that user is not automatically logged in next time
+        sharedPreferences.edit().remove("token").apply();
+
+        //save email of logged in user for future logins
+        Set<String> emailsSaved = sharedPreferences.getStringSet("emails", null);
+        Set<String> emails = emailsSaved != null ? new HashSet<>(emailsSaved) : new HashSet<>();
+        emails.add(User.getCurrentUser().getEmail());
+        sharedPreferences.edit().putStringSet("emails", emails).apply();
+
+        //start login activity
+        Intent intent = new Intent(instance, LoginActivity.class);
+        instance.startActivity(intent);
+        instance.finish();
+        instance = null;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        contextOfApplication = getApplicationContext();
+        instance = this;
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -71,11 +106,17 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(binding.appBarMain.toolbar);
         binding.appBarMain.fab.setOnClickListener(view ->
                 {
-                    User.logout();
-                    User.login("jan@novak.com", "heslo");
+                    Snackbar.make(view, "Show orders", Snackbar.LENGTH_LONG).setAction("Action", null).show();
                 });
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
+
+        MenuHeaderBinding headerBinding = MenuHeaderBinding.bind(binding.navView.getHeaderView(0));
+
+        headerBinding.logoutButton.setOnClickListener(view -> {
+            logOut();
+            User.logout();
+        });
 
         //topbar contains menu button instead of back button for these fragments
         int[] menuItems = {R.id.nav_order_food, R.id.nav_recharge_credit, R.id.nav_order_history};
@@ -97,6 +138,10 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_activity_main_content).getChildFragmentManager()
                 .addOnBackStackChangedListener(this::updateToolbarView);
         updateToolbarView();
+
+        //load user data
+        new Api(User.getCurrentUser().handler).getUserInfo(User.getCurrentUser().getToken());
+        new Api(User.getCurrentUser().handler).getUserCredit(User.getCurrentUser().getToken());
     }
 
     @Override
@@ -108,23 +153,30 @@ public class MainActivity extends AppCompatActivity {
 
     public void updateToolbarView() {
         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_activity_main_content).getChildFragmentManager().getFragments().get(0);
-        if (currentFragment instanceof OrderFoodFragment) {
-            binding.appBarMain.toolbarCredit.setVisibility(View.VISIBLE);
-            binding.appBarMain.fab.setVisibility(View.VISIBLE);
-        } else {
-            binding.appBarMain.toolbarCredit.setVisibility(View.GONE);
-            binding.appBarMain.fab.setVisibility(View.GONE);
+        switch (currentFragment.getClass().getSimpleName()) {
+            case "OrderFoodFragment":
+                binding.appBarMain.toolbarCredit.setVisibility(View.VISIBLE);
+                binding.appBarMain.fab.setVisibility(View.VISIBLE);
+                break;
+            case "RechargeCreditFragment":
+                binding.appBarMain.toolbarCredit.setVisibility(View.VISIBLE);
+                binding.appBarMain.fab.setVisibility(View.GONE);
+                break;
+            default:
+                binding.appBarMain.toolbarCredit.setVisibility(View.GONE);
+                binding.appBarMain.fab.setVisibility(View.GONE);
+                break;
         }
     }
 
-    public static Context getContext() {
-        return contextOfApplication;
+    public static void updateUserInfo() {
+        MenuHeaderBinding headerBinding = MenuHeaderBinding.bind(instance.binding.navView.getHeaderView(0));
+        headerBinding.userName.setText(User.getCurrentUser().getUsername());
+        headerBinding.userEmail.setText(User.getCurrentUser().getEmail());
+        //headerBinding.priceCategory.setText(User.getCurrentUser().getPriceCategory());
     }
 
-    public static void updateUserInfo() {
-        MenuHeaderBinding binding = MenuHeaderBinding.inflate(((MainActivity) contextOfApplication).getLayoutInflater());
-        binding.userName.setText(User.getCurrentUser().getName());
-        binding.userEmail.setText(User.getCurrentUser().getEmail());
-        binding.priceCategory.setText(User.getCurrentUser().getPriceCategory());
+    public static void updateCredit() {
+        instance.binding.appBarMain.toolbarCredit.setText(User.getCurrentUser().getCredit());
     }
 }
