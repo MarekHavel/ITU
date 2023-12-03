@@ -99,7 +99,7 @@ exports.menuGet = asyncHandler(async (req, res, next) => {
 
     const allergens = await databaseDish.getAllergens();
     const allergenNames = allergens.map((al) => al.code);
-    dish.allergens = allergenNames.toString().replaceAll(",", ", ");
+    dish.allergens = allergenNames.toString().replace(/,/g, ", ");
 
     const itemsTaken = await menu.countUsers();
     dish.itemsLeft = menu.pieces - itemsTaken;
@@ -111,7 +111,9 @@ exports.menuGet = asyncHandler(async (req, res, next) => {
     resDishes.push(dish);
   }
 
-  res.status(200).json(resDishes);
+  res.status(200).json({
+    dishes:resDishes
+  });
 });
 
 // Získání zbývajícího kreditu uživatele

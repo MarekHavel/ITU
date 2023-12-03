@@ -339,9 +339,11 @@ components:
         canteenName:
           type: string
     Dishes:
-      type: array
-      items:
-        $ref: "#/components/schemas/Dish"
+      properties:
+        dishes:
+          type: array
+          items:
+            $ref: "#/components/schemas/Dish"
     # DishDetails: - TODO
     #   properties:
     #     id:
