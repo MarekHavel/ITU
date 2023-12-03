@@ -1,11 +1,11 @@
 package eu.havy.canteen.ui.order_food;
 
 import android.app.Application;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -20,8 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import eu.havy.canteen.MainActivity;
 import eu.havy.canteen.api.Api;
 import eu.havy.canteen.model.Dish;
+import eu.havy.canteen.model.User;
 
 public class OrderFoodViewModel extends AndroidViewModel {
 
@@ -36,8 +38,13 @@ public class OrderFoodViewModel extends AndroidViewModel {
         public void handleMessage(Message msg) {
             List<Dish> dishList = new ArrayList<>();
             JSONArray jsonArray;
+            JSONObject jsonObject;
             try {
-                jsonArray = new JSONArray(Objects.requireNonNull(((Bundle) (msg.obj)).getString("response")));
+                jsonObject = (JSONObject) msg.obj;
+                if (jsonObject.has("exception")) {
+                    Toast.makeText(MainActivity.getInstance(), "FAILURE, code: " + msg.what + " message: " + jsonObject.getString("exception"), Toast.LENGTH_SHORT).show();
+                }
+                jsonArray = new JSONArray(jsonObject.getString("dishes"));
             } catch (JSONException e) {
                 Log.e("JSON", "Invalid JSON response");
                 return;
@@ -70,7 +77,7 @@ public class OrderFoodViewModel extends AndroidViewModel {
         dishes = new MutableLiveData<>();
         dishes.setValue(null);
 
-        new Api(handler).getDishes();
+        new Api(handler).getDishes(User.getCurrentUser().getToken(), "2023-11-13");
     }
 
     public LiveData<String> getText() {

@@ -20,4 +20,8 @@
     <string name="allowed_notifications">Allowed notifications\n</string>
     <string name="language">Language</string>
     <string name="credit">credit</string>
+    <string name="login">Login</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="log_out">LOG OUT</string>
 </resources>

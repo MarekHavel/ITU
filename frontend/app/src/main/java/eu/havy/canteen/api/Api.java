@@ -1,10 +1,11 @@
 package eu.havy.canteen.api;
 
-import android.os.Bundle;
 import android.os.Handler;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -39,89 +40,130 @@ public class Api {
         }
     }
 
-    private String request(Method method, String api_url, String body) {
+    private JSONObject request(Method method, String api_url, String body) {
         try {
             URL url = new URL(api_url);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(method.toString());
-            connection.setRequestProperty("Content-Type", "application/json");
             connection.setRequestProperty("Accept", "application/json");
-            connection.setDoOutput(true);
-            connection.getOutputStream().write(body.getBytes());
+            if (!body.isEmpty()) {
+                connection.setRequestProperty("Content-Type", "application/json");
+                connection.setDoOutput(true);
+                connection.getOutputStream().write(body.getBytes());
+            }
             connection.connect();
 
             int responseCode = connection.getResponseCode();
 
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                String line;
-                StringBuilder str = new StringBuilder();
-
-                while ((line = reader.readLine()) != null) {
-                    str.append(line);
+            if (connection.getErrorStream() != null) {
+                JSONObject error;
+                try {
+                    error = new JSONObject(new BufferedReader(new InputStreamReader(connection.getErrorStream())).lines().toArray()[0].toString());
+                } catch (JSONException e) {
+                    error = new JSONObject().put("message", "Invalid JSON response from server");
                 }
-
-                reader.close();
-                connection.disconnect();
-
-                return str.toString();
-            } else {
-                return "HTTP request failed with response code: " + responseCode;
+                if (error.has("message")) {
+                    return new JSONObject().put("responseCode", responseCode).put("message", error.getString("message"));
+                }
             }
-        } catch (IOException e) {
+
+            Object[] strs = new BufferedReader(new InputStreamReader(connection.getInputStream())).lines().toArray();
+            String str = strs.length == 0 ? "" : strs[0].toString();
+
+            connection.disconnect();
+
+            JSONObject response = str.length() == 0 ? new JSONObject() : new JSONObject(str);
+            response.put("responseCode", responseCode);
+            return response;
+        } catch (Exception e) {
             e.printStackTrace();
-            return "Exception: " + e.getMessage();
+            try {
+                return new JSONObject().put("exception", e.getMessage());
+            } catch (JSONException ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 
     public void authenticateUser(String email, String password) {
         executor.execute(() -> {
             //Background work here
-            String response = request(Method.POST, server_api_url+"auth", "{\"email\": \""+email+"\", \"password\": \""+password+"\"}");
+            JSONObject response = request(Method.POST, server_api_url+"auth", "{\"email\": \""+email+"\", \"password\": \""+password+"\"}");
 
             //UI Thread work here
             //handler.post(() -> {});
-            Bundle bundle = new Bundle();
-            bundle.putString("response", response);
-            handler.obtainMessage(200, bundle).sendToTarget();
+            try {
+                handler.obtainMessage(response.getInt("responseCode"), response).sendToTarget();
+            } catch (JSONException e) {
+                handler.obtainMessage(HttpURLConnection.HTTP_INTERNAL_ERROR, response).sendToTarget();
+            }
         });
     }
 
     public void getUserInfo(String token) {
         executor.execute(() -> {
             //Background work here
-            String response = request(Method.GET, server_api_url+"user", "{\"token\": \""+token+"\"}");
+            JSONObject response = request(Method.GET, server_api_url+"user?token="+token, "");
 
             //UI Thread work here
             //handler.post(() -> {});
-            Bundle bundle = new Bundle();
-            bundle.putString("response", response);
-            handler.obtainMessage(200, bundle).sendToTarget();
+            try {
+                handler.obtainMessage(response.getInt("responseCode"), response).sendToTarget();
+            } catch (JSONException e) {
+                handler.obtainMessage(HttpURLConnection.HTTP_INTERNAL_ERROR, response).sendToTarget();
+            }
         });
     }
 
-    public void getDishes() {
+    public void getDishes(String token, String date) {
         executor.execute(() -> {
             //Background work here
-            String response = request(Method.GET, server_api_url+"menu", "{\"userId\": 1,\"date\": \"2023-11-13\"}");
+            JSONObject response = request(Method.GET, server_api_url+"menu?token="+token+"&date="+date, "");
 
             //UI Thread work here
             //handler.post(() -> {});
-            Bundle bundle = new Bundle();
-            bundle.putString("response", response);
-            handler.obtainMessage(200, bundle).sendToTarget();
+            try {
+                handler.obtainMessage(response.getInt("responseCode"), response).sendToTarget();
+            } catch (JSONException e) {
+                handler.obtainMessage(HttpURLConnection.HTTP_INTERNAL_ERROR, response).sendToTarget();
+            }
         });
     }
-    public void addCredits(String amount) {
+
+    public void getUserCredit(String token) {
         executor.execute(() -> {
             //Background work here
-            String response = request(Method.POST, server_api_url+"credit", "{\"userId\": 1,\"amount\":" + amount + " }");
+            JSONObject response = request(Method.GET, server_api_url+"credit?token="+token, "");
 
             //UI Thread work here
             //handler.post(() -> {});
-            Bundle bundle = new Bundle();
-            bundle.putString("response", response);
-            handler.obtainMessage(200, bundle).sendToTarget();
+            try {
+                handler.obtainMessage(response.getInt("responseCode"), response).sendToTarget();
+            } catch (JSONException e) {
+                handler.obtainMessage(HttpURLConnection.HTTP_INTERNAL_ERROR, response).sendToTarget();
+            }
+        });
+    }
+
+    public void addUserCredit(String token, int amount) {
+        executor.execute(() -> {
+            //Background work here
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("token", token);
+                jsonObject.put("credit", amount);
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+            JSONObject response = request(Method.POST, server_api_url+"credit", jsonObject.toString());
+
+            //UI Thread work here
+            //handler.post(() -> {});
+            try {
+                handler.obtainMessage(response.getInt("responseCode"), response).sendToTarget();
+            } catch (JSONException e) {
+                handler.obtainMessage(HttpURLConnection.HTTP_INTERNAL_ERROR, response).sendToTarget();
+            }
         });
     }
 

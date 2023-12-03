@@ -15,8 +15,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import eu.havy.canteen.api.Api;
 import eu.havy.canteen.databinding.FragmentRechargeCreditBinding;
+import eu.havy.canteen.model.User;
 
 public class RechargeCreditFragment extends Fragment {
 
@@ -50,7 +50,7 @@ public class RechargeCreditFragment extends Fragment {
                 Toast.makeText(getContext(), "Please enter a valid amount", Toast.LENGTH_SHORT).show();
                 return;
             }
-            new Api(handler).addCredits(String.valueOf(creditField.getText()));
+            User.getCurrentUser().addCredit(Integer.parseInt(String.valueOf(creditField.getText())));
             creditField.setText("");
         });
 
