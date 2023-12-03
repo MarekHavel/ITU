@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import eu.havy.canteen.LoginActivity;
 import eu.havy.canteen.MainActivity;
 import eu.havy.canteen.api.Api;
 import eu.havy.canteen.model.Dish;
@@ -41,8 +42,11 @@ public class OrderFoodViewModel extends AndroidViewModel {
             JSONObject jsonObject;
             try {
                 jsonObject = (JSONObject) msg.obj;
-                if (jsonObject.has("exception")) {
-                    Toast.makeText(MainActivity.getInstance(), "FAILURE, code: " + msg.what + " message: " + jsonObject.getString("exception"), Toast.LENGTH_SHORT).show();
+                String error = jsonObject.has("exception") ? jsonObject.getString("exception") : (jsonObject.has("message") ? jsonObject.getString("message") : "");
+                if (!error.isEmpty()) {
+                    Toast.makeText(MainActivity.getInstance() != null ? MainActivity.getInstance() : LoginActivity.getInstance(), "Failed to load data", Toast.LENGTH_SHORT).show();
+                    Log.e("User", "FAILURE, request: " + Api.Request.toString(msg.what) + " code: " + msg.arg1 + " message: " + error);
+                    return;
                 }
                 jsonArray = new JSONArray(jsonObject.getString("dishes"));
             } catch (JSONException e) {
@@ -77,7 +81,7 @@ public class OrderFoodViewModel extends AndroidViewModel {
         dishes = new MutableLiveData<>();
         dishes.setValue(null);
 
-        new Api(handler).getDishes(User.getCurrentUser().getToken(), "2023-11-13");
+        new Api(handler).getMenu(User.getCurrentUser().getToken(), "2023-11-13");
     }
 
     public LiveData<String> getText() {

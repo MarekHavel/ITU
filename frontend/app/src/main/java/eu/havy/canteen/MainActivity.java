@@ -1,14 +1,14 @@
 package eu.havy.canteen;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
+import android.util.AttributeSet;
 import android.view.View;
-import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -20,15 +20,9 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.net.HttpURLConnection;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
-import eu.havy.canteen.api.Api;
 import eu.havy.canteen.databinding.ActivityMainBinding;
 import eu.havy.canteen.databinding.MenuHeaderBinding;
 import eu.havy.canteen.model.User;
@@ -39,38 +33,6 @@ public class MainActivity extends AppCompatActivity {
     private static MainActivity instance;
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
-
-    Handler handler = new Handler(Objects.requireNonNull(Looper.myLooper())) {
-        @Override
-        public void handleMessage(Message msg) {
-            JSONObject jsonObject;
-            try {
-                jsonObject = (JSONObject) msg.obj;
-                if (msg.what != HttpURLConnection.HTTP_OK) {
-                    Toast.makeText(MainActivity.getInstance(), "FAILURE, code: " + msg.what + " message: " + jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
-                    return;
-                } else if (jsonObject.has("exception")) {
-                    Toast.makeText(MainActivity.getInstance(), "FAILURE, code: " + msg.what + " message: " + jsonObject.getString("exception"), Toast.LENGTH_SHORT).show();
-                    return;
-                }
-            } catch (JSONException e) {
-                Toast.makeText(MainActivity.getInstance(), "FAILURE, code: " + msg.what + " message: " + msg.obj, Toast.LENGTH_SHORT).show();
-                return;
-            }
-            String str;
-            if (msg.what == 200) {
-                str = jsonObject.toString();
-            } else {
-                try {
-                    str = jsonObject.getString("errorMessage");
-                } catch (JSONException e) {
-                    str = "Invalid JSON response";
-                }
-            }
-            Snackbar.make(binding.getRoot(), str, Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
-        }
-    };
 
     public static MainActivity getInstance() {
         return instance;
@@ -138,10 +100,15 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_activity_main_content).getChildFragmentManager()
                 .addOnBackStackChangedListener(this::updateToolbarView);
         updateToolbarView();
+    }
 
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull String name, @NonNull Context context, @NonNull AttributeSet attrs) {
         //load user data
-        new Api(User.getCurrentUser().handler).getUserInfo(User.getCurrentUser().getToken());
-        new Api(User.getCurrentUser().handler).getUserCredit(User.getCurrentUser().getToken());
+        User.getCurrentUser().updateData();
+
+        return super.onCreateView(name, context, attrs);
     }
 
     @Override

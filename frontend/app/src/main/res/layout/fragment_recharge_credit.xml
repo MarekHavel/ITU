@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="0dp"
-            android:text="+ 100"
+            android:text="@string/_100"
             style="@style/Widget.Material3.Button.OutlinedButton"/>
 
         <Space android:layout_width="5dp" android:layout_height="0dp"/>
@@ -29,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="0dp"
-            android:text="+ 200"
+            android:text="@string/_200"
             style="@style/Widget.Material3.Button.OutlinedButton"/>
 
         <Space android:layout_width="5dp" android:layout_height="0dp"/>
@@ -39,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="0dp"
-            android:text="+ 500"
+            android:text="@string/_500"
             style="@style/Widget.Material3.Button.OutlinedButton"/>
 
         <Space android:layout_width="5dp" android:layout_height="0dp"/>
@@ -49,7 +49,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:minWidth="0dp"
-            android:text="Clear"
+            android:text="@string/clear"
             style="@style/Widget.Material3.Button.OutlinedButton"/>
     </LinearLayout>
 
@@ -61,15 +61,32 @@
         android:layout_marginTop="20dp"
         android:ems="10"
         android:inputType="number"
-        android:autofillHints=""
-        android:hint="Enter Amount"
+        android:hint="@string/enter_amount"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox" />
 
-    <Button
-        android:id="@+id/rechargeButton"
-        android:layout_width="140dp"
-        android:layout_height="70dp"
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="80dp"
-        android:text="Add Credits"/>
+        android:layout_marginTop="50dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/rechargeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/add_credits" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:indeterminate="true"
+            android:indeterminateTintMode="src_atop"
+            android:indeterminateTint="?colorPrimary"
+            android:visibility="gone"
+            style="?android:attr/progressBarStyle"/>
+
+    </LinearLayout>
 </LinearLayout>
