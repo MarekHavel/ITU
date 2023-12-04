@@ -101,12 +101,18 @@ exports.menuGet = asyncHandler(async (req, res, next) => {
     const allergenNames = allergens.map((al) => al.code);
     dish.allergens = allergenNames.toString().replace(/,/g, ", ");
 
-    const itemsTaken = await menu.countUsers();
+    const itemsTaken = await menu.countOrders();
     dish.itemsLeft = menu.pieces - itemsTaken;
 
-    
+    // Je toto jídlo mezi objednávkami uživatele?
+    const orders = await menu.getOrders({ where: {
+      userId: user.id
+    }});
 
-    dish.ordered = await menu.hasUser(user);
+    dish.orders = [];
+    for(const order of orders) {
+      dish.orders.push(order.id);
+    }
 
     resDishes.push(dish);
   }
@@ -199,7 +205,7 @@ exports.orderCreate = asyncHandler(async (req, res, next) => {
   }
 
   const user = await sequelize.models.user.findOne({
-    attributes: ["id", "canteenId"],
+    attributes: ["id", "canteenId", "priceCategoryId"],
     where: {
       authToken: req.body.token
     }
@@ -223,7 +229,7 @@ exports.orderCreate = asyncHandler(async (req, res, next) => {
       return;
     }
 
-    const itemsTaken = await menu.countUsers();
+    const itemsTaken = await menu.countOrders();
     if(itemsTaken >= menu.pieces) {
       res.status(400).json({
         code: 1,
@@ -232,9 +238,20 @@ exports.orderCreate = asyncHandler(async (req, res, next) => {
       return;
     }
 
-    await menu.addUser(user);
+    // Vytvoření objednávky
+    const order = await sequelize.models.order.create({userId: user.id, menuId: menu.id});
 
-    res.status(200).end();
+    // Odečtení ceny objednávky z konta uživatele
+    const dish = await menu.getDish();
+    const { price } = await sequelize.models.dish_price.findOne({ where: {
+      priceCategoryId: user.priceCategoryId,
+      dishId: dish.id
+    }})
+    await user.decrement("credit", {price});
+
+    res.status(200).json({
+      orderId: order.id
+    });
   } else { // Neplatný authToken
     res.status(400).json({
       code: 1,
@@ -246,7 +263,7 @@ exports.orderCreate = asyncHandler(async (req, res, next) => {
 // Objednání jídla
 exports.orderDelete = asyncHandler(async (req, res, next) => {
 
-  if(req.body.token == null || req.body.dishId == null) {
+  if(req.body.token == null || req.body.orderId == null) {
     res.status(400).json({
       code: 2,
       message: "Chybějící parametry požadavku"
@@ -255,47 +272,41 @@ exports.orderDelete = asyncHandler(async (req, res, next) => {
   }
 
   const user = await sequelize.models.user.findOne({
-    attributes: ["id", "canteenId"],
+    attributes: ["id", "canteenId", "priceCategoryId"],
     where: {
       authToken: req.body.token
     }
   });
 
   if(user) {
-    const date = req.body.date ? req.body.date : new Date().toISOString().slice(0, 10);
-    const menu = await sequelize.models.menu.findOne({
-      where: {
-        canteenId: user.canteenId,
-        dishId: req.body.dishId,
-        date: date
-      }
-    })
-
-    if(!menu) {
+    const order = await sequelize.models.order.findByPk(req.body.orderId);
+    if(!order) {
       res.status(400).json({
         code: 1,
-        message: "Takové menu neexistuje"
+        message: "Taková objednávka neexistuje"
       });
       return;
     }
 
-    // Pokud objednávka existuje, zrušíme ji, pokud ne, pošleme chybu
-    if(await menu.hasUser(user)) {
-      await menu.removeUser(user);
-      res.status(200).end();
-      return;
-    } else {
+    if(!user.hasOrder(order)) {
       res.status(400).json({
         code: 1,
-        message: "Objednávka neexistuje"
+        message: "Daná objednávka uživateli nepatří"
       });
+      return;
     }
 
-  } else { // Neplatný authToken
-    res.status(400).json({
-      code: 1,
-      message: "Neplatný autentizační token"
-    });
+    const menu = await order.getMenu();
+    const dish = await menu.getDish();
+    const { price } = await sequelize.models.dish_price.findOne({ where: {
+      priceCategoryId: user.priceCategoryId,
+      dishId: dish.id
+    }})
+
+    await order.destroy();
+    await user.decrement("credit", {by: price});
+
+    res.status(200).end();
   }
 });
 

@@ -16,6 +16,7 @@ const modelDefiners = [
   require('./dish_rating.js'),
   require('./menu.js'),
   require('./dish_prices.js'),
+  require('./order.js'),
 ];
 
 // Vytvoření tabulek
@@ -23,7 +24,7 @@ for (const modelDefiner of modelDefiners) {
   modelDefiner(sequelize);
 }
 
-const { allergen, canteen, dish_category, dish, price_category, user, dish_rating, menu, dish_price } = sequelize.models;
+const { allergen, canteen, dish_category, dish, price_category, user, dish_rating, menu, dish_price, order } = sequelize.models;
 
 // Vytvoření vztahů
 
@@ -47,13 +48,16 @@ dish.belongsToMany(user, {through: dish_rating});
 allergen.belongsToMany(dish, {through: "allergen_in_dish"});
 dish.belongsToMany(allergen, {through: "allergen_in_dish"});
 
-user.belongsToMany(menu, {through: "order"});
-menu.belongsToMany(user, {through: "order"});
-
 // Spešl: modelování N:N vztahu jako 1:N:1 - Sequelize nedovede dělat neunikátní N:N vztahy
 canteen.hasMany(menu);
 menu.belongsTo(canteen);
 dish.hasMany(menu);
 menu.belongsTo(dish);
+
+user.hasMany(order);
+order.belongsTo(user);
+menu.hasMany(order);
+order.belongsTo(menu);
+
 
 module.exports = sequelize; // Export připraveného modelu

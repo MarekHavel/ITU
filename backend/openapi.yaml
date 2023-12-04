@@ -145,6 +145,12 @@ paths:
       responses:
         200:
           description: "Order was created"
+          content:
+            application/json:
+              schema:
+                properties:
+                  dishId: # Id of newly created order
+                    type: integer
         400:
           description: "Invalid token or no such order available"
           content:
@@ -162,16 +168,13 @@ paths:
               type: "object"
               required:
                 - token
-                - dishId
+                - orderId
               properties:
                 token:
                   type: "string"
                   format: "UUID"
-                dishId:
+                orderId:
                   type: "integer"
-                date: # When not specified, today is used
-                  type: "string"
-                  format: "date"
       responses:
         200:
           description: "Order was deleted"
@@ -326,8 +329,10 @@ components:
           type: integer
         weight:
           type: integer
-        ordered: # True if user has ordered the specified dish
-          type: boolean
+        orders:
+          type: array
+          items: # OrderIds
+            type: integer
     User:
       properties:
         username:
@@ -362,6 +367,14 @@ components:
     #       type: number
     #       minimum: 0
     #       minimum: 5
+    Order:
+      properties:
+        orderId:
+          type: integer
+          nullable: false
+        dishId:
+          type: integer
+          nullable: false
     Error:
       properties:
         code:
