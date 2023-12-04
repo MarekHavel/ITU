@@ -308,6 +308,33 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  /api/dish/rating/delete:
+    post:
+      summary: "Delete a rating"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "object"
+              required:
+                - token
+                - dishId
+              properties:
+                token:
+                  type: "string"
+                  format: "UUID"
+                dishId:
+                  type: "integer"
+      responses:
+        200:
+          description: "Rating has been successfully deleted"
+        400:
+          description: "Invalid token or no such rating"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 components:
   schemas:
     Dish:

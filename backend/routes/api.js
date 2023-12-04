@@ -32,4 +32,7 @@ router.post("/dish/rating", apiController.dishRatingPost);
 // Získání ohodnocení jídla od ostaních lidí
 router.get("/dish/rating/general", apiController.dishRatingGeneralGet);
 
+// Smazat hodnocení
+router.post("/dish/rating/delete", apiController.dishRatingDelete);
+
 module.exports = router;

@@ -491,4 +491,46 @@ exports.dishRatingGeneralGet = asyncHandler(async (req, res, next) => {
     numOfRatings: numOfRatings,
     reviews: reviews.map((r) => r.comment)
   });
+});
+
+exports.dishRatingDelete = asyncHandler(async (req, res, next) => {
+
+  if(req.body.token == null || req.body.dishId == null) {
+    res.status(400).json({
+      code: 2,
+      message: "Chybějící parametry požadavku"
+    });
+    return;
+  }
+
+  const user = await sequelize.models.user.findOne({ where: { authToken: req.body.token } });
+  if(!user) {
+    res.status(400).json({
+      code: 1,
+      message: "Neplatný autentizační token"
+    });
+    return;
+  }
+  
+  const dish = await sequelize.models.dish.findByPk(req.body.dishId);
+  if(!dish) {
+    res.status(400).json({
+      code: 1,
+      message: "Takové jídlo neexistuje"
+    });
+    return;
+  }
+
+  const rating = await sequelize.models.dish_rating.findOne({ where: { userId: user.id, dishId: dish.id}});
+  if(!rating) {
+    res.status(400).json({
+      code: 1,
+      message: "Uživatel jídlo nehodnotil"
+    });
+    return;
+  }
+
+  await rating.destroy();
+
+  res.status(200).end();
 })
