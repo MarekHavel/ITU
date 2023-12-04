@@ -10,5 +10,8 @@ module.exports = (sequelize) => {
         max: 5,
       }
 		},
+		comment: {
+			type: DataTypes.TEXT,
+		},
 	});
 };

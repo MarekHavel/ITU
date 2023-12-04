@@ -29,7 +29,7 @@ router.get("/dish/rating", apiController.dishRatingGet);
 // Ohodnotit oběd
 router.post("/dish/rating", apiController.dishRatingPost);
 
-// Získání průměrného ohodnocení jídla
-router.get("/dish/rating/average", apiController.dishRatingAverageGet);
+// Získání ohodnocení jídla od ostaních lidí
+router.get("/dish/rating/general", apiController.dishRatingGeneralGet);
 
 module.exports = router;

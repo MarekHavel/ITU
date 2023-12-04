@@ -231,11 +231,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  rating:
-                    type: integer
-                    minimum: 0
-                    maximum: 5
+                $ref: "#/components/schemas/Rating"
         400:
           description: "Error, invalid auth token or bad dish id or this user hasn't rated the dish yet"
           content:
@@ -262,21 +258,20 @@ paths:
                 dishId:
                   type: "integer"
                 rating:
-                  type: "integer"
-                  minimum: 0
-                  maximum: 5
+                  $ref: "#/components/schemas/Rating"
       responses:
         200:
-          description: "Rating has been successfully "
+          description: "Rating has been successfully created/edited"
         400:
           description: "Invalid token or invalid credit"
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /api/dish/rating/average:
+  /api/dish/rating/general:
     get:
-      summary: "Get average rating for a dish"
+      summary: "Get ratings for a dish"
+      description: "Get average rating and at most 10 newest reviews"
       parameters:
         - name: "token"
           in: "query"
@@ -293,7 +288,7 @@ paths:
             type: "integer"
       responses:
         200:
-          description: "Success, responding with rating"
+          description: "Success, responding with ratings"
           content:
             application/json:
               schema:
@@ -305,6 +300,8 @@ paths:
                     maximum: 5
                   numOfRatings:
                     type: integer
+                  reviews:
+                    $ref: "#/components/schemas/Reviews"
         400:
           description: "Error, invalid auth token or bad dish id"
           content:
@@ -314,6 +311,15 @@ paths:
 components:
   schemas:
     Dish:
+      required:
+        - id
+        - name
+        - category
+        - allergens
+        - itemsLeft
+        - price
+        - weight
+        - orders
       properties:
         id:
           type: integer
@@ -333,7 +339,17 @@ components:
           type: array
           items: # OrderIds
             type: integer
+    Reviews:
+      type: array
+      items: # Reviews
+        type: string
+      maxItems: 10
     User:
+      required:
+        - username
+        - email
+        - priceCategory
+        - canteenName
       properties:
         username:
           type: string
@@ -344,6 +360,8 @@ components:
         canteenName:
           type: string
     Dishes:
+      required:
+        - dishes
       properties:
         dishes:
           type: array
@@ -368,6 +386,9 @@ components:
     #       minimum: 0
     #       minimum: 5
     Order:
+      required:
+        - orderId
+        - dishId
       properties:
         orderId:
           type: integer
@@ -375,7 +396,21 @@ components:
         dishId:
           type: integer
           nullable: false
+    Rating:
+      required:
+        - rating
+      properties:
+        rating:
+          type: integer
+          minimum: 0
+          maximum: 5
+          nullable: false
+        comment:
+          type: string
     Error:
+      required:
+        - code
+        - message
       properties:
         code:
           description: "0 = no database, 1 = logic error, 2 = bad request"

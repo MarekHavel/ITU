@@ -383,15 +383,21 @@ exports.dishRatingGet = asyncHandler(async (req, res, next) => {
     return;
   }
 
-  const responseObject = { rating: rating.stars };
-  res.status(200).json(responseObject);
+  res.status(200).json({
+    rating: rating.stars,
+    comment: rating.comment,
+  });
 });
 
 
 // Ohodnocení jídla uživatelem
 exports.dishRatingPost = asyncHandler(async (req, res, next) => {
 
-  if(req.body.token == null || req.body.dishId  == null || req.body.rating == null) {
+  if(req.body.token == null ||
+    req.body.dishId  == null ||
+    req.body.rating == null || // req.body.rating je objekt { rating: INT, comment: STRING }
+    req.body.rating.rating == null
+  ) {
     res.status(400).json({
       code: 2,
       message: "Chybějící parametry požadavku"
@@ -399,7 +405,7 @@ exports.dishRatingPost = asyncHandler(async (req, res, next) => {
     return;
   }
 
-  if(!(Number.isInteger(req.body.rating) && req.body.rating >= 0 && req.body.rating <= 5)) {
+  if(!(Number.isInteger(req.body.rating.rating) && req.body.rating.rating >= 0 && req.body.rating.rating <= 5)) {
     res.status(400).json({
       code: 1,
       message: "Neplatná hodnota pro hodnocení jídla"
@@ -432,14 +438,15 @@ exports.dishRatingPost = asyncHandler(async (req, res, next) => {
     }
   });
 
-  rating.stars = req.body.rating;
+  rating.stars = req.body.rating.rating;
+  rating.comment = req.body.rating.comment;
   await rating.save();
 
   res.status(200).end();
 });
 
 // Získání průměrného hodnocení jídla
-exports.dishRatingAverageGet = asyncHandler(async (req, res, next) => {
+exports.dishRatingGeneralGet = asyncHandler(async (req, res, next) => {
 
   if(req.query.token == null || req.query.dishId == null) {
     res.status(400).json({
@@ -470,8 +477,18 @@ exports.dishRatingAverageGet = asyncHandler(async (req, res, next) => {
   const numOfRatings = await sequelize.models.dish_rating.count({ where: { dishId: dish.id }})
   const averageRating = numOfRatings == 0 ? 0 : await sequelize.models.dish_rating.sum("stars", { where: { dishId: dish.id } }) / numOfRatings;
 
+  const reviews = await sequelize.models.dish_rating.findAll({
+    attributes: ["comment"],
+    where: {
+      dishId: dish.id
+    },
+    limit: 10,
+    order: ["updatedAt"]
+  })
+
   res.status(200).json({
     averageRating: averageRating,
-    numOfRatings: numOfRatings
+    numOfRatings: numOfRatings,
+    reviews: reviews.map((r) => r.comment)
   });
 })
