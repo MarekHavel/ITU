@@ -74,8 +74,8 @@ public class User {
                     }
                 }
             } catch (JSONException e) {
-                Toast.makeText(MainActivity.getInstance() != null ? MainActivity.getInstance() : LoginActivity.getInstance(), "Request failed", Toast.LENGTH_SHORT).show();
-                Log.e("User", "FAILURE, request: " + Api.Request.toString(msg.what) +" code: " + msg.arg1 + " message: " + msg.obj);
+                error = msg.obj.toString();
+                e.printStackTrace();
             } finally {
                 switch (Api.Request.getEnum(msg.what)) {
                     case AUTHENTICATE_USER:
