@@ -7,8 +7,8 @@ var logger = require('morgan');
 // Natáhne do process.env proměnné z .env souboru
 require('dotenv').config();
 
-var indexRouter = require('./routes/index');
 var apiRouter = require('./routes/api');
+var webappRouter = require('./routes/webapp');
 
 var app = express();
 
@@ -18,7 +18,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'pug');
+
 // Nastavení sessions
+// TODO Nastav pouze pro /webapp/* endpointy
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
@@ -28,8 +33,8 @@ app.use(session({
   }
 }))
 
-app.use('/', indexRouter);
 app.use('/api', apiRouter);
+app.use('/webapp', webappRouter);
 
 // Vytvoření databáze
 // const sequelize = require("./models");
