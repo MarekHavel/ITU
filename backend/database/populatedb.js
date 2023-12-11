@@ -60,7 +60,8 @@ async function main() {
 
   const platek = await models.dish.create({name: "Kuřecí plátek na divoko",
     ingredients: "Kuřecí maso, sůl, kmín, řepkový olej",
-    weight: 200
+    weight: 200,
+    image_name: "platek.jpg"
   });
   await platek.addAllergen(gluten);
   await platek.setDish_category(main);
@@ -68,7 +69,8 @@ async function main() {
 
   const lusk = await models.dish.create({name: "Plněný paprikový lusk",
     ingredients: "Paprika, vepřové maso, kmín, cibule",
-    weight: 220
+    weight: 220,
+    image_name: "lusk.jpg"
   });
   await lusk.addAllergen(gluten);
   await lusk.setDish_category(main);
@@ -76,7 +78,8 @@ async function main() {
 
   const svickova = await models.dish.create({name: "Svíčková na smetaně",
     ingredients: "Vepřové maso, mrkev, petržel, smetana, celer",
-    weight: 350
+    weight: 350,
+    image_name: "svickova.jpg"
   });
   await svickova.addAllergens([gluten, eggs, milk, mustard]);
   await svickova.setDish_category(main);
@@ -84,7 +87,8 @@ async function main() {
 
   const ptacek = await models.dish.create({name: "Španělský ptáček",
     ingredients: "Hovězí maso, slanina, salám, okurky, vejce, hladká mouka",
-    weight: 250
+    weight: 250,
+    image_name: "ptacek.jpg"
   });
   await ptacek.addAllergens([gluten, eggs, mustard]);
   await ptacek.setDish_category(main);
@@ -92,7 +96,8 @@ async function main() {
 
   const buchty = await models.dish.create({name: "Dukátové buchtičky s krémem",
     ingredients: "Hladká mouka, mléko, cukr, žloutek, skořice",
-    weight: 270
+    weight: 270,
+    image_name: "buchticky.jpg"
   });
   await buchty.addAllergens([gluten, eggs, milk]);
   await buchty.setDish_category(main);
@@ -100,7 +105,8 @@ async function main() {
 
   const vyvar = await models.dish.create({name: "Vývar s nudlemi",
     ingredients: "Kuřecí vývar, nudle z pšeničné mouky",
-    weight: 150
+    weight: 150,
+    image_name: "vyvar.jpg"
   });
   await vyvar.addAllergens([gluten, eggs]);
   await vyvar.setDish_category(soup);
@@ -108,7 +114,8 @@ async function main() {
 
   const drstkova = await models.dish.create({name: "Dršťková",
     ingredients: "Dršťky, cibule, hladká mouka, česnek",
-    weight: 150
+    weight: 150,
+    image_name: "drstkova.jpg"
   });
   await drstkova.addAllergens([gluten, eggs]);
   await drstkova.setDish_category(soup);
@@ -116,7 +123,8 @@ async function main() {
 
   const ryze = await models.dish.create({name: "Rýže",
     ingredients: "Jasmínová rýže",
-    weight: 100
+    weight: 100,
+    image_name: "ryze.jpg"
   });
   await ryze.addAllergen(gluten);
   await ryze.setDish_category(sideDish);
@@ -124,7 +132,8 @@ async function main() {
 
   const hranolky = await models.dish.create({name: "Hranolky",
     ingredients: "Brambory, olej, sůl",
-    weight: 100
+    weight: 100,
+    image_name: "hranolky.jpg"
   });
   await hranolky.addAllergen(gluten);
   await hranolky.setDish_category(sideDish);
@@ -132,7 +141,8 @@ async function main() {
 
   const kase = await models.dish.create({name: "Bramborová kaše",
     ingredients: "Brambory, Mléko",
-    weight: 100
+    weight: 100,
+    image_name: "kase.jpg"
   });
   await kase.addAllergen(gluten);
   await kase.setDish_category(sideDish);
@@ -140,7 +150,8 @@ async function main() {
 
   const knedlik = await models.dish.create({name: "Knedlík",
     ingredients: "Hladká mouka",
-    weight: 100
+    weight: 100,
+    image_name: "knedlik.jpg"
   });
   await knedlik.addAllergen(gluten);
   await knedlik.setDish_category(sideDish);

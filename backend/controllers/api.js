@@ -566,7 +566,7 @@ exports.dishGet = asyncHandler(async (req, res, next) => {
     name: dish.name,
     ingredients: dish.ingredients,
     weight: dish.weight,
-    photoPath: dish.image_name,
+    photoPath: "images/dishes/" + dish.image_name,
   };
 
   dishDetail.category = (await dish.getDish_category()).name;
