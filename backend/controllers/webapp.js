@@ -1,7 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const sequelize = require("../models");
 const bcrypt = require("bcrypt");
-const { startOfISOWeek, setISOWeek, addDays } = require("date-fns");
+const { startOfISOWeek, setISOWeek, getISOWeek, addDays, addWeeks } = require("date-fns");
 
 // Funkce pro získání data začátku týdne
 // @param week - formát "YYYY-WNN", kde NN je číslo 1..53
@@ -28,29 +28,59 @@ function getWeekStart(week) {
 
 exports.week = asyncHandler(async (req, res, next) => {
   if(!req.query.week) {
-    //TODO nějaký template s chybovou hláškou
-    res.send("Chyba požadavku kamaráde!");
+    res.render("datePickerError", {
+      errorMessage: "Špatný formát týdne"
+    })
+    return;
   }
 
-  let date = getWeekStart(req.query.week);
-  
-  if(!date) {
-    //TODO nějaký template s chybovou hláškou
-    res.send("Chyba formátu kamaráde!");
+  // Regex pro reprezentaci HTML Week Stringu
+  // https://developer.mozilla.org/en-US/docs/Web/HTML/Date_and_time_formats#week_strings 
+  const week_regex = /^\d{4}-W\d{2}$/;
+  if(!week_regex.test(req.query.week)) {
+    res.render("datePickerError", {
+      originalInput: req.query.week,
+      errorMessage: "Špatný formát týdne, správný příklad: 2023-W16"
+    })
+    return;
   }
+
+  const year = Number(req.query.week.split("-W")[0]);
+  const weekNumber = Number(req.query.week.split("-W")[1]);
+
+  if(weekNumber > 53) {
+    res.render("datePickerError", {
+      originalInput: req.query.week,
+      errorMessage: "Špatné číslo týdne, musí být mezi 1 a 53"
+    })
+    return;
+  }
+
+  const weekDate = setISOWeek(new Date(year, 1, 1), weekNumber);
+  let weekStartdate = startOfISOWeek(weekDate);
   
+
+  // Vygenerování obsahu pro tlačítka jednotlivých dní
   const weekDayNames = ["Pondělí", "Úterý", "Středa", "Čtvrtek", "Pátek", "Sobota", "Neděle"];
   let dayButtons = [];
   for(let i = 0; i < 7; i++) {
     let dayButton = {};
-    dayButton.urlDate = date.toISOString().split('T')[0]; // YYYY-MM-DD
-    date = addDays(date, 1);
-
+    dayButton.urlDate = weekStartdate.toISOString().split('T')[0]; // YYYY-MM-DD
+    dayButton.dateHumanReadable = weekStartdate.toLocaleDateString("cs-CZ");
     dayButton.dayName = weekDayNames[i];
+
     dayButtons.push(dayButton);
+    weekStartdate = addDays(weekStartdate, 1);
   }
 
-  console.log(dayButtons);
+  // Vygenerování obsahu pro tlačítka předchozího a následujícího týdne
+  const nextWeekNumber = getISOWeek(weekStartdate).toString().padStart(2, "0");
+  const prevWeekNumber = getISOWeek(addWeeks(weekStartdate, -2)).toString().padStart(2, "0");
 
-  res.render("weekContent", {dayButtons: dayButtons});
+  res.render("datePicker", {
+    dayButtons: dayButtons,
+    selectedWeek: req.query.week,
+    nextWeek: nextWeek = year.toString() + "-W" + nextWeekNumber,
+    prevWeek: prevWeek = year.toString() + "-W" + prevWeekNumber,
+  });
 });

@@ -36,108 +36,102 @@
     </div>
   </div>
 
-  <!-- Vybírání týdnů -->
-  <div class="container mt-3" style="height: 75px">
-    <div class="row h-100">
-      <div class="col">
-      </div>
-      <div class="col-4">
-        <div class="input-group">
-          <span class="input-group-text">Týden</span>
-          <input type="week" class="form-control" id="weekPicker" name="week" placeholder="Např. 2023-W35"
-            hx-get="/webapp/week" hx-params="*" hx-target="#weekContent">
-        </div>
-      </div>
-      <div class="col">
-      </div>
-    </div>
-  </div>
-
-  <div id="weekContent"> <!-- Při změně týdne se změní -->
-    <!-- Vybírání dnů -->
-    <div class="container" style="height: 75px">
+  <!-- Vybrání týdne a dne -->
+  <div id="datePicker">
+    <!-- Vybírání týdnů -->
+    <div class="container mt-3" style="height: 75px">
       <div class="row h-100">
-        <div class="col">
-          <button class="btn btn-primary btn-square-md h-100 w-100">
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
-              class="bi bi-arrow-left-circle" viewBox="0 0 16 16">
-              <path fill-rule="evenodd"
-                d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z" />
-            </svg>
-          </button>
-        </div>
-        <div class="col">
-          <button type="button" hx-get="/webapp/day/TODO" class="btn btn-outline-primary h-100 w-100">TEST!!</button>
-        </div>
-        <div class="col">
-          <button type="button" hx-get="/webapp/day/TODO" class="btn btn-outline-primary h-100 w-100">TEST!!</button>
-        </div>
-        <div class="col">
-          <button type="button" hx-get="/webapp/day/TODO" class="btn btn-outline-primary h-100 w-100">TEST!!</button>
-        </div>
-        <div class="col">
-          <button type="button" hx-get="/webapp/day/TODO" class="btn btn-outline-primary h-100 w-100">TEST!!</button>
-        </div>
-        <div class="col">
-          <button type="button" hx-get="/webapp/day/TODO" class="btn btn-outline-primary h-100 w-100">TEST!!</button>
-        </div>
-        <div class="col">
-          <button type="button" hx-get="/webapp/day/TODO" class="btn btn-outline-primary h-100 w-100">TEST!!</button>
-        </div>
-        <div class="col">
-          <button type="button" hx-get="/webapp/day/TODO" class="btn btn-outline-primary h-100 w-100">TEST!!</button>
-        </div>
-        <div class="col">
-          <button class="btn btn-primary btn-square-md h-100 w-100">
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
-              class="bi bi-arrow-right-circle" viewBox="0 0 16 16">
-              <path fill-rule="evenodd"
-                d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0M4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5z" />
-            </svg>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Formulář na obědy -->
-    <div class="container mt-3">
-      <div class="row"> <!-- Jednotlivé karty -->
         <div class="col">
         </div>
         <div class="col-6">
-          <div class="card p-3">
-            <div class="row">
-              <div class="col-8"> <!-- Formulář -->
-                <label for="dishName" class="form-label">Název jídla</label>
-                <input class="form-control" type="text" list="dishesDatalist" id="dishName"
-                  placeholder="Např. *backend*">
-                <datalist id="dishesDatalist">
-                  <option value="Jídlo 1">
-                  <option value="Jídlo 2">
-                  <option value="Bude doplněno backendem :)">
-                </datalist>
-                <label for="dishAmount" class="form-label">Počet kusů</label>
-                <input class="form-control" type="number" id="dishAmount" min="0" max="1000">
-              </div>
-              <div class="col-4 text-center">
-                <button class="btn btn-primary h-75 w-75 mt-3"> <!-- Tlačítko pro odstranění -->
-                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
-                    class="bi bi-trash3-fill" viewBox="0 0 16 16">
-                    <path
-                      d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
-                  </svg>
-                </button>
-              </div>
-            </div>
+          <div class="input-group">
+            <button class="btn btn-primary" disabled>
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
+                class="bi bi-arrow-left-circle" viewBox="0 0 16 16">
+                <path fill-rule="evenodd"
+                  d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z" />
+              </svg>
+            </button>
+            <span class="input-group-text">Týden</span>
+            <input type="week" class="form-control" id="weekPicker" name="week" placeholder="Např. 2023-W35"
+              hx-get="/webapp/week" hx-params="*" hx-target="#datePicker">
+            <button class="btn btn-primary" disabled>
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
+                class="bi bi-arrow-right-circle" viewBox="0 0 16 16">
+                <path fill-rule="evenodd"
+                  d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0M4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5z" />
+              </svg>
+            </button>
           </div>
         </div>
         <div class="col">
         </div>
       </div>
     </div>
+
+    <!-- Vybírání dnů -->
+    <div class="container" style="height: 75px">
+      <div class="row h-100">
+        <div class="col">
+          <button type="button" hx-get="/webapp/day/TODO" class="btn btn-outline-primary h-100 w-100">TEST!!</button>
+        </div>
+        <div class="col">
+          <button type="button" hx-get="/webapp/day/TODO" class="btn btn-outline-primary h-100 w-100">TEST!!</button>
+        </div>
+        <div class="col">
+          <button type="button" hx-get="/webapp/day/TODO" class="btn btn-outline-primary h-100 w-100">TEST!!</button>
+        </div>
+        <div class="col">
+          <button type="button" hx-get="/webapp/day/TODO" class="btn btn-outline-primary h-100 w-100">TEST!!</button>
+        </div>
+        <div class="col">
+          <button type="button" hx-get="/webapp/day/TODO" class="btn btn-outline-primary h-100 w-100">TEST!!</button>
+        </div>
+        <div class="col">
+          <button type="button" hx-get="/webapp/day/TODO" class="btn btn-outline-primary h-100 w-100">TEST!!</button>
+        </div>
+        <div class="col">
+          <button type="button" hx-get="/webapp/day/TODO" class="btn btn-outline-primary h-100 w-100">TEST!!</button>
+        </div>
+      </div>
+    </div>
   </div>
 
-
+  <!-- Formulář na obědy -->
+  <div class="container mt-3" id="dishesContent">
+    <div class="row"> <!-- Jednotlivé karty -->
+      <div class="col">
+      </div>
+      <div class="col-6">
+        <div class="card p-3">
+          <div class="row">
+            <div class="col-8"> <!-- Formulář -->
+              <label for="dishName" class="form-label">Název jídla</label>
+              <input class="form-control" type="text" list="dishesDatalist" id="dishName" placeholder="Např. *backend*">
+              <datalist id="dishesDatalist">
+                <option value="Jídlo 1">
+                <option value="Jídlo 2">
+                <option value="Bude doplněno backendem :)">
+              </datalist>
+              <label for="dishAmount" class="form-label">Počet kusů</label>
+              <input class="form-control" type="number" id="dishAmount" min="0" max="1000">
+            </div>
+            <div class="col-4 text-center">
+              <button class="btn btn-primary h-75 w-75 mt-3"> <!-- Tlačítko pro odstranění -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
+                  class="bi bi-trash3-fill" viewBox="0 0 16 16">
+                  <path
+                    d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+      </div>
+    </div>
+  </div>
 
 </body>
 
