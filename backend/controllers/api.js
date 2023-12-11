@@ -2,7 +2,6 @@ const asyncHandler = require("express-async-handler");
 const sequelize = require("../models");
 const bcrypt = require("bcrypt");
 const { v4: uuidv4 } = require('uuid');
-const allergen = require("../models/allergen");
 
 // Zpracování autentikace uživatele
 exports.authenticate = asyncHandler(async (req, res, next) => {
@@ -533,4 +532,59 @@ exports.dishRatingDelete = asyncHandler(async (req, res, next) => {
   await rating.destroy();
 
   res.status(200).end();
+})
+
+exports.dishGet = asyncHandler(async (req, res, next) => {
+
+  if(req.query.token == null || req.query.dishId == null) {
+    res.status(400).json({
+      code: 2,
+      message: "Chybějící parametry požadavku"
+    });
+    return;
+  }
+
+  const user = await sequelize.models.user.findOne({ where: { authToken: req.query.token } });
+  if(!user) {
+    res.status(400).json({
+      code: 1,
+      message: "Neplatný autentizační token"
+    });
+    return;
+  }
+  
+  const dish = await sequelize.models.dish.findByPk(req.query.dishId);
+  if(!dish) {
+    res.status(400).json({
+      code: 1,
+      message: "Takové jídlo neexistuje"
+    });
+    return;
+  }
+
+  let dishDetail = {
+    name: dish.name,
+    ingredients: dish.ingredients,
+    weight: dish.weight,
+    photoPath: dish.image_name,
+  };
+
+  dishDetail.category = (await dish.getDish_category()).name;
+  dishDetail.price = (await sequelize.models.dish_price.findOne({where: {
+      priceCategoryId: user.priceCategoryId,
+      dishId: dish.id
+  }})).price;
+
+  const allergens = await dish.getAllergens();
+
+  // console.log(allergens)
+
+  dishDetail.allergens = allergens.map((allergen) => {
+    return {
+      name: allergen.name,
+      code: allergen.code
+    }
+  });
+  
+  res.status(200).json(dishDetail);
 })

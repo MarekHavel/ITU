@@ -335,6 +335,36 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  /api/dish:
+    get:
+      summary: "Get detail for a dish"
+      parameters:
+        - name: "token"
+          in: "query"
+          description: "Authorization token"
+          required: true
+          schema:
+            type: "string"
+            format: "UUID"
+        - name: "dishId"
+          in: "query"
+          description: "Id of the dish"
+          required: true
+          schema:
+            type: "integer"
+      responses:
+        200:
+          description: "Success, responding with dish detail"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DishDetail"
+        400:
+          description: "Error, invalid auth token or bad dish id"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 components:
   schemas:
     Dish:
@@ -394,24 +424,40 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Dish"
-    # DishDetails: - TODO
-    #   properties:
-    #     id:
-    #       type: integer
-    #     name:
-    #       type: string
-    #     constitutions:
-    #       type: string
-    #     allergens:
-    #       type: string
-    #     price:
-    #       type: integer
-    #     weight:
-    #       type: integer
-    #     rating:
-    #       type: number
-    #       minimum: 0
-    #       minimum: 5
+    DishDetail:
+      required:
+        - name
+        - ingredients
+        - weight
+        - photoPath
+        - allergens
+        - price
+        - category
+      properties:
+        name:
+          type: string
+        ingredients:
+          type: string
+        weight:
+          type: integer
+        photoPath: # For downloading the dish photo
+          type: string
+        allergens:
+          type: array
+          items:
+            type: object
+            required:
+              - name
+              - code
+            properties:
+              name:
+                type: "string"
+              code:
+                type: "integer"
+        price:
+          type: integer
+        category:
+          type: integer
     Order:
       required:
         - orderId
