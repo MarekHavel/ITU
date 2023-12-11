@@ -44,13 +44,11 @@ public class User {
         @Override
         public void handleMessage(Message msg) {
             JSONObject jsonObject;
+            String error = "";
             try {
                 jsonObject = (JSONObject) msg.obj;
-                String error = jsonObject.has("exception") ? jsonObject.getString("exception") : (jsonObject.has("message") ? jsonObject.getString("message") : "");
-                if (!error.isEmpty()) {
-                    Toast.makeText(MainActivity.getInstance() != null ? MainActivity.getInstance() : LoginActivity.getInstance(), "Failed to load data", Toast.LENGTH_SHORT).show();
-                    Log.e("User", "FAILURE, request: " + Api.Request.toString(msg.what) +" code: " + msg.arg1 + " message: " + error);
-                } else {
+                error = jsonObject.has("exception") ? jsonObject.getString("exception") : (jsonObject.has("message") ? jsonObject.getString("message") : "");
+                if (error.isEmpty()) {
                     switch (Api.Request.getEnum(msg.what)) {
                         case AUTHENTICATE_USER:
                             token = jsonObject.getString("token");
@@ -91,6 +89,17 @@ public class User {
                     case ADD_USER_CREDIT:
                         RechargeCreditFragment.requestFinished();
                         break;
+                }
+
+                if (!error.isEmpty()) {
+                    Toast.makeText(MainActivity.getInstance() != null ? MainActivity.getInstance() : LoginActivity.getInstance(), "Failed to load data", Toast.LENGTH_SHORT).show();
+                    Log.e("User", "FAILURE, request: " + Api.Request.toString(msg.what) +" code: " + msg.arg1 + " message: " + error);
+                    if  (error.equals("Neplatný autentizační token")) {
+                        if (MainActivity.getInstance() != null) {
+                            MainActivity.logOut();
+                        }
+                        User.logout();
+                    }
                 }
             }
         }
