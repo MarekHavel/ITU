@@ -55,8 +55,20 @@ async function main() {
     authToken: "7198b575-ba08-4275-884c-89fc85b2732c" // Pro testování
   });
 
+  const user2 = await models.user.create({
+    username: "Josef Starý",  
+    email: "josef.stary@gmail.com",  
+    password: "password",  // Custom setter to zahešuje
+    credit: "129",  
+    role: "customer",  
+    authToken: "ac752c76-5c8d-4642-ba3a-e5bc4548bce4" // Pro testování
+  });
+
   await user1.setCanteen(canteen1);
   await user1.setPrice_category(studentCategory);
+
+  await user2.setCanteen(canteen1);
+  await user2.setPrice_category(studentCategory);
 
   const platek = await models.dish.create({name: "Kuřecí plátek na divoko",
     ingredients: "Kuřecí maso, sůl, kmín, řepkový olej",
