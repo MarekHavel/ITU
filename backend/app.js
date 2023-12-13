@@ -22,9 +22,17 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+
 // Nastavení sessions
-// TODO Nastav pouze pro /webapp/* endpointy
-app.use(session({
+app.use("/webapp", session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 24 * 60 * 60 * 1000 // 1 den v ms
+  }
+}))
+app.use("/", session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,

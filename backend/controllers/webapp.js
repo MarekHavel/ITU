@@ -116,3 +116,42 @@ exports.deleteMenu = asyncHandler(async (req, res, next) => {
 
   res.status(200).end();
 })
+
+exports.login = asyncHandler(async (req, res, next) => {
+  const email = req.body.email;
+  const password = req.body.password;
+  console.log("User logging in with email: %s password: %s", email, password);
+
+  const user = await sequelize.models.user.findOne({
+    attributes: ["password", "id"],
+    where: {
+      email: email
+    }
+  });
+
+  if(user != null && bcrypt.compareSync(password, user.password)) {
+    // OK
+    req.session.userId = user.id;
+
+    // Uložení session a přesměrování na hlavní stránku
+    req.session.save(function (err) {
+      if (err) return next(err);
+      res.render("loginSuccess")
+      return;
+    })
+  } else {
+    res.render("loginFailure")
+  }
+
+})
+
+exports.logout = asyncHandler(async (req, res, next) => {
+  req.session.userId = null;
+
+  // Uložení session a přesměrování na hlavní stránku
+  req.session.save(function (err) {
+    if (err) return next(err);
+    res.set("HX-Redirect", "/").end();
+    return;
+  })
+})
