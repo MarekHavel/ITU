@@ -19,7 +19,7 @@
       Očekává pole elementů dayButtons s atributy: urlDate, dayName
     each dayButton in dayButtons
       .col
-        button.btn.btn-outline-primary.h-100.w-100(type='button' hx-get='/webapp/day/' + dayButton.urlDate) #{dayButton.dayName} #{dayButton.dateHumanReadable}
+        button.btn.btn-outline-primary.h-100.w-100(type='button' hx-get='/webapp/day/' + dayButton.urlDate hx-target='#dishesContent') #{dayButton.dayName} #{dayButton.dateHumanReadable}
 
 //- Nahradí dishesContent prázdným div-em
 .container.text-center.mt-5(id="dishesContent" hx-swap-oob="true")

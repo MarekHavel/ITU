@@ -58,14 +58,15 @@ exports.week = asyncHandler(async (req, res, next) => {
 
   const weekDate = setISOWeek(new Date(year, 1, 1), weekNumber);
   let weekStartdate = startOfISOWeek(weekDate);
-  
+  console.log(weekStartdate)
+  // weekStartdate.setHours(12);
 
   // Vygenerování obsahu pro tlačítka jednotlivých dní
   const weekDayNames = ["Pondělí", "Úterý", "Středa", "Čtvrtek", "Pátek", "Sobota", "Neděle"];
   let dayButtons = [];
   for(let i = 0; i < 7; i++) {
     let dayButton = {};
-    dayButton.urlDate = weekStartdate.toISOString().split('T')[0]; // YYYY-MM-DD
+    dayButton.urlDate = addDays(weekStartdate, 1).toISOString().split('T')[0]; // YYYY-MM-DD
     dayButton.dateHumanReadable = weekStartdate.toLocaleDateString("cs-CZ");
     dayButton.dayName = weekDayNames[i];
 
@@ -84,3 +85,34 @@ exports.week = asyncHandler(async (req, res, next) => {
     prevWeek: prevWeek = year.toString() + "-W" + prevWeekNumber,
   });
 });
+
+exports.day = asyncHandler(async (req, res, next) => {
+  const day = req.params.day;
+
+  const menus = await sequelize.models.menu.findAll({where: {
+    date: day,
+    //TODO canteen ID z přihlášení
+  }})
+
+  const resMenus = await Promise.all(menus.map(
+    async (menu) => ({
+      name: (await menu.getDish()).name,
+      count: menu.pieces,
+      id: menu.id
+    })
+  ));
+
+  res.render("dishes", {
+    dishesMenu: resMenus
+  })
+});
+
+exports.deleteMenu = asyncHandler(async (req, res, next) => {
+  const menuId = req.params.menuId;
+
+  const menu = await sequelize.models.menu.findByPk(menuId)
+
+  await menu.destroy()
+
+  res.status(200).end();
+})
