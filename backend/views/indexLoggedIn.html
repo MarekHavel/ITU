@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TODO!</title>
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <link href="stylesheets/bs-overwrite.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+    crossorigin="anonymous"> deref</script>
+  <!-- HTMX -->
+  <script src="https://unpkg.com/htmx.org@1.9.9"
+    integrity="sha384-QFjmbokDn2DjBjq+fM+8LUIVrAgqcNW2s0PjAxHETgRn9l4fvX31ZxDxvwQnyMOX"
+    crossorigin="anonymous"></script>
+  </script>
+
+</head>
+
+<body>
+
+  <!-- Horní lišta -->
+  <div class="container-fluid bg-primary py-1">
+    <div class="row">
+      <div class="col-2 d-flex justify-content-center">
+        <img class="rounded-circle" src="images/canteen-playstore.png" alt="Logo" width="60" height="60" />
+      </div>
+      <div class="col">
+      </div>
+      <div class="col-2 d-flex justify-content-center" id="logoutButton">
+        <button class="btn btn-light" type="button" hx-post="/webapp/auth/logout">Odhlásit se</button>
+      </div>
+    </div>
+  </div>
+
+  <main class="form-signin container text-center" id="mainContent">
+    <!-- Vybrání týdne a dne-->
+    <div id="datePicker">
+      <!-- Vybírání týdnů-->
+      <div class="container mt-3" style="height: 75px">
+        <div class="row h-100">
+          <div class="col"></div>
+          <div class="col-6">
+            <div class="input-group">
+              <button class="btn btn-primary" disabled="disabled">
+                <svg class="bi bi-arrow-left-circle" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                  fill="currentColor" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd"
+                    d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z">
+                  </path>
+                </svg>
+              </button><span class="input-group-text">Týden</span>
+              <input class="form-control" id="weekPicker" type="week" name="week" placeholder="Např. 2023-W35"
+                hx-get="/webapp/auth/week" hx-params="*" hx-target="#datePicker" />
+              <button class="btn btn-primary" disabled="disabled">
+                <svg class="bi bi-arrow-right-circle" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                  fill="currentColor" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd"
+                    d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0M4.5 7.5a.5.5 0 0 0 0 1h5.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5z">
+                  </path>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="col"></div>
+        </div>
+        <div class="row">
+          <p>Prosím zvolte týden</p>
+        </div>
+      </div>
+    </div>
+    <div class="container mt-3" id="dishesContent"></div>
+  </main>
+
+</body>
+
+</html>

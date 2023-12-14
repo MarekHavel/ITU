@@ -1,30 +1,50 @@
 const asyncHandler = require("express-async-handler");
 const sequelize = require("../models");
+const { Op } = require("sequelize");
 const bcrypt = require("bcrypt");
+const path = require("path");
 const { startOfISOWeek, setISOWeek, getISOWeek, addDays, addWeeks } = require("date-fns");
+const { Sequelize } = require("sequelize");
 
-// Funkce pro získání data začátku týdne
-// @param week - formát "YYYY-WNN", kde NN je číslo 1..53
-// @return Date - datum začátku týdne (null při chybě)
-function getWeekStart(week) {
-  const re = /^\d{4}-W\d{2}$/;
-  if(!re.test(week)) {
-    return null;
-  }
+// Funkce pro získání jmen všech jídel, které lze přidat do dané nabídky jídelny daného dne
+// @param date - Datum, pro které zkoumat nabídku
+// @param canteen - ID jídelny, pro kterou zkoumat nabídku
+// @return [string] - Pole jmen jídel, které by šly přidat
+async function getAvailableDishes(date, canteen) {
+  const menus = await sequelize.models.menu.findAll({
+    where: {
+      date:date,
+      canteenId: canteen
+    }
+  });
 
-  const year = Number(week.split("-W")[0]);
-  const weekNumber = Number(week.split("-W")[1]);
+  const availableDishes = await sequelize.models.dish.findAll({
+    where: {
+      id: {[Op.notIn]:menus.map((menu) => menu.dishId)}
+    }
+  });
 
-  if(weekNumber > 53) {
-    return null;
-  }
-
-  const weekStart = setISOWeek(new Date(year, 1, 1), weekNumber);
-
-  return startOfISOWeek(weekStart);
+  return availableDishes.map((dish) => dish.name);
 }
 
-// TODO: Přidej do middleware-u funkci pro autorizaci uživatelů
+// Funkce pro obsluhu vstupního bodu stránky
+// Neautentizovanému uživateli zobrazí přihlášení, autentetizovaného přihlásí
+exports.index = asyncHandler(async (req, res, next) => {
+  if(!req.session.userId) {
+    res.sendFile(path.join(__dirname, "../views/index.html"));
+    return;
+  } else {
+    const user = await sequelize.models.user.findByPk(req.session.userId);
+    if(!user) {
+      req.session.userId = null;
+      res.sendFile(path.join(__dirname, "../views/index.html"));
+      return;
+    } else {
+      res.sendFile(path.join(__dirname, "../views/indexLoggedIn.html"));
+      return;
+    }
+  }
+})
 
 exports.week = asyncHandler(async (req, res, next) => {
   if(!req.query.week) {
@@ -58,8 +78,6 @@ exports.week = asyncHandler(async (req, res, next) => {
 
   const weekDate = setISOWeek(new Date(year, 1, 1), weekNumber);
   let weekStartdate = startOfISOWeek(weekDate);
-  console.log(weekStartdate)
-  // weekStartdate.setHours(12);
 
   // Vygenerování obsahu pro tlačítka jednotlivých dní
   const weekDayNames = ["Pondělí", "Úterý", "Středa", "Čtvrtek", "Pátek", "Sobota", "Neděle"];
@@ -88,10 +106,11 @@ exports.week = asyncHandler(async (req, res, next) => {
 
 exports.day = asyncHandler(async (req, res, next) => {
   const day = req.params.day;
+  const user = await sequelize.models.user.findByPk(req.session.userId);
 
   const menus = await sequelize.models.menu.findAll({where: {
     date: day,
-    //TODO canteen ID z přihlášení
+    canteenId: user.canteenId
   }})
 
   const resMenus = await Promise.all(menus.map(
@@ -102,8 +121,18 @@ exports.day = asyncHandler(async (req, res, next) => {
     })
   ));
 
+  const availableDishes = await getAvailableDishes(req.params.day, user.canteenId);
+
+  const info = {
+      canteenId: user.canteenId,
+      date: day
+  };
+  console.log(info);
+
   res.render("dishes", {
-    dishesMenu: resMenus
+    dishesMenu: resMenus,
+    availableDishes: availableDishes,
+    createDishInfo: info
   })
 });
 
@@ -111,16 +140,51 @@ exports.deleteMenu = asyncHandler(async (req, res, next) => {
   const menuId = req.params.menuId;
 
   const menu = await sequelize.models.menu.findByPk(menuId)
+  if(menu) {
+    const date = menu.date;
+    const canteen = menu.canteenId;
 
-  await menu.destroy()
+    await menu.destroy()
+    const availableDishes = await getAvailableDishes(date, canteen);
 
+    res.render("dishDatalist", {availableDishes: availableDishes});
+    return;
+  } else {
+    res.status(400).end();
+  }
+})
+
+exports.addMenu = asyncHandler(async (req, res, next) => {
+  const date = req.params.date;
+  const canteenId = req.params.canteenId;
+
+  const dish = await sequelize.models.dish.findOne({
+    where: {
+      name: req.body.dishName
+    }
+  })
+
+  const menu = await sequelize.models.menu.create({
+    date: date,
+    pieces: req.body.dishAmount,
+    canteenId: canteenId,
+    dishId: dish.id
+  })
+
+  res.render("dishCard", {
+    dish: {
+      name: dish.name,
+      count: req.body.dishAmount,
+      id: menu.id
+    }
+  })
+  
   res.status(200).end();
 })
 
 exports.login = asyncHandler(async (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
-  console.log("User logging in with email: %s password: %s", email, password);
 
   const user = await sequelize.models.user.findOne({
     attributes: ["password", "id"],
