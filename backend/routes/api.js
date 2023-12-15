@@ -38,4 +38,7 @@ router.post("/dish/rating/delete", apiController.dishRatingDelete);
 // Získání ohodnocení jídla od ostaních lidí
 router.get("/dish", apiController.dishGet);
 
+// Vytvoření objednávky jídla
+router.get("/order/history", apiController.orderHistoryGet);
+
 module.exports = router;

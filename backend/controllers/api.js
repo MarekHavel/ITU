@@ -566,7 +566,7 @@ exports.dishGet = asyncHandler(async (req, res, next) => {
     name: dish.name,
     ingredients: dish.ingredients,
     weight: dish.weight,
-    photoPath: "images/dishes/" + dish.image_name,
+    photoPath: "/images/dishes/" + dish.image_name,
   };
 
   dishDetail.category = (await dish.getDish_category()).name;
@@ -588,3 +588,59 @@ exports.dishGet = asyncHandler(async (req, res, next) => {
   
   res.status(200).json(dishDetail);
 })
+
+
+exports.orderHistoryGet = asyncHandler(async (req, res, next) => {
+  if(req.query.token == null) {
+    res.status(400).json({
+      code: 2,
+      message: "Chybějící parametry požadavku"
+    });
+    return;
+  }
+
+  const user = await sequelize.models.user.findOne({
+    attributes: ["id", "canteenId", "priceCategoryId"],
+    where: {
+      authToken: req.query.token
+    }
+  });
+
+  if(!user) {
+    res.status(400).json({
+      code: 1,
+      message: "Neznámý token"
+    });
+    return;
+  }
+
+  // Objednávky seřazené od nejnovějších
+  const userOrders = await user.getOrders({ order: ["createdAt"] });
+
+  let resData = { orders: [] };
+  for(const order of userOrders) {
+    let resOrder = {};
+    resOrder.orderDate = order.createdAt;
+
+    const dish = await (await order.getMenu()).getDish();
+
+    resOrder.dishId = dish.id;
+    resOrder.name = dish.name;
+    resOrder.weight = dish.weight;
+
+    resOrder.category = (await dish.getDish_category()).name;
+
+    resOrder.price = (await sequelize.models.dish_price.findOne({where: {
+      priceCategoryId: user.priceCategoryId,
+      dishId: dish.id
+    }})).price;
+
+    const allergens = await dish.getAllergens();
+    const allergenNames = allergens.map((al) => al.code);
+    resOrder.allergens = allergenNames.toString().replace(/,/g, ", ");
+
+    resData.orders.push(resOrder);
+  }
+
+  res.status(200).json(resData);
+});

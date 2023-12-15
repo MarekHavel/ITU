@@ -365,6 +365,34 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  /api/order/history:
+    get:
+      summary: "Get order history of a given user"
+      parameters:
+        - name: "token"
+          in: "query"
+          description: "Authorization token"
+          required: true
+          schema:
+            type: "string"
+            format: "UUID"
+      responses:
+        200:
+          description: "Array of history items"
+          content:
+            application/json:
+              schema:
+                properties:
+                  orders:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/DishHistoryItem"
+        400:
+          description: "Invalid token"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 components:
   schemas:
     Dish:
@@ -492,3 +520,29 @@ components:
         message:
           nullable: false
           type: "string"
+    DishHistoryItem:
+      required:
+        - dishId
+        - name
+        - category
+        - allergens
+        - orderDate
+        - price
+        - weight
+      properties:
+        dishId:
+          type: integer
+        name:
+          type: string
+        category:
+          type: string
+        allergens:
+          type: string
+        orderDate:
+          type: string
+          format: date-time
+        price:
+          type: integer
+        weight:
+          type: integer
+
