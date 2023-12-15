@@ -19,3 +19,11 @@ input#dishName.form-control(hx-swap-oob="true" type='text' list='dishesDatalist'
 datalist#dishesDatalist(hx-swap-oob="true")
   each dish in datalistDishes
     option(value=dish)
+
+//- Notifikace úspěchu!
+#successToast.toast-container.position-fixed.bottom-0.end-0.p-3(hx-swap-oob="true")
+  .toast.show(role='alert')
+    .toast-header
+      strong.me-auto Info
+      button.btn-close(type='button' data-bs-dismiss='toast')
+    .toast-body Pokrm byl úspěšně přidán!
