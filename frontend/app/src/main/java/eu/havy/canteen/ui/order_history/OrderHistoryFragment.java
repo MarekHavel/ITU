@@ -1,6 +1,7 @@
 package eu.havy.canteen.ui.order_history;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,9 +9,16 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.List;
+
+import eu.havy.canteen.databinding.CardDishHistoryBinding;
 import eu.havy.canteen.databinding.FragmentOrderHistoryBinding;
+import eu.havy.canteen.model.Dish;
 
 public class OrderHistoryFragment extends Fragment {
 
@@ -18,16 +26,92 @@ public class OrderHistoryFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+
         OrderHistoryViewModel orderHistoryViewModel =
                 new ViewModelProvider(this).get(OrderHistoryViewModel.class);
 
         binding = FragmentOrderHistoryBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
 
-        final TextView textView = binding.textOrderHistory;
-        orderHistoryViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-        return root;
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getContext()){
+            @Override
+            public boolean checkLayoutParams(RecyclerView.LayoutParams lp) {
+                // force height of viewHolder here, this will override layout_height from xml
+                lp.width = getWidth();
+                lp.topMargin = 16;
+                lp.bottomMargin = 16;
+                return true;
+            }
+        };
+        binding.foodCardRecycler.setLayoutManager(layoutManager);
+        binding.foodCardRecycler.setHasFixedSize(true);
+        dishAdapter adapter = new dishAdapter(orderHistoryViewModel);
+        binding.foodCardRecycler.setAdapter(adapter);
+
+        orderHistoryViewModel.getAllDishes().observe(this.getViewLifecycleOwner(), new Observer<List<Dish>>() {
+            @Override
+            public void onChanged(List<Dish> dishes) {
+                adapter.setDishes(dishes);
+            }
+        });
+
+        return binding.getRoot();
     }
+
+    private class dishAdapter extends RecyclerView.Adapter<dishAdapter.MyViewHolder>{
+
+        //private List<String> items;
+        OrderHistoryViewModel src;
+
+        private class MyViewHolder extends RecyclerView.ViewHolder{
+
+            CardDishHistoryBinding binding;//Name of the test_list_item.xml in camel case + "Binding"
+
+            public MyViewHolder(CardDishHistoryBinding b){
+                super(b.getRoot());
+                binding = b;
+            }
+        }
+
+        public dishAdapter(OrderHistoryViewModel data){
+            this.src = data;
+        }
+
+        @NonNull
+        @Override
+        public dishAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){ //todo handle categories
+            return new dishAdapter.MyViewHolder(CardDishHistoryBinding.inflate(getLayoutInflater()));
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull dishAdapter.MyViewHolder holder, int position){
+            //String text = String.format(Locale.ENGLISH, "%s %d", items.get(position), position);
+
+            //An example of how to use the bindings
+            if(src.getDishCount() > 0) {
+                Dish current = src.getAllDishes().getValue().get(position);
+                if(current != null) {
+                    holder.binding.textViewName.setText(current.getName());
+                    holder.binding.textViewExtraInfo.setText(current.getExtraInfo());
+                    holder.binding.textViewPrice.setText(current.getPrice());
+                    holder.binding.textViewDate.setText("13.12.2023");
+                    holder.binding.getRoot().setOnClickListener( view -> {
+                        Log.d("test", "onBindViewHolder: xd");
+                    });
+                    //holder.binding.textViewDate.setText(current.getRemainingAmount()); //todo replace
+                }
+            }
+        }
+
+        public void setDishes(List<Dish> dishes){
+            notifyDataSetChanged();
+        }
+
+        @Override
+        public int getItemCount(){
+            return (int) src.getDishCount();
+        }
+    }
+
 
     @Override
     public void onDestroyView() {
