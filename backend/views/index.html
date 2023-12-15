@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TODO!</title>
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <link href="stylesheets/bs-overwrite.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+    crossorigin="anonymous"> deref</script>
+  <!-- HTMX -->
+  <script src="https://unpkg.com/htmx.org@1.9.9"
+    integrity="sha384-QFjmbokDn2DjBjq+fM+8LUIVrAgqcNW2s0PjAxHETgRn9l4fvX31ZxDxvwQnyMOX"
+    crossorigin="anonymous"></script>
+  </script>
+
+</head>
+
+<body>
+
+  <!-- Horní lišta -->
+  <div class="container-fluid bg-primary py-1">
+    <div class="row">
+      <div class="col-2 d-flex justify-content-center">
+        <img class="rounded-circle" src="images/canteen-playstore.png" alt="Logo" width="60" height="60" />
+      </div>
+      <div class="col">
+      </div>
+      <div class="col-2 d-flex justify-content-center" id="logoutButton">
+      </div>
+    </div>
+  </div>
+
+  <main class="container" id="mainContent">
+    <div class="row">
+      <div class="col">
+      </div>
+      <div class="col-4">
+        <form class="form-signin text-center">
+          <h1 class="h3 mb-3 mt-5 fw-normal">Přihlášení</h1>
+
+          <div class="form-floating">
+            <input type="email" class="form-control" name="email">
+            <label>Email</label>
+          </div>
+          <div class="form-floating">
+            <input type="password" class="form-control" name="password">
+            <label>Heslo</label>
+          </div>
+          <button class="w-100 btn btn-lg btn-primary mt-3" hx-post="/webapp/login"
+            hx-target="#mainContent">Přihlásit</button>
+        </form>
+      </div>
+      <div class="col">
+      </div>
+    </div>
+  </main>
+
+</body>
+
+</html>

@@ -70,6 +70,15 @@ async function main() {
   await user2.setCanteen(canteen1);
   await user2.setPrice_category(studentCategory);
 
+  const admin = await models.user.create({
+    username: "Karel Pořízek",  
+    email: "karel@gmail.com",  
+    password: "admin",  // Custom setter to zahešuje
+    role: "admin",  
+  });
+
+  await admin.setCanteen(canteen1);
+
   const platek = await models.dish.create({name: "Kuřecí plátek na divoko",
     ingredients: "Kuřecí maso, sůl, kmín, řepkový olej",
     weight: 200,

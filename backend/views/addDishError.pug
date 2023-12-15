@@ -1,0 +1,6 @@
+#errorToast.toast-container.position-fixed.top-50.start-50.translate-middle.p-3(hx-swap-oob="true")
+  .toast.show(role='alert')
+    .toast-header
+      strong.me-auto Chyba!
+      button.btn-close(type='button' data-bs-dismiss='toast')
+    .toast-body #{errorMessage}

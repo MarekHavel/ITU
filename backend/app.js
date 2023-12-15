@@ -7,8 +7,9 @@ var logger = require('morgan');
 // Natáhne do process.env proměnné z .env souboru
 require('dotenv').config();
 
-var indexRouter = require('./routes/index');
 var apiRouter = require('./routes/api');
+var webappRouter = require('./routes/webapp');
+var authMiddleware = require("./controllers/middleware");
 
 var app = express();
 
@@ -18,8 +19,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Nastavení sessions
-app.use(session({
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'pug');
+
+// Nastavení sessions pro webové rozhraní
+app.use("/webapp", session({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
@@ -28,12 +33,16 @@ app.use(session({
   }
 }))
 
-app.use('/', indexRouter);
+// Kořen se přesměruje na kořen webapp
+app.get('/', function(req, res) {
+  res.redirect('/webapp');
+})
+
+// Routování pro API
 app.use('/api', apiRouter);
 
-// Vytvoření databáze
-// const sequelize = require("./models");
-// sequelize.sync({ alter: true })
-//   .then(() => sequelize.close());
+// Routování webového klienta
+app.use('/webapp/auth', authMiddleware.auth); // Middleware pro autorizaci
+app.use('/webapp', webappRouter);
 
 module.exports = app;
