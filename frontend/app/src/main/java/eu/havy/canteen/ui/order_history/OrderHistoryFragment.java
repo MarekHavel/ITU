@@ -14,6 +14,12 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
+import java.util.Date;
 import java.util.List;
 
 import eu.havy.canteen.databinding.CardDishHistoryBinding;
@@ -84,20 +90,18 @@ public class OrderHistoryFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull dishAdapter.MyViewHolder holder, int position){
-            //String text = String.format(Locale.ENGLISH, "%s %d", items.get(position), position);
-
-            //An example of how to use the bindings
             if(src.getDishCount() > 0) {
                 Dish current = src.getAllDishes().getValue().get(position);
                 if(current != null) {
                     holder.binding.textViewName.setText(current.getName());
                     holder.binding.textViewExtraInfo.setText(current.getExtraInfo());
                     holder.binding.textViewPrice.setText(current.getPrice());
-                    holder.binding.textViewDate.setText("13.12.2023");
-                    holder.binding.getRoot().setOnClickListener( view -> {
+
+                    String[] dateSplit = current.getPurchaseDate().split("T");
+                    holder.binding.textViewDate.setText(dateSplit[0]);
+                    holder.binding.getRoot().setOnClickListener(view -> {
                         Log.d("test", "onBindViewHolder: xd");
                     });
-                    //holder.binding.textViewDate.setText(current.getRemainingAmount()); //todo replace
                 }
             }
         }

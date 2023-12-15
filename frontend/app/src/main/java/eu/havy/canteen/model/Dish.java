@@ -35,6 +35,8 @@ public class Dish {
         return name;
     }
 
+    public String getPurchaseDate(){return purchaseDate;}
+
     public int getWeight() {
         return weight;
     }
