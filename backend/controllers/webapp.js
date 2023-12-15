@@ -164,6 +164,33 @@ exports.addMenu = asyncHandler(async (req, res, next) => {
     }
   })
 
+  if(!dish) { // Chybný vstup
+    res.render("addDishError", {
+      errorMessage: "Takové jídlo neexistuje"
+    })
+    return;
+  }
+
+  const dishAmount = Number(req.body.dishAmount);
+
+  if(!Number.isInteger(dishAmount) || dishAmount <= 0 ||  dishAmount> 1000) {
+    res.render("addDishError", {
+      errorMessage: "Počet kusů musí být kladné číslo menší než 1000"
+    })
+    return;
+  }
+
+  if(await sequelize.models.menu.findOne({ where: {
+    date: req.params.date,
+    canteenId: req.params.canteenId,
+    dishId: dish.id,
+  }})) { // Nabídka tohoto jídla již existuje
+    res.render("addDishError", {
+      errorMessage: "Takové jídlo již v nabídce dne je"
+    })
+    return;
+  }
+
   const menu = await sequelize.models.menu.create({
     date: date,
     pieces: req.body.dishAmount,
@@ -171,15 +198,14 @@ exports.addMenu = asyncHandler(async (req, res, next) => {
     dishId: dish.id
   })
 
-  res.render("dishCard", {
+  res.render("addDish", {
     dish: {
       name: dish.name,
       count: req.body.dishAmount,
       id: menu.id
-    }
+    },
+    datalistDishes: await getAvailableDishes(date, canteenId)
   })
-  
-  res.status(200).end();
 })
 
 exports.login = asyncHandler(async (req, res, next) => {

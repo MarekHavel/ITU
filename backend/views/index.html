@@ -35,21 +35,21 @@
     </div>
   </div>
 
-  <main class="form-signin container text-center" id="mainContent">
+  <main class="container" id="mainContent">
     <div class="row">
       <div class="col">
       </div>
       <div class="col-4">
-        <form>
+        <form class="form-signin text-center">
           <h1 class="h3 mb-3 mt-5 fw-normal">Přihlášení</h1>
 
           <div class="form-floating">
             <input type="email" class="form-control" name="email">
-            <label for="floatingInput">Email</label>
+            <label>Email</label>
           </div>
           <div class="form-floating">
             <input type="password" class="form-control" name="password">
-            <label for="floatingPassword">Heslo</label>
+            <label>Heslo</label>
           </div>
           <button class="w-100 btn btn-lg btn-primary mt-3" hx-post="/webapp/login"
             hx-target="#mainContent">Přihlásit</button>
