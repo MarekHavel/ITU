@@ -224,5 +224,10 @@ async function main() {
   await objednavka4.setUser(user2);
   await objednavka4.setMenu(nabidkaLusk);
 
+  await models.dish_preset.create({
+    name: "moje šablona",
+    dishIds: [platek.id, lusk.id, svickova.id, buchty.id].toString()
+  });
+
   await sequelize.close();
 }

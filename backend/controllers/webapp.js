@@ -27,6 +27,12 @@ async function getAvailableDishes(date, canteen) {
   return availableDishes.map((dish) => dish.name);
 }
 
+// Funkce pro získání jmen všech dostupných šablon
+// @return [string] - Pole jmen dostupných šablon
+async function getAvailablePresets() {
+  return (await sequelize.models.dish_preset.findAll()).map((preset) => preset.name);
+}
+
 // Funkce pro vygenerování informací pro vykreslení datePickeru
 // @param week - číslo týdne
 // @param year - rok
@@ -152,7 +158,8 @@ exports.day = asyncHandler(async (req, res, next) => {
   res.render("dishes", {
     dishesMenu: resMenus,
     availableDishes: availableDishes,
-    createDishInfo: info
+    createDishInfo: info,
+    dishPresets: await getAvailablePresets()
   })
 });
 
@@ -265,5 +272,43 @@ exports.logout = asyncHandler(async (req, res, next) => {
     if (err) return next(err);
     res.set("HX-Redirect", "/").end();
     return;
+  })
+})
+
+exports.savePreset = asyncHandler(async (req, res, next) => {
+  const date = req.params.date;
+  const name = req.body.presetName.trim();
+
+  if(name === "") {
+    res.render("savePresetFailure", {
+      errorMessage: "Název šablony nemůže být prázdný"
+    })
+    return;
+  }
+  
+  const user = await sequelize.models.user.findByPk(req.session.userId);
+  const menus = await sequelize.models.menu.findAll({
+    where: {
+      date: date,
+      canteenId: user.canteenId
+    }
+  })
+
+  const dishIds = menus.map((m) => m.dishId).toString();
+
+  const [preset, created] = await sequelize.models.dish_preset.findOrBuild({
+    where: {
+      name: req.body.presetName
+    }
+  });
+  preset.dishIds = dishIds;
+  preset.save();
+
+  const message = "Šablona '" + req.body.presetName + "' byla úspěšně " + (created ? "vytvořena" : "modifikována")
+  console.log("Success")
+
+  res.render("savePresetSuccess", {
+    successMessage: message,
+    dishPresets: await getAvailablePresets()
   })
 })

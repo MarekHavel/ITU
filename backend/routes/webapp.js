@@ -9,5 +9,6 @@ router.get("/auth/week", webappController.week);
 router.get("/auth/day/:day", webappController.day);
 router.delete("/auth/menuItem/:menuId", webappController.deleteMenu);
 router.post("/auth/menuItem/:date/:canteenId", webappController.addMenu);
+router.post("/auth/preset/save/:date", webappController.savePreset);
 
 module.exports = router;

@@ -12,6 +12,7 @@ const modelDefiners = [
   require('./dish.js'),
   require('./price_category.js'),
   require('./user.js'),
+  require('./dish_preset.js'),
   // Přemosťovací tabulky
   require('./dish_rating.js'),
   require('./menu.js'),
@@ -24,7 +25,7 @@ for (const modelDefiner of modelDefiners) {
   modelDefiner(sequelize);
 }
 
-const { allergen, canteen, dish_category, dish, price_category, user, dish_rating, menu, dish_price, order } = sequelize.models;
+const { allergen, canteen, dish_category, dish, price_category, user, dish_preset, dish_rating, menu, dish_price, order} = sequelize.models;
 
 // Vytvoření vztahů
 
