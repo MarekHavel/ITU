@@ -15,13 +15,14 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/text_view_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
             android:layout_marginTop="6dp"
             android:ellipsize="end"
             android:textSize="20sp"
             android:textStyle="bold"
+            android:maxLines="4"
             app:layout_constraintEnd_toStartOf="@+id/text_view_count"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -48,24 +49,35 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:layout_marginEnd="6dp"
             android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/purchaseButton"
             app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginEnd="4dp"
             tools:text="69 ks" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/text_view_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:layout_marginEnd="6dp"
+            android:layout_marginEnd="4dp"
             android:layout_marginBottom="6dp"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_view_count"
+            app:layout_constraintEnd_toStartOf="@+id/purchaseButton"
+            app:layout_constraintTop_toBottomOf="@+id/text_view_name"
             tools:text="420 Kč" />
+
+        <ImageView
+            android:id="@+id/purchaseButton"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="14dp"
+            android:background="@color/red_900"
+            android:src="@drawable/baseline_shopping_cart_48"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.google.android.material.card.MaterialCardView>

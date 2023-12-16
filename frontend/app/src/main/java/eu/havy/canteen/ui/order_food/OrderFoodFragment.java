@@ -1,6 +1,7 @@
 package eu.havy.canteen.ui.order_food;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,6 +90,12 @@ public class OrderFoodFragment extends Fragment {
                 holder.binding.textViewExtraInfo.setText(current.getExtraInfo());
                 holder.binding.textViewPrice.setText(current.getPrice());
                 holder.binding.textViewCount.setText(current.getRemainingAmount());
+                holder.binding.purchaseButton.setOnClickListener(view->{
+                    Log.d("clickListener","Kliknuto na nákup obědu " + current.getId());
+                });
+                holder.binding.getRoot().setOnClickListener(view->{
+                    Log.d("clickListener","Kliknuto na detail obědu " + current.getId());
+                });
             }
         }
 
