@@ -166,7 +166,7 @@ exports.addMenu = asyncHandler(async (req, res, next) => {
 
   if(!dish) { // Chybný vstup
     res.render("addDishError", {
-      errorMessage: "Takové jídlo neexistuje"
+      errorMessage: "Jídlo '" + req.body.dishName + "' není v databázi"
     })
     return;
   }
@@ -186,7 +186,7 @@ exports.addMenu = asyncHandler(async (req, res, next) => {
     dishId: dish.id,
   }})) { // Nabídka tohoto jídla již existuje
     res.render("addDishError", {
-      errorMessage: "Takové jídlo již v nabídce dne je"
+      errorMessage: "Jídlo '" + req.body.dishName + "' již v nabídce dne je. Pokud jej chcete změnit, nejprve je smažte"
     })
     return;
   }
@@ -204,7 +204,8 @@ exports.addMenu = asyncHandler(async (req, res, next) => {
       count: req.body.dishAmount,
       id: menu.id
     },
-    datalistDishes: await getAvailableDishes(date, canteenId)
+    datalistDishes: await getAvailableDishes(date, canteenId),
+    successMessage: "Pokrm '" + req.body.dishName + "' byl úspěšně přidán"
   })
 })
 

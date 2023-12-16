@@ -6,7 +6,7 @@
         button.btn.btn-primary(hx-get='/webapp/auth/week?week=' + prevWeek hx-target='#datePicker')
           svg.bi.bi-arrow-left-circle(xmlns='http://www.w3.org/2000/svg' width='32' height='32' fill='currentColor' viewBox='0 0 16 16')
             path(fill-rule='evenodd' d='M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8m15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z')
-        span.input-group-text Týden
+        span.input-group-text Týden:
         input#weekPicker.form-control(type='week' name='week' placeholder='Např. 2023-W35' value=selectedWeek hx-get='/webapp/auth/week' hx-params='*' hx-target='#datePicker')
         button.btn.btn-primary(hx-get='/webapp/auth/week?week=' + nextWeek hx-target='#datePicker')
           svg.bi.bi-arrow-right-circle(xmlns='http://www.w3.org/2000/svg' width='32' height='32' fill='currentColor' viewBox='0 0 16 16')
@@ -15,11 +15,13 @@
 // Vybírání dnů
 .container(style='height: 75px')
   .row.h-100
-    //-
-      Očekává pole elementů dayButtons s atributy: urlDate, dayName
-    each dayButton in dayButtons
-      .col
-        button.btn.btn-outline-primary.h-100.w-100(type='button' hx-get='/webapp/auth/day/' + dayButton.urlDate hx-target='#dishesContent') #{dayButton.dayName} #{dayButton.dateHumanReadable}
+    //- Očekává pole elementů dayButtons s atributy: urlDate, dayName
+    .btn-group(role='group')
+      each dayButton in dayButtons
+        input.btn-check(id='dayButton' + dayButton.urlDate type='radio' name='day' autocomplete='off' hx-get='/webapp/auth/day/' + dayButton.urlDate hx-target='#dishesContent')
+        label.btn.btn-outline-primary(for='dayButton' + dayButton.urlDate)
+          .p.text-center.h-50 #{dayButton.dayName}
+          .p.text-center.h-50 #{dayButton.dateHumanReadable}
 
 //- Nahradí dishesContent
 #dishesContent.container.mt-5(hx-swap-oob="true")

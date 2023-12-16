@@ -8,7 +8,7 @@
         .col
           .mb-3
             label.form-label(for='dishName') Název jídla
-            input#dishName.form-control(type='text' list='dishesDatalist' name="dishName")
+            input#dishName.form-control(type='text' list='dishesDatalist' name="dishName" autocomplete='off')
             datalist#dishesDatalist
               each dishName in availableDishes
                 option(value=dishName)

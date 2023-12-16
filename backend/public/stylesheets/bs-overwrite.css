@@ -61,6 +61,7 @@ button.bg-primary:focus {
   background-color: var(--primary-t1);
   border-color: var(--primary-t1);
   --bs-btn-hover-bg: var(--primary-t2);
+  --bs-btn-hover-border-color: var(--primary-t2);
 }
 
 .btn-primary:hover {
@@ -94,6 +95,8 @@ button.bg-primary:focus {
   background-color: transparent;
   border-color: var(--primary-t1);
   --bs-btn-hover-bg: var(--primary-t1);
+  --bs-btn-color: var(--primary-t5);
+  --bs-btn-border-color: var(--primary-t5);
 }
 
 .btn-outline-primary:hover {
@@ -158,4 +161,10 @@ button.bg-primary:focus {
 
 a.text-primary:hover, a.text-primary:focus {
   color: var(--primary-t2) !important;
+}
+
+.btn-check:checked+.btn, .btn.active, .btn.show, .btn:first-child:active, :not(.btn-check)+.btn:active {
+    color: #ffffff;
+    background-color: var(--primary-t1);
+    border-color: var(--primary-t1);
 }
