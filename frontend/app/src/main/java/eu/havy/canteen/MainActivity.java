@@ -18,7 +18,6 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -135,6 +134,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static void updateCredit() {
-        instance.binding.appBarMain.toolbarCredit.setText(User.getCurrentUser().getCredit());
+        instance.binding.appBarMain.toolbarCredit.setText(String.format("%s Kč", User.getCurrentUser().getCredit()));
+    }
+
+    public static void updateCanteenInfo(String name, String email, String phone, String openingHours, String address) {
+        instance.binding.canteenName.setText(name);
+        instance.binding.canteenOpeningHours.setText(openingHours);
+        instance.binding.canteenPhone.setText(phone);
+        instance.binding.canteenEmail.setText(email);
+        instance.binding.canteenAddress.setText(address.replaceAll(",", "\n"));
     }
 }

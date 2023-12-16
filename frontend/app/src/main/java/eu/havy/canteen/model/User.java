@@ -67,6 +67,8 @@ public class User {
                             creditUpdateLoop.removeCallbacks(creditUpdate);
                             creditUpdateLoop.postDelayed(creditUpdate, 30000);
                             break;
+                        case GET_CANTEEN_INFO:
+                            MainActivity.updateCanteenInfo(jsonObject.getString("name"), jsonObject.getString("email"), jsonObject.getString("phone"), jsonObject.getString("openingHours"), jsonObject.getString("address"));
                         case ADD_USER_CREDIT:
                             creditUpdateLoop.removeCallbacks(creditUpdate);
                             creditUpdateLoop.post(creditUpdate);
@@ -93,7 +95,7 @@ public class User {
 
                 if (!error.isEmpty()) {
                     Log.e("User", "FAILURE, request: " + Api.Request.toString(msg.what) +" code: " + msg.arg1 + " message: " + error);
-                    if  (error.equals("Neplatný autentizační token")) {
+                    if  (error.equals("Invalid token")) {
                         if (MainActivity.getInstance() != null) {
                             MainActivity.logOut();
                         }
@@ -180,8 +182,10 @@ public class User {
     }
 
     public void updateData() {
-        new Api(handler).getUserInfo(token);
-        new Api(handler).getUserCredit(token);
+        Api api = new Api(handler);
+        api.getUserInfo(token);
+        api.getUserCredit(token);
+        api.getCanteenInfo(token);
     }
 
     /**

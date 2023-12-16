@@ -46,7 +46,8 @@ public class Api {
         GET_MENU,
         GET_USER_CREDIT,
         ADD_USER_CREDIT,
-        GET_ORDER_HISTORY;
+        GET_ORDER_HISTORY,
+        GET_CANTEEN_INFO;
 
         public static Request getEnum(int i) {
             return Request.values()[i];
@@ -163,6 +164,17 @@ public class Api {
             //UI Thread work here
             //handler.post(() -> {});
             handler.obtainMessage(Request.ADD_USER_CREDIT.ordinal(), getResponseCode(response), 0, response).sendToTarget();
+        });
+    }
+
+    public void getCanteenInfo(String token) {
+        executor.execute(() -> {
+            //Background work here
+            JSONObject response = request(Method.GET, server_api_url+"canteen?token="+token, null);
+
+            //UI Thread work here
+            //handler.post(() -> {});
+            handler.obtainMessage(Request.GET_CANTEEN_INFO.ordinal(), getResponseCode(response), 0, response).sendToTarget();
         });
     }
 
