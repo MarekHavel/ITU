@@ -208,6 +208,9 @@ async function main() {
   await models.menu.create({date: '2023-11-17', dishId: kase.id, canteenId: canteen1.id, pieces: 30});
   await models.menu.create({date: '2023-11-17', dishId: vyvar.id, canteenId: canteen1.id, pieces: 32});
 
+  await models.dish_rating.create({stars: 3, comment: "Plátek, klasika", userId: user1.id, dishId: platek.id})
+  await models.dish_rating.create({stars: 5, comment: "S rýžou perfektní", userId: user2.id, dishId: platek.id})
+
   const objednavka1 = await models.order.create();
   await objednavka1.setUser(user1)
   await objednavka1.setMenu(nabidkaPlatek);

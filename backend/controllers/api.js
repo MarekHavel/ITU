@@ -477,18 +477,27 @@ exports.dishRatingGeneralGet = asyncHandler(async (req, res, next) => {
   const averageRating = numOfRatings == 0 ? 0 : await sequelize.models.dish_rating.sum("stars", { where: { dishId: dish.id } }) / numOfRatings;
 
   const reviews = await sequelize.models.dish_rating.findAll({
-    attributes: ["comment"],
     where: {
       dishId: dish.id
     },
-    limit: 10,
     order: ["updatedAt"]
-  })
+  });
+
+  let resReviews = [];
+  for (const review of reviews) {
+    const reviewAuthor = await sequelize.models.user.findByPk(review.userId);
+    let r = {
+      reviewText: review.comment,
+      author: reviewAuthor.username
+    }
+    resReviews.push(r);
+  }
+
 
   res.status(200).json({
     averageRating: averageRating,
     numOfRatings: numOfRatings,
-    reviews: reviews.map((r) => r.comment)
+    reviews: resReviews
   });
 });
 
