@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="Canteen name"
-                android:textSize="18sp"
+                android:textSize="24sp"
                 android:textColor="?colorPrimary" />
 
             <TextView
@@ -56,7 +56,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="Canteen status"
-                android:textSize="18sp"
+                android:textSize="24sp"
                 android:textColor="?colorPrimary"
                 android:visibility="gone"/>
 
@@ -65,7 +65,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="Canteen opening hours" />
+                android:text="Canteen opening hours"
+                android:textSize="18sp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -76,13 +77,15 @@
                     android:id="@+id/canteen_phone_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Phone: "/>
+                    android:text="Phone: "
+                    android:textSize="18sp"/>
 
                 <TextView
                     android:id="@+id/canteen_phone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=""/>
+                    android:text=""
+                    android:textSize="18sp"/>
             </LinearLayout>
 
             <LinearLayout
@@ -94,13 +97,15 @@
                     android:id="@+id/canteen_email_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Email: "/>
+                    android:text="Email: "
+                    android:textSize="18sp"/>
 
                 <TextView
                     android:id="@+id/canteen_email"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=""/>
+                    android:text=""
+                    android:textSize="18sp"/>
             </LinearLayout>
 
             <LinearLayout
@@ -112,13 +117,15 @@
                     android:id="@+id/canteen_address_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Address: "/>
+                    android:text="Address: "
+                    android:textSize="18sp"/>
 
                 <TextView
                     android:id="@+id/canteen_address"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=""/>
+                    android:text=""
+                    android:textSize="18sp"/>
             </LinearLayout>
 
         </LinearLayout>

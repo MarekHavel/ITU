@@ -19,9 +19,9 @@
         tools:layout="@layout/fragment_recharge_credit" >
 
         <action
-            android:id="@+id/action_nav_recharge_credit_to_nav_order_food2"
+            android:id="@+id/action_nav_recharge_credit_to_nav_order_food"
             app:destination="@id/nav_order_food"
-            app:popUpTo="@id/nav_order_food"
+            app:popUpTo="@id/nav_recharge_credit"
             app:popUpToInclusive="true"/>
     </fragment>
 
@@ -33,18 +33,30 @@
         <action
             android:id="@+id/action_nav_order_history_to_nav_order_food"
             app:destination="@id/nav_order_food"
-            app:popUpTo="@id/nav_order_food"
+            app:popUpTo="@id/nav_order_history"
+            app:popUpToInclusive="true"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_food_detail"
+        android:name="eu.havy.canteen.ui.food_detail.FoodDetailFragment"
+        android:label="@string/menu_food_detail"
+        tools:layout="@layout/fragment_food_detail">
+        <action
+            android:id="@+id/action_nav_food_detail_to_nav_order_food"
+            app:destination="@id/nav_order_food"
+            app:popUpTo="@id/nav_food_detail"
             app:popUpToInclusive="true"/>
     </fragment>
 
     <fragment
         android:id="@+id/nav_settings"
         android:name="eu.havy.canteen.ui.settings.SettingsFragment"
-        android:label="@string/menu_settings" >
+        android:label="@string/menu_settings">
         <action
             android:id="@+id/action_nav_settings_to_nav_order_food"
             app:destination="@id/nav_order_food"
-            app:popUpTo="@id/nav_order_food"
+            app:popUpTo="@id/nav_settings"
             app:popUpToInclusive="true"/>
     </fragment>
 </navigation>
