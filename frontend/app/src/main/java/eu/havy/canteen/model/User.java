@@ -31,15 +31,6 @@ public class User {
     private String priceCategory;
     private String credit;
 
-    private final Handler creditUpdateLoop = new Handler(Objects.requireNonNull(Looper.myLooper()));
-    private final Runnable creditUpdate = new Runnable() {
-        @Override
-        public void run() {
-            creditUpdateLoop.postDelayed(this, 30000);
-            new Api(handler).getUserCredit(token);
-        }
-    };
-
     private final Handler handler = new Handler(Objects.requireNonNull(Looper.myLooper())) {
         @Override
         public void handleMessage(Message msg) {
@@ -64,14 +55,11 @@ public class User {
                         case GET_USER_CREDIT:
                             credit = jsonObject.getString("credit");
                             MainActivity.updateCredit();
-                            creditUpdateLoop.removeCallbacks(creditUpdate);
-                            creditUpdateLoop.postDelayed(creditUpdate, 30000);
                             break;
                         case GET_CANTEEN_INFO:
                             MainActivity.updateCanteenInfo(jsonObject.getString("name"), jsonObject.getString("email"), jsonObject.getString("phone"), jsonObject.getString("openingHours"), jsonObject.getString("address"));
                         case ADD_USER_CREDIT:
-                            creditUpdateLoop.removeCallbacks(creditUpdate);
-                            creditUpdateLoop.post(creditUpdate);
+                            new Api(this).getUserCredit(token);
                             break;
                     }
                 }
@@ -194,7 +182,6 @@ public class User {
      */
     public static synchronized boolean logout() {
         if (currentUser != null) {
-            currentUser.creditUpdateLoop.removeCallbacks(currentUser.creditUpdate);
             currentUser = null;
             return true;
         }
