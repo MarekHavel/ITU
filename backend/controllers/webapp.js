@@ -27,26 +27,71 @@ async function getAvailableDishes(date, canteen) {
   return availableDishes.map((dish) => dish.name);
 }
 
+// Funkce pro vygenerování informací pro vykreslení datePickeru
+// @param week - číslo týdne
+// @param year - rok
+// @return Objekt s informacemi pro vykreslení týdne
+async function generateDayPickerInfo(week, year) {
+  console.log({
+    week: week,
+    year: year
+  })
+  const weekDate = setISOWeek(new Date(year, 1, 1), week);
+  let weekStartdate = startOfISOWeek(weekDate);
+
+  // Vygenerování obsahu pro tlačítka jednotlivých dní
+  const weekDayNames = ["Pondělí", "Úterý", "Středa", "Čtvrtek", "Pátek", "Sobota", "Neděle"];
+  let dayButtons = [];
+  for(let i = 0; i < 7; i++) {
+    let dayButton = {};
+    dayButton.urlDate = addDays(weekStartdate, 1).toISOString().split('T')[0]; // YYYY-MM-DD
+    dayButton.dateHumanReadable = weekStartdate.toLocaleDateString("cs-CZ");
+    dayButton.dayName = weekDayNames[i];
+
+    dayButtons.push(dayButton);
+    weekStartdate = addDays(weekStartdate, 1);
+  }
+
+  // Vygenerování obsahu pro tlačítka předchozího a následujícího týdne
+  const nextWeekNumber = getISOWeek(weekStartdate).toString().trim().padStart(2, "0");
+  const prevWeekYear = weekStartdate.getFullYear();
+  const prevWeekNumber = getISOWeek(addWeeks(weekStartdate, -2)).toString().trim().padStart(2, "0");
+  const nextWeekYear = weekStartdate.getFullYear();
+
+  const resData = {
+    dayButtons: dayButtons,
+    selectedWeek: year.toString() + "-W" + week.toString().trim().padStart(2, "0"),
+    nextWeek: nextWeekYear.toString() + "-W" + nextWeekNumber,
+    prevWeek: prevWeekYear.toString() + "-W" + prevWeekNumber,
+  };
+
+  console.log(resData);
+
+  return resData;
+}
+
 // Funkce pro obsluhu vstupního bodu stránky
 // Neautentizovanému uživateli zobrazí přihlášení, autentetizovaného přihlásí
 exports.index = asyncHandler(async (req, res, next) => {
-  if(!req.session.userId) {
-    res.sendFile(path.join(__dirname, "../views/index.html"));
+  if(!req.session.userId) { // Bez session
+    res.render("login.pug");
     return;
   } else {
     const user = await sequelize.models.user.findByPk(req.session.userId);
-    if(!user) {
+    if(!user) { // Session bez autentizace
       req.session.userId = null;
-      res.sendFile(path.join(__dirname, "../views/index.html"));
+      res.render("login.pug");
       return;
-    } else {
-      res.sendFile(path.join(__dirname, "../views/indexLoggedIn.html"));
+    } else { // Session s platnou autentizací - rovnou zobrazíme předvyplněný datePicker
+      const today = new Date(); // Dnešek
+      res.render("loggedIn.pug", await generateDayPickerInfo(getISOWeek(today), today.getFullYear()))
       return;
     }
   }
 })
 
 exports.week = asyncHandler(async (req, res, next) => {
+  req.query.week = req.query.week.trim();
   if(!req.query.week) {
     res.render("datePickerError", {
       errorMessage: "Špatný formát týdne"
@@ -76,32 +121,7 @@ exports.week = asyncHandler(async (req, res, next) => {
     return;
   }
 
-  const weekDate = setISOWeek(new Date(year, 1, 1), weekNumber);
-  let weekStartdate = startOfISOWeek(weekDate);
-
-  // Vygenerování obsahu pro tlačítka jednotlivých dní
-  const weekDayNames = ["Pondělí", "Úterý", "Středa", "Čtvrtek", "Pátek", "Sobota", "Neděle"];
-  let dayButtons = [];
-  for(let i = 0; i < 7; i++) {
-    let dayButton = {};
-    dayButton.urlDate = addDays(weekStartdate, 1).toISOString().split('T')[0]; // YYYY-MM-DD
-    dayButton.dateHumanReadable = weekStartdate.toLocaleDateString("cs-CZ");
-    dayButton.dayName = weekDayNames[i];
-
-    dayButtons.push(dayButton);
-    weekStartdate = addDays(weekStartdate, 1);
-  }
-
-  // Vygenerování obsahu pro tlačítka předchozího a následujícího týdne
-  const nextWeekNumber = getISOWeek(weekStartdate).toString().padStart(2, "0");
-  const prevWeekNumber = getISOWeek(addWeeks(weekStartdate, -2)).toString().padStart(2, "0");
-
-  res.render("datePicker", {
-    dayButtons: dayButtons,
-    selectedWeek: req.query.week,
-    nextWeek: nextWeek = year.toString() + "-W" + nextWeekNumber,
-    prevWeek: prevWeek = year.toString() + "-W" + prevWeekNumber,
-  });
+  res.render("datePickerWithMessage", await generateDayPickerInfo(weekNumber, year));
 });
 
 exports.day = asyncHandler(async (req, res, next) => {
@@ -225,9 +245,10 @@ exports.login = asyncHandler(async (req, res, next) => {
     req.session.userId = user.id;
 
     // Uložení session a přesměrování na hlavní stránku
-    req.session.save(function (err) {
+    req.session.save(async function (err) {
       if (err) return next(err);
-      res.render("loginSuccess")
+      const today = new Date(); // Dnešek
+      res.render("loginSuccess.pug", await generateDayPickerInfo(getISOWeek(today), today.getFullYear()))
       return;
     })
   } else {
