@@ -33,17 +33,4 @@
 
     <include layout="@layout/activity_main_content" />
 
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_marginEnd="@dimen/fab_margin"
-        android:layout_marginBottom="@dimen/fab_margin"
-        android:text="@string/orders"
-        android:textColor="?attr/colorOnPrimary"
-        app:icon="@android:drawable/ic_menu_info_details"
-        app:iconTint="?attr/colorOnPrimary"
-        app:backgroundTint="?attr/colorPrimary"/>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
