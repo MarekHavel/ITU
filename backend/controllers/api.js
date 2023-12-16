@@ -644,3 +644,37 @@ exports.orderHistoryGet = asyncHandler(async (req, res, next) => {
 
   res.status(200).json(resData);
 });
+
+exports.canteenGet = asyncHandler(async (req, res, next) => {
+  if(req.query.token == null) {
+    res.status(400).json({
+      code: 2,
+      message: "Chybějící parametry požadavku"
+    });
+    return;
+  }
+
+  const user = await sequelize.models.user.findOne({
+    where: {
+      authToken: req.query.token
+    }
+  });
+
+  if(!user) {
+    res.status(400).json({
+      code: 1,
+      message: "Neznámý token"
+    });
+    return;
+  }
+
+  const canteen = await user.getCanteen();
+
+  res.json({
+    name: canteen.name,
+    email: canteen.email,
+    phone: canteen.phone,
+    openingHours: canteen.openingHours,
+    address: canteen.address,
+  });
+});

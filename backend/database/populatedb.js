@@ -20,7 +20,7 @@ async function main() {
     name: "Jídelna1",
     email: "jidelna1@jidelnybrno.cz",
     phone: "+420598927106",
-    openingHours: "idkxd",
+    openingHours: "Po: 11:00 - 14:00\nÚt: 11:00 - 14:00\nSt: 11:00 - 14:00\nČt: 11:00 - 14:00\nPá: 11:00 - 14:00\n",
     address: "Purkyňova 2640/93, 61200 Brno Královo Pole, Česko",
   });
   

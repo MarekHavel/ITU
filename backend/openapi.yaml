@@ -393,6 +393,30 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  /api/canteen:
+    get:
+      summary: "Get canteen info for user"
+      parameters:
+        - name: "token"
+          in: "query"
+          description: "Authorization token"
+          required: true
+          schema:
+            type: "string"
+            format: "UUID"
+      responses:
+        200:
+          description: "Canteen info"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Canteen"
+        400:
+          description: "Invalid token"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 components:
   schemas:
     Dish:
@@ -545,4 +569,22 @@ components:
           type: integer
         weight:
           type: integer
-
+    Canteen:
+      required:
+        - name
+        - email
+        - phone
+        - openingHours
+        - address
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        openingHours:
+          type: string
+        address:
+          type: string

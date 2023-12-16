@@ -41,4 +41,7 @@ router.get("/dish", apiController.dishGet);
 // Vytvoření objednávky jídla
 router.get("/order/history", apiController.orderHistoryGet);
 
+// Vytvoření objednávky jídla
+router.get("/canteen", apiController.canteenGet);
+
 module.exports = router;
