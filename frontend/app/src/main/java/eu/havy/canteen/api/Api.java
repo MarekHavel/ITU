@@ -45,7 +45,8 @@ public class Api {
         GET_USER_INFO,
         GET_MENU,
         GET_USER_CREDIT,
-        ADD_USER_CREDIT;
+        ADD_USER_CREDIT,
+        GET_ORDER_HISTORY;
 
         public static Request getEnum(int i) {
             return Request.values()[i];
@@ -135,6 +136,13 @@ public class Api {
         });
     }
 
+    public void getOrderHistory(String token) {
+        executor.execute(() -> {
+            JSONObject response = request(Method.GET, server_api_url+"order/history?token="+token, null);
+            handler.obtainMessage(Request.GET_ORDER_HISTORY.ordinal(), getResponseCode(response), 0, response).sendToTarget();
+        });
+    }
+
     public void getUserCredit(String token) {
         executor.execute(() -> {
             //Background work here
@@ -179,4 +187,5 @@ public class Api {
         }
         return responseCode;
     }
+
 }

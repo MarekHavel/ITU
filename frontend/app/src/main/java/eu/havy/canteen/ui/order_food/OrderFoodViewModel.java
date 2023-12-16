@@ -28,12 +28,8 @@ import eu.havy.canteen.model.User;
 
 public class OrderFoodViewModel extends AndroidViewModel {
 
-    private final MutableLiveData<List<Dish>> dishes; //todo implement
-    private final MutableLiveData<String> mText;
-    private final MutableLiveData<Integer> mCount;
+    private final MutableLiveData<List<Dish>> dishes;
 
-
-    //todo pull out of viewmodel, this has no place here
     Handler handler = new Handler(Objects.requireNonNull(Looper.myLooper())) {
         @Override
         public void handleMessage(Message msg) {
@@ -58,7 +54,8 @@ public class OrderFoodViewModel extends AndroidViewModel {
                     JSONObject obj = jsonArray.getJSONObject(i);
                     Dish dish = new Dish(obj.getInt("id"),obj.getString("name"),
                             obj.getString("category"),obj.getString("allergens"),
-                            obj.getInt("price"), obj.getInt("itemsLeft"),obj.getInt("weight"));
+                            obj.getInt("price"), obj.getInt("itemsLeft"),
+                            obj.getInt("weight"), null);
                     dishList.add(dish);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -72,23 +69,11 @@ public class OrderFoodViewModel extends AndroidViewModel {
 
     public OrderFoodViewModel(@NonNull Application application) {
         super(application);
-        mText = new MutableLiveData<>();
-        mText.setValue("This is home fragment");
-
-        mCount = new MutableLiveData<>();
-        mCount.setValue(3);
 
         dishes = new MutableLiveData<>();
         dishes.setValue(null);
 
         new Api(handler).getMenu(User.getCurrentUser().getToken(), "2023-11-13");
-    }
-
-    public LiveData<String> getText() {
-        return mText;
-    }
-    public Integer getCount() {
-        return mCount.getValue();
     }
 
     public LiveData<List<Dish>> getAllDishes() {

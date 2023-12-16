@@ -3,12 +3,12 @@ package eu.havy.canteen.model;
 import java.util.Objects;
 
 public class Dish {
-    private final String name, category, allergensLite;
+    private final String name, category, allergensLite, purchaseDate;
     private final int id, weight, price;
 
     private int remainingAmount;
 
-    public Dish(int id, String name, String category, String allergensLite, int price, int remainingAmount, int weight){
+    public Dish(int id, String name, String category, String allergensLite, int price, int remainingAmount, int weight, String purchaseDate){
         this.id = id;
         this.name = name;
         this.category = category;
@@ -16,6 +16,7 @@ public class Dish {
         this.price = price;
         this.remainingAmount = remainingAmount;
         this.weight = weight;
+        this.purchaseDate = purchaseDate;
     }
 
     public int getId() {
@@ -33,6 +34,8 @@ public class Dish {
     public String getName() {
         return name;
     }
+
+    public String getPurchaseDate(){return purchaseDate;}
 
     public int getWeight() {
         return weight;
