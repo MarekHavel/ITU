@@ -4,7 +4,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -79,18 +78,20 @@ public class User {
                     case ADD_USER_CREDIT:
                         RechargeCreditFragment.requestFinished();
                         break;
+                    case GET_USER_INFO:
+                    case GET_USER_CREDIT:
+                    case GET_CANTEEN_INFO:
+                    case GET_MENU:
+                    case GET_ORDER_HISTORY:
+                        if (msg.arg1 == HttpURLConnection.HTTP_BAD_REQUEST) {
+                            if (MainActivity.getInstance() != null) {
+                                MainActivity.logOut();
+                            }
+                            User.logout();
+                        }
                 }
-
                 if (!error.isEmpty()) {
                     Log.e("User", "FAILURE, request: " + Api.Request.toString(msg.what) +" code: " + msg.arg1 + " message: " + error);
-                    if  (error.equals("Invalid token")) {
-                        if (MainActivity.getInstance() != null) {
-                            MainActivity.logOut();
-                        }
-                        User.logout();
-                    } else {
-                        Toast.makeText(MainActivity.getInstance() != null ? MainActivity.getInstance() : LoginActivity.getInstance(), "Failed to load data", Toast.LENGTH_SHORT).show();
-                    }
                 }
             }
         }

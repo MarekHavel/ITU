@@ -102,7 +102,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public View onCreateView(@NonNull String name, @NonNull Context context, @NonNull AttributeSet attrs) {
         //load user data
-        User.getCurrentUser().updateData();
+        if (User.getCurrentUser() != null) {
+            User.getCurrentUser().updateData();
+        }
 
         return super.onCreateView(name, context, attrs);
     }

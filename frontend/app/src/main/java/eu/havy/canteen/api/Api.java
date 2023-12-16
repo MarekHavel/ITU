@@ -193,7 +193,7 @@ public class Api {
     private int getResponseCode(JSONObject response) {
         int responseCode = HttpURLConnection.HTTP_INTERNAL_ERROR;
         try {
-            response.getInt("responseCode");
+            return response.getInt("responseCode");
         } catch (JSONException e) {
             e.printStackTrace();
         }
