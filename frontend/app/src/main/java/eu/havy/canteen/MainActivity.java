@@ -10,14 +10,11 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-
-import com.google.android.material.navigation.NavigationView;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -63,13 +60,10 @@ public class MainActivity extends AppCompatActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
         setSupportActionBar(binding.appBarMain.toolbar);
-        DrawerLayout drawer = binding.drawerLayout;
-        NavigationView navigationView = binding.navView;
 
+        //set up logout button
         MenuHeaderBinding headerBinding = MenuHeaderBinding.bind(binding.navView.getHeaderView(0));
-
         headerBinding.logoutButton.setOnClickListener(view -> {
             logOut();
             User.logout();
@@ -79,10 +73,17 @@ public class MainActivity extends AppCompatActivity {
         int[] menuItems = {R.id.nav_order_food, R.id.nav_recharge_credit, R.id.nav_order_history};
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
-        mAppBarConfiguration = new AppBarConfiguration.Builder(menuItems).setOpenableLayout(drawer).build();
+        mAppBarConfiguration = new AppBarConfiguration.Builder(menuItems).setOpenableLayout(binding.drawerLayout).build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main_content);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-        NavigationUI.setupWithNavController(navigationView, navController);
+        NavigationUI.setupWithNavController(binding.navView, navController);
+
+        //credit toolbar click listener
+        binding.appBarMain.toolbarCredit.setOnClickListener(view -> {
+            if (navController.getCurrentDestination().getId() != R.id.nav_recharge_credit) {
+                navController.navigate(R.id.nav_recharge_credit);
+            }
+        });
     }
 
     @Override
