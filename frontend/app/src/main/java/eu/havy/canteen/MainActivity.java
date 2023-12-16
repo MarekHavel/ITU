@@ -119,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
         switch (currentFragment.getClass().getSimpleName()) {
             case "OrderFoodFragment":
             case "RechargeCreditFragment":
+            case "PurchaseFoodFragment":
                 binding.appBarMain.toolbarCredit.setVisibility(View.VISIBLE);
                 break;
             default:
