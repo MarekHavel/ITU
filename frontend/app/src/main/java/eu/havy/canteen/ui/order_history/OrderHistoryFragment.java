@@ -100,7 +100,7 @@ public class OrderHistoryFragment extends Fragment {
                     String[] dateSplit = current.getPurchaseDate().split("T");
                     holder.binding.textViewDate.setText(dateSplit[0]);
                     holder.binding.getRoot().setOnClickListener(view -> {
-                        Log.d("test", "onBindViewHolder: xd");
+                        Log.d("test", "onBindViewHolder: dish id " + current.getId());
                     });
                 }
             }

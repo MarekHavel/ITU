@@ -66,10 +66,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.appBarMain.toolbar);
-        binding.appBarMain.fab.setOnClickListener(view ->
-                {
-                    Snackbar.make(view, "Show orders", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                });
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
 
@@ -122,16 +118,11 @@ public class MainActivity extends AppCompatActivity {
         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment_activity_main_content).getChildFragmentManager().getFragments().get(0);
         switch (currentFragment.getClass().getSimpleName()) {
             case "OrderFoodFragment":
-                binding.appBarMain.toolbarCredit.setVisibility(View.VISIBLE);
-                binding.appBarMain.fab.setVisibility(View.VISIBLE);
-                break;
             case "RechargeCreditFragment":
                 binding.appBarMain.toolbarCredit.setVisibility(View.VISIBLE);
-                binding.appBarMain.fab.setVisibility(View.GONE);
                 break;
             default:
                 binding.appBarMain.toolbarCredit.setVisibility(View.GONE);
-                binding.appBarMain.fab.setVisibility(View.GONE);
                 break;
         }
     }
@@ -140,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
         MenuHeaderBinding headerBinding = MenuHeaderBinding.bind(instance.binding.navView.getHeaderView(0));
         headerBinding.userName.setText(User.getCurrentUser().getUsername());
         headerBinding.userEmail.setText(User.getCurrentUser().getEmail());
-        //headerBinding.priceCategory.setText(User.getCurrentUser().getPriceCategory());
+        //headerBinding.priceCategory.setText(User.getCurrentUser().getPriceCategory()); //todo fixup
     }
 
     public static void updateCredit() {
