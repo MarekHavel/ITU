@@ -586,14 +586,16 @@ exports.dishGet = asyncHandler(async (req, res, next) => {
 
   const allergens = await dish.getAllergens();
 
-  // console.log(allergens)
-
   dishDetail.allergens = allergens.map((allergen) => {
     return {
       name: allergen.name,
       code: allergen.code
     }
   });
+
+  const numOfRatings = await sequelize.models.dish_rating.count({ where: { dishId: dish.id }})
+  const averageRating = numOfRatings == 0 ? 0 : await sequelize.models.dish_rating.sum("stars", { where: { dishId: dish.id } }) / numOfRatings;
+  dishDetail.averageRating = averageRating;
   
   res.status(200).json(dishDetail);
 })

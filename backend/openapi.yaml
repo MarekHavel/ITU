@@ -517,6 +517,9 @@ components:
           type: integer
         category:
           type: integer
+        averageRating:
+          type: number
+          format: float
     Order:
       required:
         - orderId
