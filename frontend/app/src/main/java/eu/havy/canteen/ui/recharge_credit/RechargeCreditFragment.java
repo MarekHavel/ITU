@@ -36,6 +36,7 @@ public class RechargeCreditFragment extends Fragment {
         binding = FragmentRechargeCreditBinding.inflate(inflater, container, false);
 
         binding.rechargeButton.setOnClickListener(l -> {
+            viewModel.setRechargeAmountValue(getIntegerFromString(binding.rechargeAmount.getText().toString()));
             if (viewModel.getRechargeAmountValue() == 0) {
                 Toast.makeText(getContext(), "Please enter a valid amount", Toast.LENGTH_SHORT).show();
                 return;
@@ -76,6 +77,14 @@ public class RechargeCreditFragment extends Fragment {
             return "";
         } else {
             return String.valueOf(integer);
+        }
+    }
+
+    private static int getIntegerFromString(String string) {
+        try {
+            return Integer.parseInt(string);
+        } catch (Exception e) {
+            return 0;
         }
     }
 }
