@@ -26,6 +26,7 @@ public class OrderHistoryFragment extends Fragment {
 
     private FragmentOrderHistoryBinding binding;
 
+    //builds recycler view, attaches adapter, observes data changes
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -61,6 +62,7 @@ public class OrderHistoryFragment extends Fragment {
         return binding.getRoot();
     }
 
+    //for filling order history cards from dish array + extra processing
     private class dishAdapter extends RecyclerView.Adapter<dishAdapter.MyViewHolder>{
 
         //private List<String> items;

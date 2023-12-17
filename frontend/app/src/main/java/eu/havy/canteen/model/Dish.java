@@ -56,6 +56,7 @@ public class Dish {
         return allergensLite;
     }
 
+    // for printing via UI
     public String getExtraInfo() {
         if(Objects.equals(allergensLite, "")){
             return weight + "g";

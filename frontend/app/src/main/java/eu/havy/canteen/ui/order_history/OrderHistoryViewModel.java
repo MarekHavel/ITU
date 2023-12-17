@@ -29,6 +29,7 @@ public class OrderHistoryViewModel extends ViewModel {
 
     private final MutableLiveData<List<Dish>> dishes;
 
+    // handles response from API
     Handler handler = new Handler(Objects.requireNonNull(Looper.myLooper())) {
         @Override
         public void handleMessage(Message msg) {
@@ -63,12 +64,13 @@ public class OrderHistoryViewModel extends ViewModel {
         }
     };
 
-
+    //constructor
     public OrderHistoryViewModel() {
         dishes = new MutableLiveData<>();
         dishes.setValue(null);
     }
 
+    // explicit refresh requests
     public void refresh() {
         Log.d("Canteen", "Refreshing order history");
         new Api(handler).getOrderHistory(User.getCurrentUser().getToken());
@@ -77,6 +79,8 @@ public class OrderHistoryViewModel extends ViewModel {
     public LiveData<List<Dish>> getAllDishes() {
         return dishes;
     }
+
+    // needed by adapter
     public long getDishCount() {
         try {
             return Objects.requireNonNull(dishes.getValue()).size();
