@@ -52,7 +52,7 @@ public class OrderHistoryViewModel extends ViewModel {
                     JSONObject obj = jsonArray.getJSONObject(i);
                     Dish dish = new Dish(obj.getInt("dishId"),obj.getString("name"),
                             obj.getString("category"),obj.getString("allergens"),
-                            obj.getInt("price"), -1,obj.getInt("weight"), obj.getString("orderDate"));
+                            obj.getInt("price"), -1,obj.getInt("weight"), obj.getString("orderDate"),-1);
                     dishList.add(dish);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -68,6 +68,11 @@ public class OrderHistoryViewModel extends ViewModel {
         dishes = new MutableLiveData<>();
         dishes.setValue(null);
 
+        refresh();
+    }
+
+    public void refresh() {
+        Log.d("Canteen", "Refreshing order history");
         new Api(handler).getOrderHistory(User.getCurrentUser().getToken());
     }
 
