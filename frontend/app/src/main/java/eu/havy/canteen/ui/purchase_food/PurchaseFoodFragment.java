@@ -44,6 +44,7 @@ public class PurchaseFoodFragment extends Fragment {
 
         View binding = inflater.inflate(R.layout.fragment_purchase_food, container, false);
 
+        //refresh info about dish from arguments, when received
         mViewModel.getDish().observe(this.getViewLifecycleOwner(), dish -> {
             if (dish != null) {
                 Log.d("Canteen", "Picked dish changed: " + dish.getName());

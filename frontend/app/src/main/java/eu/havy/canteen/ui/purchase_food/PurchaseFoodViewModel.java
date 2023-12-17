@@ -33,6 +33,7 @@ public class PurchaseFoodViewModel extends AndroidViewModel {
     private final MutableLiveData<Dish> dish;
     private final MutableLiveData<Integer> dishId;
 
+    //handler for getting dish list
     Handler getDishHandler = new Handler(Objects.requireNonNull(Looper.myLooper())) {
         @Override
         public void handleMessage(Message msg) {
@@ -67,6 +68,7 @@ public class PurchaseFoodViewModel extends AndroidViewModel {
         }
     };
 
+    //handler for ordering dish
     Handler orderDishHandler = new Handler(Objects.requireNonNull(Looper.myLooper())) {
         @Override
         public void handleMessage(Message msg) {
@@ -91,6 +93,7 @@ public class PurchaseFoodViewModel extends AndroidViewModel {
         }
     };
 
+    // constructor
     public PurchaseFoodViewModel(@NonNull Application application) {
         super(application);
 
@@ -102,15 +105,18 @@ public class PurchaseFoodViewModel extends AndroidViewModel {
 
     }
 
+    // returns observable object
     public LiveData<Dish> getDish() {
         return dish;
     }
 
+    // sets dish id and gets dish from api
     public void setDishId(int dishn){
         dishId.setValue(dishn);
         new Api(getDishHandler).getDish(User.getCurrentUser().getToken(),dishn);
     }
 
+    //forwarder
     public void orderDish(String date){
         new Api(orderDishHandler).orderDish(User.getCurrentUser().getToken(), Objects.requireNonNull(dishId.getValue()), date);
     }
