@@ -488,6 +488,7 @@ exports.dishRatingGeneralGet = asyncHandler(async (req, res, next) => {
   for (const review of reviews) {
     const reviewAuthor = await sequelize.models.user.findByPk(review.userId);
     let r = {
+      rating: review.stars,
       reviewText: review.comment,
       author: reviewAuthor.username
     }

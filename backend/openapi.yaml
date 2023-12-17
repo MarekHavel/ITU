@@ -466,6 +466,8 @@ components:
             type: "string"
           reviewText:
             type: "string"
+          rating:
+            type: "integer"
     User:
       required:
         - username
