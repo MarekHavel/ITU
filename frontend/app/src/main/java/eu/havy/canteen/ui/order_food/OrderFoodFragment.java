@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -21,10 +22,12 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import eu.havy.canteen.R;
 import eu.havy.canteen.api.Api;
 import eu.havy.canteen.databinding.CardDishBinding;
+import eu.havy.canteen.databinding.CardDishOrderedBinding;
 import eu.havy.canteen.databinding.FragmentOrderFoodBinding;
 import eu.havy.canteen.model.Dish;
 import eu.havy.canteen.model.User;
@@ -34,14 +37,17 @@ public class OrderFoodFragment extends Fragment {
     private FragmentOrderFoodBinding binding;
     public MutableLiveData<Date> selectedDate;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        selectedDate = new MutableLiveData<>();
+        selectedDate.setValue(Calendar.getInstance().getTime());
+    }
+
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         binding = FragmentOrderFoodBinding.inflate(inflater, container, false);
         if(User.getCurrentUser() == null) return binding.getRoot();
-
-        selectedDate = new MutableLiveData<>();
-
-        selectedDate.setValue(Calendar.getInstance().getTime());
 
         /* // use me if you need to set date manually for testing
         String dateString = "2023-11-13";
@@ -58,7 +64,7 @@ public class OrderFoodFragment extends Fragment {
         OrderFoodViewModel orderFoodViewModel = new ViewModelProvider(this).get(OrderFoodViewModel.class);
         orderFoodViewModel.refresh(selectedDate.getValue());
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getContext()){
+        RecyclerView.LayoutManager orderLM = new LinearLayoutManager(this.getContext()){
             @Override
             public boolean checkLayoutParams(RecyclerView.LayoutParams lp) {
                 // force height of viewHolder here, this will override layout_height from xml
@@ -69,20 +75,42 @@ public class OrderFoodFragment extends Fragment {
             }
         };
 
-        //todo move dates around
+        binding.orderCardRecycler.setLayoutManager(orderLM);
+        //binding.orderCardRecycler.setHasFixedSize(true);
+        orderAdapter orderAdapter = new orderAdapter(orderFoodViewModel);
+        binding.orderCardRecycler.setAdapter(orderAdapter);
+        binding.orderCardRecycler.setScrollContainer(false);
+        binding.orderCardRecycler.setNestedScrollingEnabled(false);
+        binding.orderCardRecycler.setOnTouchListener((v, event) -> true);
 
-        binding.foodCardRecycler.setLayoutManager(layoutManager);
-        binding.foodCardRecycler.setHasFixedSize(true);
-        dishAdapter adapter = new dishAdapter(orderFoodViewModel);
-        binding.foodCardRecycler.setAdapter(adapter);
+        orderFoodViewModel.getAllOrders().observe(this.getViewLifecycleOwner(), new Observer<List<Dish>>() {
+            @Override
+            public void onChanged(List<Dish> orders) {
+                orderAdapter.setOrders(orders);
+            }
+        });
 
-        orderAdapter orders = new orderAdapter(orderFoodViewModel);
-        binding.orderCardRecycler.setAdapter(orders);
+        RecyclerView.LayoutManager dishLM = new LinearLayoutManager(this.getContext()){
+            @Override
+            public boolean checkLayoutParams(RecyclerView.LayoutParams lp) {
+                // force height of viewHolder here, this will override layout_height from xml
+                lp.width = getWidth();
+                lp.topMargin = 16;
+                lp.bottomMargin = 16;
+                return true;
+            }
+        };
+        binding.foodCardRecycler.setLayoutManager(dishLM);
+        //binding.foodCardRecycler.setHasFixedSize(true);
+        dishAdapter dishAdapter = new dishAdapter(orderFoodViewModel);
+        binding.foodCardRecycler.setAdapter(dishAdapter);
+        binding.foodCardRecycler.setNestedScrollingEnabled(false);
+        binding.foodCardRecycler.setOnTouchListener((v, event) -> true);
 
         orderFoodViewModel.getAllDishes().observe(this.getViewLifecycleOwner(), new Observer<List<Dish>>() {
             @Override
             public void onChanged(List<Dish> dishes) {
-                adapter.setDishes(dishes);
+                dishAdapter.setDishes(dishes);
             }
         });
 
@@ -149,10 +177,15 @@ public class OrderFoodFragment extends Fragment {
                 holder.binding.textViewName.setText(current.getName());
                 holder.binding.textViewExtraInfo.setText(current.getExtraInfo());
                 holder.binding.textViewPrice.setText(current.getPrice());
-                holder.binding.textViewCount.setText(current.getRemainingAmount());
+                holder.binding.textViewCount.setText(String.format(Locale.getDefault(),"%d ks",current.getRemainingAmount()));
                 Bundle bundle = new Bundle();
                 bundle.putInt("dishId", current.getId());
                 bundle.putString("date", Api.DateToApiDate(selectedDate.getValue()));
+                bundle.putInt("remainingAmount", current.getRemainingAmount());
+                if(current.getRemainingAmount() == 0) {
+                    holder.binding.purchaseButton.setEnabled(false);
+                    holder.binding.purchaseButton.setBackgroundColor(getResources().getColor(R.color.grey_500, getActivity().getTheme()));
+                }
                 holder.binding.purchaseButton.setOnClickListener(view->{
                     Log.d("clickListener","Kliknuto na nákup obědu " + current.getId());
                     Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_main_content).navigate(R.id.nav_purchase_food, bundle);
@@ -176,15 +209,13 @@ public class OrderFoodFragment extends Fragment {
     }
 
     private class orderAdapter extends RecyclerView.Adapter<orderAdapter.MyViewHolder> {
-
-        //private List<String> items;
         OrderFoodViewModel src;
 
         private class MyViewHolder extends RecyclerView.ViewHolder {
 
-            CardDishBinding binding; //Name of the test_list_item.xml in camel case + "Binding"
+            CardDishOrderedBinding binding;
 
-            public MyViewHolder(CardDishBinding b) {
+            public MyViewHolder(CardDishOrderedBinding b) {
                 super(b.getRoot());
                 binding = b;
             }
@@ -197,17 +228,36 @@ public class OrderFoodFragment extends Fragment {
         @NonNull
         @Override
         public orderAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return new MyViewHolder(CardDishBinding.inflate(getLayoutInflater()));
+            return new MyViewHolder(CardDishOrderedBinding.inflate(getLayoutInflater()));
+        }
+
+        public void setOrders(List<Dish> orders) {
+            notifyDataSetChanged();
         }
 
         @Override
         public int getItemCount() {
-            return 0;
+            return (int) src.getOrderCount();
         }
 
         @Override
         public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-
+            if(src.getOrderCount() > 0) {
+                Dish current = src.getAllOrders().getValue().get(position);
+                holder.binding.textViewName.setText(current.getName());
+                holder.binding.textViewExtraInfo.setText(current.getExtraInfo());
+                holder.binding.textViewPrice.setText(current.getPrice());
+                holder.binding.deleteButton.setOnClickListener(view->{
+                    Log.d("clickListener","Kliknuto na nákup obědu " + current.getId());
+                    src.deleteOrder(current.getOrderId());
+                });
+                holder.binding.getRoot().setOnClickListener(view->{
+                    Log.d("clickListener","Kliknuto na detail obědu " + current.getId());
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("dishId", current.getId());
+                    Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_main_content).navigate(R.id.nav_food_detail, bundle);
+                });
+            }
         }
     }
 

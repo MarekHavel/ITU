@@ -51,7 +51,9 @@ public class Api {
         ADD_USER_CREDIT,
         GET_ORDER_HISTORY,
         GET_DISH,
+        GET_ORDERS_FOR_DAY,
         ORDER_DISH,
+        SELL_DISH,
         GET_CANTEEN_INFO;
 
         public static Request getEnum(int i) {
@@ -139,7 +141,7 @@ public class Api {
     public void getMenu(String token, Date date) {
         executor.execute(() -> {
             //Background work here
-            JSONObject response = request(Method.GET, server_api_url+"menu?token="+token+"&date="+ DateToApiDate(date), null);
+            JSONObject response = request(Method.GET, server_api_url+"menu?token="+token+"&date="+DateToApiDate(date), null);
 
             //UI Thread work here
             //handler.post(() -> {});
@@ -209,6 +211,29 @@ public class Api {
             //UI Thread work here
             //handler.post(() -> {});
             handler.obtainMessage(Request.GET_CANTEEN_INFO.ordinal(), getResponseCode(response), 0, response).sendToTarget();
+        });
+    }
+
+    public void getOrdersForDay(String token,Date date) {
+        executor.execute(() -> {
+            //Background work here
+            JSONObject response = request(Method.GET, server_api_url+"order/history?token="+token+"&date="+DateToApiDate(date), null);
+
+            //UI Thread work here
+            //handler.post(() -> {});
+            handler.obtainMessage(Request.GET_ORDERS_FOR_DAY.ordinal(), getResponseCode(response), 0, response).sendToTarget();
+        });
+    }
+
+    public void deleteOrder(String token, String orderId) {
+        executor.execute(() -> {
+            //Background work here
+            JSONObject body = buildBody(Map.of("token", token, "orderId", orderId));
+            JSONObject response = request(Method.POST, server_api_url+"order/delete", body);
+
+            //UI Thread work here
+            //handler.post(() -> {});
+            handler.obtainMessage(Request.SELL_DISH.ordinal(), getResponseCode(response), 0, response).sendToTarget();
         });
     }
 

@@ -58,7 +58,7 @@ public class PurchaseFoodViewModel extends AndroidViewModel {
                     }
                 }
                 dish.setValue(new Dish(Objects.requireNonNull(dishId.getValue()),jsonObject.getString("name"),jsonObject.getString("category"),
-                        allergensString,jsonObject.getInt("price"),-1,jsonObject.getInt("weight"),null,jsonObject.getInt("averageRating")));
+                        allergensString,jsonObject.getInt("price"),-1,jsonObject.getInt("weight"),null,jsonObject.getInt("averageRating"),null));
             } catch (JSONException | NullPointerException e) {
                 e.printStackTrace();
             }
