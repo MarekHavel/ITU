@@ -9,7 +9,7 @@ exports.authenticate = asyncHandler(async (req, res, next) => {
   if(req.body.email == null || req.body.password == null) {
     res.status(400).json({
       code: 2,
-      message: "Chybějící parametry požadavku"
+      message: "Missing request parameters"
     });
     return;
   }
@@ -35,7 +35,7 @@ exports.authenticate = asyncHandler(async (req, res, next) => {
     // ERR
     res.status(400).json({
       code: 1,
-      message: "Špatné heslo"
+      message: "Incorrect password"
     });
     return;
   }
@@ -46,7 +46,7 @@ exports.menuGet = asyncHandler(async (req, res, next) => {
   if(req.query.token == null) {
     res.status(400).json({
       code: 2,
-      message: "Chybějící parametry požadavku"
+      message: "Missing request parameters"
     });
     return;
   }
@@ -64,7 +64,7 @@ exports.menuGet = asyncHandler(async (req, res, next) => {
   if(!user) {
     res.status(400).json({
       code: 1,
-      message: "Neznámý token"
+      message: "Unknown token"
     });
     return;
   }
@@ -127,7 +127,7 @@ exports.creditGet = asyncHandler(async (req, res, next) => {
   if(req.query.token == null) {
     res.status(400).json({
       code: 2,
-      message: "Chybějící parametry požadavku"
+      message: "Missing request parameters"
     });
     return;
   }
@@ -146,7 +146,7 @@ exports.creditGet = asyncHandler(async (req, res, next) => {
   } else { // Neplatný authToken
     res.status(400).json({
       code: 1,
-      message: "Neplatný autentizační token"
+      message: "Invalid authentication token"
     });
   }
 });
@@ -158,7 +158,7 @@ exports.creditPost = asyncHandler(async (req, res, next) => {
   if(req.body.token == null || req.body.credit == null) {
     res.status(400).json({
       code: 2,
-      message: "Chybějící parametry požadavku"
+      message: "Missing request parameters"
     });
     return;
   }
@@ -167,7 +167,7 @@ exports.creditPost = asyncHandler(async (req, res, next) => {
   if(!Number.isInteger(req.body.credit) || req.body.credit < 1) {
     res.status(400).json({
       code: 1,
-      message: "Kredit není celé kladné číslo"
+      message: "Credit must be an integer"
     });
     return;
   }
@@ -187,7 +187,7 @@ exports.creditPost = asyncHandler(async (req, res, next) => {
   } else { // Neplatný authToken
     res.status(400).json({
       code: 1,
-      message: "Neplatný autentizační token"
+      message: "Invalid authentication token"
     });
   }
 });
@@ -198,7 +198,7 @@ exports.orderCreate = asyncHandler(async (req, res, next) => {
   if(req.body.token == null || req.body.dishId == null) {
     res.status(400).json({
       code: 2,
-      message: "Chybějící parametry požadavku"
+      message: "Missing request parameters"
     });
     return;
   }
@@ -223,7 +223,7 @@ exports.orderCreate = asyncHandler(async (req, res, next) => {
     if(!menu) {
       res.status(400).json({
         code: 1,
-        message: "Takové menu neexistuje"
+        message: "No such menu"
       });
       return;
     }
@@ -232,7 +232,7 @@ exports.orderCreate = asyncHandler(async (req, res, next) => {
     if(itemsTaken >= menu.pieces) {
       res.status(400).json({
         code: 1,
-        message: "Jídlo je vyprodáno"
+        message: "Dish is sold out"
       });
       return;
     }
@@ -255,7 +255,7 @@ exports.orderCreate = asyncHandler(async (req, res, next) => {
   } else { // Neplatný authToken
     res.status(400).json({
       code: 1,
-      message: "Neplatný autentizační token"
+      message: "Invalid authentication token"
     });
   }
 });
@@ -266,7 +266,7 @@ exports.orderDelete = asyncHandler(async (req, res, next) => {
   if(req.body.token == null || req.body.orderId == null) {
     res.status(400).json({
       code: 2,
-      message: "Chybějící parametry požadavku"
+      message: "Missing request parameters"
     });
     return;
   }
@@ -283,7 +283,7 @@ exports.orderDelete = asyncHandler(async (req, res, next) => {
     if(!order) {
       res.status(400).json({
         code: 1,
-        message: "Taková objednávka neexistuje"
+        message: "No such order"
       });
       return;
     }
@@ -291,7 +291,7 @@ exports.orderDelete = asyncHandler(async (req, res, next) => {
     if(!user.hasOrder(order)) {
       res.status(400).json({
         code: 1,
-        message: "Daná objednávka uživateli nepatří"
+        message: "This order doesn't belong to user"
       });
       return;
     }
@@ -316,7 +316,7 @@ exports.userGet = asyncHandler(async (req, res, next) => {
   if(req.query.token == null) {
     res.status(400).json({
       code: 2,
-      message: "Chybějící parametry požadavku"
+      message: "Missing request parameters"
     });
     return;
   }
@@ -340,7 +340,7 @@ exports.userGet = asyncHandler(async (req, res, next) => {
   } else { // Neplatný authToken
     res.status(400).json({
       code: 1,
-      message: "Neplatný autentizační token"
+      message: "Invalid authentication token"
     });
   }
 });
@@ -351,7 +351,7 @@ exports.dishRatingGet = asyncHandler(async (req, res, next) => {
   if(req.query.token == null || req.query.dishId == null) {
     res.status(400).json({
       code: 2,
-      message: "Chybějící parametry požadavku"
+      message: "Missing request parameters"
     });
     return;
   }
@@ -360,7 +360,7 @@ exports.dishRatingGet = asyncHandler(async (req, res, next) => {
   if(!user) {
     res.status(400).json({
       code: 1,
-      message: "Neplatný autentizační token"
+      message: "Invalid authentication token"
     });
     return;
   }
@@ -369,7 +369,7 @@ exports.dishRatingGet = asyncHandler(async (req, res, next) => {
   if(!dish) {
     res.status(400).json({
       code: 1,
-      message: "Takové jídlo neexistuje"
+      message: "No such dish"
     });
     return;
   }
@@ -378,7 +378,7 @@ exports.dishRatingGet = asyncHandler(async (req, res, next) => {
   if(!rating) {
     res.status(400).json({
       code: 1,
-      message: "Uživatel jídlo ještě nehodnotil"
+      message: "User has not submitted a rating for this food yet"
     });
     return;
   }
@@ -400,7 +400,7 @@ exports.dishRatingPost = asyncHandler(async (req, res, next) => {
   ) {
     res.status(400).json({
       code: 2,
-      message: "Chybějící parametry požadavku"
+      message: "Missing request parameters"
     });
     return;
   }
@@ -408,7 +408,7 @@ exports.dishRatingPost = asyncHandler(async (req, res, next) => {
   if(!(Number.isInteger(req.body.rating.rating) && req.body.rating.rating >= 0 && req.body.rating.rating <= 5)) {
     res.status(400).json({
       code: 1,
-      message: "Neplatná hodnota pro hodnocení jídla"
+      message: "Invalid value for dish rating"
     });
     return;
   }
@@ -417,7 +417,7 @@ exports.dishRatingPost = asyncHandler(async (req, res, next) => {
   if(!user) {
     res.status(400).json({
       code: 1,
-      message: "Neplatný autentizační token"
+      message: "Invalid authentication token"
     });
     return;
   }
@@ -426,7 +426,7 @@ exports.dishRatingPost = asyncHandler(async (req, res, next) => {
   if(!dish) {
     res.status(400).json({
       code: 1,
-      message: "Takové jídlo neexistuje"
+      message: "No such dish"
     });
     return;
   }
@@ -451,7 +451,7 @@ exports.dishRatingGeneralGet = asyncHandler(async (req, res, next) => {
   if(req.query.token == null || req.query.dishId == null) {
     res.status(400).json({
       code: 2,
-      message: "Chybějící parametry požadavku"
+      message: "Missing request parameters"
     });
     return;
   }
@@ -460,7 +460,7 @@ exports.dishRatingGeneralGet = asyncHandler(async (req, res, next) => {
   if(!user) {
     res.status(400).json({
       code: 1,
-      message: "Neplatný autentizační token"
+      message: "Invalid authentication token"
     });
     return;
   }
@@ -469,7 +469,7 @@ exports.dishRatingGeneralGet = asyncHandler(async (req, res, next) => {
   if(!dish) {
     res.status(400).json({
       code: 1,
-      message: "Takové jídlo neexistuje"
+      message: "No such dish"
     });
     return;
   }
@@ -508,7 +508,7 @@ exports.dishRatingDelete = asyncHandler(async (req, res, next) => {
   if(req.body.token == null || req.body.dishId == null) {
     res.status(400).json({
       code: 2,
-      message: "Chybějící parametry požadavku"
+      message: "Missing request parameters"
     });
     return;
   }
@@ -517,7 +517,7 @@ exports.dishRatingDelete = asyncHandler(async (req, res, next) => {
   if(!user) {
     res.status(400).json({
       code: 1,
-      message: "Neplatný autentizační token"
+      message: "Invalid authentication token"
     });
     return;
   }
@@ -526,7 +526,7 @@ exports.dishRatingDelete = asyncHandler(async (req, res, next) => {
   if(!dish) {
     res.status(400).json({
       code: 1,
-      message: "Takové jídlo neexistuje"
+      message: "No such dish"
     });
     return;
   }
@@ -535,7 +535,7 @@ exports.dishRatingDelete = asyncHandler(async (req, res, next) => {
   if(!rating) {
     res.status(400).json({
       code: 1,
-      message: "Uživatel jídlo nehodnotil"
+      message: "User has not rated this dish yet"
     });
     return;
   }
@@ -550,7 +550,7 @@ exports.dishGet = asyncHandler(async (req, res, next) => {
   if(req.query.token == null || req.query.dishId == null) {
     res.status(400).json({
       code: 2,
-      message: "Chybějící parametry požadavku"
+      message: "Missing request parameters"
     });
     return;
   }
@@ -559,7 +559,7 @@ exports.dishGet = asyncHandler(async (req, res, next) => {
   if(!user) {
     res.status(400).json({
       code: 1,
-      message: "Neplatný autentizační token"
+      message: "Invalid authentication token"
     });
     return;
   }
@@ -568,7 +568,7 @@ exports.dishGet = asyncHandler(async (req, res, next) => {
   if(!dish) {
     res.status(400).json({
       code: 1,
-      message: "Takové jídlo neexistuje"
+      message: "No such dish"
     });
     return;
   }
@@ -607,7 +607,7 @@ exports.orderHistoryGet = asyncHandler(async (req, res, next) => {
   if(req.query.token == null) {
     res.status(400).json({
       code: 2,
-      message: "Chybějící parametry požadavku"
+      message: "Missing request parameters"
     });
     return;
   }
@@ -622,7 +622,7 @@ exports.orderHistoryGet = asyncHandler(async (req, res, next) => {
   if(!user) {
     res.status(400).json({
       code: 1,
-      message: "Neznámý token"
+      message: "Unknown token"
     });
     return;
   }
@@ -669,7 +669,7 @@ exports.canteenGet = asyncHandler(async (req, res, next) => {
   if(req.query.token == null) {
     res.status(400).json({
       code: 2,
-      message: "Chybějící parametry požadavku"
+      message: "Missing request parameters"
     });
     return;
   }
@@ -683,7 +683,7 @@ exports.canteenGet = asyncHandler(async (req, res, next) => {
   if(!user) {
     res.status(400).json({
       code: 1,
-      message: "Neznámý token"
+      message: "Unknown token"
     });
     return;
   }
