@@ -329,7 +329,6 @@ exports.applyPreset = asyncHandler(async (req, res, next) => {
   }
 
   const menusInfo = JSON.parse(preset.dishIds);
-  console.log(menusInfo)
 
   for (const info of menusInfo) {
     await sequelize.models.menu.create({
