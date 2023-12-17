@@ -1,3 +1,5 @@
+// Autor: Robin Volf (xvolfr00)
+
 const Sequelize = require('sequelize');
 
 const sequelize = new Sequelize({

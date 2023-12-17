@@ -1,3 +1,5 @@
+// Autor: Robin Volf (xvolfr00)
+
 const asyncHandler = require("express-async-handler");
 const sequelize = require("../models");
 const { Op } = require("sequelize");
