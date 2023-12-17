@@ -76,10 +76,20 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/food_ingridients"
+            android:id="@+id/food_weight"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Ingridients" />
+            android:text="weight" />
+
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/food_ingredients"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ingredients" />
 
         <com.google.android.material.divider.MaterialDivider
             android:layout_width="match_parent"
@@ -89,7 +99,7 @@
             android:id="@+id/food_allergens"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Allergens" />
+            android:text="allergens" />
 
     </LinearLayout>
 
