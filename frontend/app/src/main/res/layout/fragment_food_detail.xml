@@ -1,80 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".ui.food_detail.FoodDetailFragment">
 
-    <ImageView
-        android:id="@+id/food_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <include
+        android:id="@+id/food_detail"
+        layout="@layout/food_detail"/>
 
     <com.google.android.material.divider.MaterialDivider
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:orientation="horizontal"
-        android:background="?colorPrimary">
-
-        <TextView
-            android:id="@+id/food_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Name"
-            android:textSize="24sp"
-            android:textColor="?colorOnPrimary"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="end">
-
-            <TextView
-                android:id="@+id/food_price"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingEnd="16dp"
-                android:text="Price"
-                android:textSize="24sp"
-                android:textColor="?colorOnPrimary"/>
-
-            <TextView
-                android:id="@+id/food_rating"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Rating"
-                android:textSize="24sp"
-                android:textColor="?colorOnPrimary"/>
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <com.google.android.material.divider.MaterialDivider
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <TextView
-        android:id="@+id/food_ingridients"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Ingridients" />
-
-    <com.google.android.material.divider.MaterialDivider
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <TextView
-        android:id="@+id/food_allergens"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Allergens" />
+    <include
+        android:id="@+id/food_rewiew"
+        layout="@layout/food_review"/>
 
 </LinearLayout>
