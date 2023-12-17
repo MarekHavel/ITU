@@ -28,7 +28,7 @@ import java.util.Objects;
 import eu.havy.canteen.MainActivity;
 import eu.havy.canteen.R;
 import eu.havy.canteen.api.Api;
-import eu.havy.canteen.databinding.CardFoodReviewBinding;
+import eu.havy.canteen.databinding.FoodReviewItemBinding;
 import eu.havy.canteen.databinding.FragmentFoodDetailBinding;
 import eu.havy.canteen.model.Review;
 import eu.havy.canteen.model.User;
@@ -119,8 +119,8 @@ public class FoodDetailFragment extends Fragment {
      */
     private class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewHolder> {
         private class ReviewHolder extends RecyclerView.ViewHolder {
-            CardFoodReviewBinding binding;
-            public ReviewHolder(CardFoodReviewBinding binding) {
+            FoodReviewItemBinding binding;
+            public ReviewHolder(FoodReviewItemBinding binding) {
                 super(binding.getRoot());
                 this.binding = binding;
             }
@@ -129,7 +129,7 @@ public class FoodDetailFragment extends Fragment {
         @NonNull
         @Override
         public ReviewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            return new ReviewHolder(CardFoodReviewBinding.inflate(getLayoutInflater()));
+            return new ReviewHolder(FoodReviewItemBinding.inflate(getLayoutInflater()));
         }
 
         @Override
