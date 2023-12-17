@@ -78,7 +78,9 @@ public class MainActivity extends AppCompatActivity {
         selectedDate = new MutableLiveData<>();
 
         //selectedDate.setValue(Calendar.getInstance().getTime());
-        String dateString = "2023-11-13"; // Replace with your date string
+
+        // todo replace with above
+        String dateString = "2023-11-13";
         DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         try {
             Date date = sdf.parse(dateString);
