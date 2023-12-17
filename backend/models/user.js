@@ -1,3 +1,5 @@
+// Autor: Robin Volf (xvolfr00)
+
 const { DataTypes } = require('sequelize');
 const bcrypt = require('bcrypt');
 
