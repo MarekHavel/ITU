@@ -1,6 +1,7 @@
 #! /usr/bin/env node
 
 const sequelize = require("../models");
+const { startOfISOWeek, setISOWeek, getISOWeek, addDays, addWeeks } = require("date-fns");
 const models = sequelize.models;
 
 main().catch((err) => console.log(err));
@@ -20,7 +21,7 @@ async function main() {
     name: "Jídelna1",
     email: "jidelna1@jidelnybrno.cz",
     phone: "+420598927106",
-    openingHours: "idkxd",
+    openingHours: "Po: 11:00 - 14:00\nÚt: 11:00 - 14:00\nSt: 11:00 - 14:00\nČt: 11:00 - 14:00\nPá: 11:00 - 14:00\n",
     address: "Purkyňova 2640/93, 61200 Brno Královo Pole, Česko",
   });
   
@@ -55,12 +56,46 @@ async function main() {
     authToken: "7198b575-ba08-4275-884c-89fc85b2732c" // Pro testování
   });
 
+  const user2 = await models.user.create({
+    username: "Josef Starý",  
+    email: "josef.stary@gmail.com",  
+    password: "password",  // Custom setter to zahešuje
+    credit: "129",  
+    role: "customer",  
+    authToken: "ac752c76-5c8d-4642-ba3a-e5bc4548bce4" // Pro testování
+  });
+
+  const user3 = await models.user.create({
+    username: "Vašek Večeřa",  
+    email: "vecera@gmail.com",  
+    password: "password",  // Custom setter to zahešuje
+    credit: "99",  
+    role: "customer",  
+    authToken: "597a9b5c-7b12-4e9c-87d3-71527d29e8d1" // Pro testování
+  });
+
   await user1.setCanteen(canteen1);
   await user1.setPrice_category(studentCategory);
 
+  await user2.setCanteen(canteen1);
+  await user2.setPrice_category(studentCategory);
+
+  await user3.setCanteen(canteen1);
+  await user3.setPrice_category(studentCategory);
+
+  const admin = await models.user.create({
+    username: "Karel Pořízek",  
+    email: "karel@gmail.com",  
+    password: "admin",  // Custom setter to zahešuje
+    role: "admin",  
+  });
+
+  await admin.setCanteen(canteen1);
+
   const platek = await models.dish.create({name: "Kuřecí plátek na divoko",
     ingredients: "Kuřecí maso, sůl, kmín, řepkový olej",
-    weight: 200
+    weight: 200,
+    image_name: "platek.jpg"
   });
   await platek.addAllergen(gluten);
   await platek.setDish_category(main);
@@ -68,7 +103,8 @@ async function main() {
 
   const lusk = await models.dish.create({name: "Plněný paprikový lusk",
     ingredients: "Paprika, vepřové maso, kmín, cibule",
-    weight: 220
+    weight: 220,
+    image_name: "lusk.jpg"
   });
   await lusk.addAllergen(gluten);
   await lusk.setDish_category(main);
@@ -76,7 +112,8 @@ async function main() {
 
   const svickova = await models.dish.create({name: "Svíčková na smetaně",
     ingredients: "Vepřové maso, mrkev, petržel, smetana, celer",
-    weight: 350
+    weight: 350,
+    image_name: "svickova.jpg"
   });
   await svickova.addAllergens([gluten, eggs, milk, mustard]);
   await svickova.setDish_category(main);
@@ -84,7 +121,8 @@ async function main() {
 
   const ptacek = await models.dish.create({name: "Španělský ptáček",
     ingredients: "Hovězí maso, slanina, salám, okurky, vejce, hladká mouka",
-    weight: 250
+    weight: 250,
+    image_name: "ptacek.jpg"
   });
   await ptacek.addAllergens([gluten, eggs, mustard]);
   await ptacek.setDish_category(main);
@@ -92,7 +130,8 @@ async function main() {
 
   const buchty = await models.dish.create({name: "Dukátové buchtičky s krémem",
     ingredients: "Hladká mouka, mléko, cukr, žloutek, skořice",
-    weight: 270
+    weight: 270,
+    image_name: "buchticky.jpg"
   });
   await buchty.addAllergens([gluten, eggs, milk]);
   await buchty.setDish_category(main);
@@ -100,7 +139,8 @@ async function main() {
 
   const vyvar = await models.dish.create({name: "Vývar s nudlemi",
     ingredients: "Kuřecí vývar, nudle z pšeničné mouky",
-    weight: 150
+    weight: 150,
+    image_name: "vyvar.jpg"
   });
   await vyvar.addAllergens([gluten, eggs]);
   await vyvar.setDish_category(soup);
@@ -108,7 +148,8 @@ async function main() {
 
   const drstkova = await models.dish.create({name: "Dršťková",
     ingredients: "Dršťky, cibule, hladká mouka, česnek",
-    weight: 150
+    weight: 150,
+    image_name: "drstkova.jpg"
   });
   await drstkova.addAllergens([gluten, eggs]);
   await drstkova.setDish_category(soup);
@@ -116,7 +157,8 @@ async function main() {
 
   const ryze = await models.dish.create({name: "Rýže",
     ingredients: "Jasmínová rýže",
-    weight: 100
+    weight: 100,
+    image_name: "ryze.jpg"
   });
   await ryze.addAllergen(gluten);
   await ryze.setDish_category(sideDish);
@@ -124,7 +166,8 @@ async function main() {
 
   const hranolky = await models.dish.create({name: "Hranolky",
     ingredients: "Brambory, olej, sůl",
-    weight: 100
+    weight: 100,
+    image_name: "hranolky.jpg"
   });
   await hranolky.addAllergen(gluten);
   await hranolky.setDish_category(sideDish);
@@ -132,7 +175,8 @@ async function main() {
 
   const kase = await models.dish.create({name: "Bramborová kaše",
     ingredients: "Brambory, Mléko",
-    weight: 100
+    weight: 100,
+    image_name: "kase.jpg"
   });
   await kase.addAllergen(gluten);
   await kase.setDish_category(sideDish);
@@ -140,41 +184,111 @@ async function main() {
 
   const knedlik = await models.dish.create({name: "Knedlík",
     ingredients: "Hladká mouka",
-    weight: 100
+    weight: 100,
+    image_name: "knedlik.jpg"
   });
   await knedlik.addAllergen(gluten);
   await knedlik.setDish_category(sideDish);
   await knedlik.addPrice_category(studentCategory, {through: { price: 20}});
 
-  await models.menu.create({date: '2023-11-13', dishId: platek.id, canteenId: canteen1.id, pieces: 47});
-  await models.menu.create({date: '2023-11-13', dishId: lusk.id, canteenId: canteen1.id, pieces: 44});
-  await models.menu.create({date: '2023-11-13', dishId: ryze.id, canteenId: canteen1.id, pieces: 40});
-  await models.menu.create({date: '2023-11-13', dishId: kase.id, canteenId: canteen1.id, pieces: 42});
-  await models.menu.create({date: '2023-11-13', dishId: vyvar.id, canteenId: canteen1.id, pieces: 30});
+  // Nabídka se vytvoří na aktuální a následující týden
+  let date = new Date(); // Dnešek
+  date = startOfISOWeek(date) // Začátek týdne
 
-  await models.menu.create({date: '2023-11-14', dishId: lusk.id, canteenId: canteen1.id, pieces: 35});
-  await models.menu.create({date: '2023-11-14', dishId: svickova.id, canteenId: canteen1.id, pieces: 35});
-  await models.menu.create({date: '2023-11-14', dishId: hranolky.id, canteenId: canteen1.id, pieces: 38});
-  await models.menu.create({date: '2023-11-14', dishId: knedlik.id, canteenId: canteen1.id, pieces: 32});
-  await models.menu.create({date: '2023-11-14', dishId: drstkova.id, canteenId: canteen1.id, pieces: 42});
+  // Týden 1
 
-  await models.menu.create({date: '2023-11-15', dishId: ptacek.id, canteenId: canteen1.id, pieces: 47});
-  await models.menu.create({date: '2023-11-15', dishId: buchty.id, canteenId: canteen1.id, pieces: 47});
-  await models.menu.create({date: '2023-11-15', dishId: ryze.id, canteenId: canteen1.id, pieces: 50});
-  await models.menu.create({date: '2023-11-15', dishId: kase.id, canteenId: canteen1.id, pieces: 31});
-  await models.menu.create({date: '2023-11-15', dishId: vyvar.id, canteenId: canteen1.id, pieces: 36});
+  const nabidkaPlatek = await models.menu.create({date: date, dishId: platek.id, canteenId: canteen1.id, pieces: 47});
+  const nabidkaLusk = await models.menu.create({date: date, dishId: lusk.id, canteenId: canteen1.id, pieces: 44});
+  await models.menu.create({date: date, dishId: ryze.id, canteenId: canteen1.id, pieces: 40});
+  await models.menu.create({date: date, dishId: kase.id, canteenId: canteen1.id, pieces: 42});
+  await models.menu.create({date: date, dishId: vyvar.id, canteenId: canteen1.id, pieces: 30});
+  date = addDays(date, 1);
 
-  await models.menu.create({date: '2023-11-16', dishId: svickova.id, canteenId: canteen1.id, pieces: 35});
-  await models.menu.create({date: '2023-11-16', dishId: ptacek.id, canteenId: canteen1.id, pieces: 43});
-  await models.menu.create({date: '2023-11-16', dishId: knedlik.id, canteenId: canteen1.id, pieces: 33});
-  await models.menu.create({date: '2023-11-16', dishId: hranolky.id, canteenId: canteen1.id, pieces: 42});
-  await models.menu.create({date: '2023-11-16', dishId: drstkova.id, canteenId: canteen1.id, pieces: 49});
+  await models.menu.create({date: date, dishId: lusk.id, canteenId: canteen1.id, pieces: 35});
+  await models.menu.create({date: date, dishId: svickova.id, canteenId: canteen1.id, pieces: 35});
+  await models.menu.create({date: date, dishId: hranolky.id, canteenId: canteen1.id, pieces: 38});
+  await models.menu.create({date: date, dishId: knedlik.id, canteenId: canteen1.id, pieces: 32});
+  await models.menu.create({date: date, dishId: drstkova.id, canteenId: canteen1.id, pieces: 42});
+  date = addDays(date, 1);
 
-  await models.menu.create({date: '2023-11-17', dishId: platek.id, canteenId: canteen1.id, pieces: 33});
-  await models.menu.create({date: '2023-11-17', dishId: lusk.id, canteenId: canteen1.id, pieces: 33});
-  await models.menu.create({date: '2023-11-17', dishId: hranolky.id, canteenId: canteen1.id, pieces: 44});
-  await models.menu.create({date: '2023-11-17', dishId: kase.id, canteenId: canteen1.id, pieces: 30});
-  await models.menu.create({date: '2023-11-17', dishId: vyvar.id, canteenId: canteen1.id, pieces: 32});
+  await models.menu.create({date: date, dishId: ptacek.id, canteenId: canteen1.id, pieces: 47});
+  await models.menu.create({date: date, dishId: buchty.id, canteenId: canteen1.id, pieces: 47});
+  await models.menu.create({date: date, dishId: ryze.id, canteenId: canteen1.id, pieces: 50});
+  await models.menu.create({date: date, dishId: kase.id, canteenId: canteen1.id, pieces: 31});
+  await models.menu.create({date: date, dishId: vyvar.id, canteenId: canteen1.id, pieces: 36});
+  date = addDays(date, 1);
+
+  await models.menu.create({date: date, dishId: svickova.id, canteenId: canteen1.id, pieces: 35});
+  await models.menu.create({date: date, dishId: ptacek.id, canteenId: canteen1.id, pieces: 43});
+  await models.menu.create({date: date, dishId: knedlik.id, canteenId: canteen1.id, pieces: 33});
+  await models.menu.create({date: date, dishId: hranolky.id, canteenId: canteen1.id, pieces: 42});
+  await models.menu.create({date: date, dishId: drstkova.id, canteenId: canteen1.id, pieces: 49});
+  date = addDays(date, 1);
+
+  await models.menu.create({date: date, dishId: platek.id, canteenId: canteen1.id, pieces: 33});
+  await models.menu.create({date: date, dishId: lusk.id, canteenId: canteen1.id, pieces: 33});
+  await models.menu.create({date: date, dishId: hranolky.id, canteenId: canteen1.id, pieces: 44});
+  await models.menu.create({date: date, dishId: kase.id, canteenId: canteen1.id, pieces: 30});
+  await models.menu.create({date: date, dishId: vyvar.id, canteenId: canteen1.id, pieces: 32});
+
+  date = addDays(date, 3); // Skip na další pondělí
+
+  // Týden 2
+
+  await models.menu.create({date: date, dishId: platek.id, canteenId: canteen1.id, pieces: 47});
+  await models.menu.create({date: date, dishId: lusk.id, canteenId: canteen1.id, pieces: 44});
+  await models.menu.create({date: date, dishId: ryze.id, canteenId: canteen1.id, pieces: 40});
+  await models.menu.create({date: date, dishId: kase.id, canteenId: canteen1.id, pieces: 42});
+  await models.menu.create({date: date, dishId: vyvar.id, canteenId: canteen1.id, pieces: 30});
+  date = addDays(date, 1);
+
+  await models.menu.create({date: date, dishId: lusk.id, canteenId: canteen1.id, pieces: 35});
+  await models.menu.create({date: date, dishId: svickova.id, canteenId: canteen1.id, pieces: 35});
+  await models.menu.create({date: date, dishId: hranolky.id, canteenId: canteen1.id, pieces: 38});
+  await models.menu.create({date: date, dishId: knedlik.id, canteenId: canteen1.id, pieces: 32});
+  await models.menu.create({date: date, dishId: drstkova.id, canteenId: canteen1.id, pieces: 42});
+  date = addDays(date, 1);
+
+  await models.menu.create({date: date, dishId: ptacek.id, canteenId: canteen1.id, pieces: 47});
+  await models.menu.create({date: date, dishId: buchty.id, canteenId: canteen1.id, pieces: 47});
+  await models.menu.create({date: date, dishId: ryze.id, canteenId: canteen1.id, pieces: 50});
+  await models.menu.create({date: date, dishId: kase.id, canteenId: canteen1.id, pieces: 31});
+  await models.menu.create({date: date, dishId: vyvar.id, canteenId: canteen1.id, pieces: 36});
+  date = addDays(date, 1);
+
+  await models.menu.create({date: date, dishId: svickova.id, canteenId: canteen1.id, pieces: 35});
+  await models.menu.create({date: date, dishId: ptacek.id, canteenId: canteen1.id, pieces: 43});
+  await models.menu.create({date: date, dishId: knedlik.id, canteenId: canteen1.id, pieces: 33});
+  await models.menu.create({date: date, dishId: hranolky.id, canteenId: canteen1.id, pieces: 42});
+  await models.menu.create({date: date, dishId: drstkova.id, canteenId: canteen1.id, pieces: 49});
+  date = addDays(date, 1);
+
+  await models.menu.create({date: date, dishId: platek.id, canteenId: canteen1.id, pieces: 33});
+  await models.menu.create({date: date, dishId: lusk.id, canteenId: canteen1.id, pieces: 33});
+  await models.menu.create({date: date, dishId: hranolky.id, canteenId: canteen1.id, pieces: 44});
+  await models.menu.create({date: date, dishId: kase.id, canteenId: canteen1.id, pieces: 30});
+  await models.menu.create({date: date, dishId: vyvar.id, canteenId: canteen1.id, pieces: 32});
+
+  await models.dish_rating.create({stars: 3, comment: "Plátek, klasika", userId: user1.id, dishId: platek.id})
+  await models.dish_rating.create({stars: 5, comment: "S rýžou perfektní", userId: user2.id, dishId: platek.id})
+
+  const objednavka1 = await models.order.create();
+  await objednavka1.setUser(user1)
+  await objednavka1.setMenu(nabidkaPlatek);
+  const objednavka2 = await models.order.create()
+  await objednavka2.setUser(user1);
+  await objednavka2.setMenu(nabidkaLusk);
+  const objednavka3 = await models.order.create()
+  await objednavka3.setUser(user2);
+  await objednavka3.setMenu(nabidkaPlatek);
+  const objednavka4 = await models.order.create()
+  await objednavka4.setUser(user2);
+  await objednavka4.setMenu(nabidkaLusk);
+
+  await models.dish_preset.create({
+    name: "moje šablona",
+    dishIds: "[{\"id\":1,\"pieces\":47},{\"id\":2,\"pieces\":44},{\"id\":6,\"pieces\":30},{\"id\":8,\"pieces\":40},{\"id\":10,\"pieces\":42}]"
+  });
 
   await sequelize.close();
 }

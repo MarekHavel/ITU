@@ -1,0 +1,1204 @@
+<!doctype html>
+<html>
+  <head>
+    <title>CanteenAPI</title>
+    <style type="text/css">
+      body {
+	font-family: Trebuchet MS, sans-serif;
+	font-size: 15px;
+	color: #444;
+	margin-right: 24px;
+}
+
+h1	{
+	font-size: 25px;
+}
+h2	{
+	font-size: 20px;
+}
+h3	{
+	font-size: 16px;
+	font-weight: bold;
+}
+hr	{
+	height: 1px;
+	border: 0;
+	color: #ddd;
+	background-color: #ddd;
+}
+
+.app-desc {
+  clear: both;
+  margin-left: 20px;
+}
+.param-name {
+  width: 100%;
+}
+.license-info {
+  margin-left: 20px;
+}
+
+.license-url {
+  margin-left: 20px;
+}
+
+.model {
+  margin: 0 0 0px 20px;
+}
+
+.method {
+  margin-left: 20px;
+}
+
+.method-notes	{
+	margin: 10px 0 20px 0;
+	font-size: 90%;
+	color: #555;
+}
+
+pre {
+  padding: 10px;
+  margin-bottom: 2px;
+}
+
+.http-method {
+ text-transform: uppercase;
+}
+
+pre.get {
+  background-color: #0f6ab4;
+}
+
+pre.post {
+  background-color: #10a54a;
+}
+
+pre.put {
+  background-color: #c5862b;
+}
+
+pre.delete {
+  background-color: #a41e22;
+}
+
+.huge	{
+	color: #fff;
+}
+
+pre.example {
+  background-color: #f3f3f3;
+  padding: 10px;
+  border: 1px solid #ddd;
+}
+
+code {
+  white-space: pre;
+}
+
+.nickname {
+  font-weight: bold;
+}
+
+.method-path {
+  font-size: 1.5em;
+  background-color: #0f6ab4;
+}
+
+.up {
+  float:right;
+}
+
+.parameter {
+  width: 500px;
+}
+
+.param {
+  width: 500px;
+  padding: 10px 0 0 20px;
+  font-weight: bold;
+}
+
+.param-desc {
+  width: 700px;
+  padding: 0 0 0 20px;
+  color: #777;
+}
+
+.param-type {
+  font-style: italic;
+}
+
+.param-enum-header {
+width: 700px;
+padding: 0 0 0 60px;
+color: #777;
+font-weight: bold;
+}
+
+.param-enum {
+width: 700px;
+padding: 0 0 0 80px;
+color: #777;
+font-style: italic;
+}
+
+.field-label {
+  padding: 0;
+  margin: 0;
+  clear: both;
+}
+
+.field-items	{
+	padding: 0 0 15px 0;
+	margin-bottom: 15px;
+}
+
+.return-type {
+  clear: both;
+  padding-bottom: 10px;
+}
+
+.param-header {
+  font-weight: bold;
+}
+
+.method-tags {
+  text-align: right;
+}
+
+.method-tag {
+  background: none repeat scroll 0% 0% #24A600;
+  border-radius: 3px;
+  padding: 2px 10px;
+  margin: 2px;
+  color: #FFF;
+  display: inline-block;
+  text-decoration: none;
+}
+
+    </style>
+  </head>
+  <body>
+  <h1>CanteenAPI</h1>
+    <div class="app-desc">API for Canteens mobile app</div>
+    <div class="app-desc">More information: <a href="https://openapi-generator.tech">https://openapi-generator.tech</a></div>
+    <div class="app-desc">Contact Info: <a href="team@openapitools.org">team@openapitools.org</a></div>
+    <div class="app-desc">Version: 1</div>
+    <div class="app-desc">BasePath:</div>
+    <div class="license-info">All rights reserved</div>
+    <div class="license-url">http://apache.org/licenses/LICENSE-2.0.html</div>
+  <h2>Access</h2>
+
+  <h2><a name="__Methods">Methods</a></h2>
+  [ Jump to <a href="#__Models">Models</a> ]
+
+  <h3>Table of Contents </h3>
+  <div class="method-summary"></div>
+  <h4><a href="#Default">Default</a></h4>
+  <ul>
+  <li><a href="#apiAuthPost"><code><span class="http-method">post</span> /api/auth</code></a></li>
+  <li><a href="#apiCanteenGet"><code><span class="http-method">get</span> /api/canteen</code></a></li>
+  <li><a href="#apiCreditGet"><code><span class="http-method">get</span> /api/credit</code></a></li>
+  <li><a href="#apiCreditPost"><code><span class="http-method">post</span> /api/credit</code></a></li>
+  <li><a href="#apiDishGet"><code><span class="http-method">get</span> /api/dish</code></a></li>
+  <li><a href="#apiDishRatingDeletePost"><code><span class="http-method">post</span> /api/dish/rating/delete</code></a></li>
+  <li><a href="#apiDishRatingGeneralGet"><code><span class="http-method">get</span> /api/dish/rating/general</code></a></li>
+  <li><a href="#apiDishRatingGet"><code><span class="http-method">get</span> /api/dish/rating</code></a></li>
+  <li><a href="#apiDishRatingPost"><code><span class="http-method">post</span> /api/dish/rating</code></a></li>
+  <li><a href="#apiMenuGet"><code><span class="http-method">get</span> /api/menu</code></a></li>
+  <li><a href="#apiOrderCreatePost"><code><span class="http-method">post</span> /api/order/create</code></a></li>
+  <li><a href="#apiOrderDeletePost"><code><span class="http-method">post</span> /api/order/delete</code></a></li>
+  <li><a href="#apiOrderHistoryGet"><code><span class="http-method">get</span> /api/order/history</code></a></li>
+  <li><a href="#apiUserGet"><code><span class="http-method">get</span> /api/user</code></a></li>
+  </ul>
+
+  <h1><a name="Default">Default</a></h1>
+  <div class="method"><a name="apiAuthPost"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /api/auth</code></pre></div>
+    <div class="method-summary">Authentication of a user (<span class="nickname">apiAuthPost</span>)</div>
+    <div class="method-notes"></div>
+
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">_api_auth_post_request <a href="#_api_auth_post_request">_api_auth_post_request</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#_api_auth_post_200_response">_api_auth_post_200_response</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "token" : "token"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Returns userId for authorization during future comunication
+        <a href="#_api_auth_post_200_response">_api_auth_post_200_response</a>
+    <h4 class="field-label">400</h4>
+    Authentication unsuccesful
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="apiCanteenGet"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /api/canteen</code></pre></div>
+    <div class="method-summary">Get canteen info for user (<span class="nickname">apiCanteenGet</span>)</div>
+    <div class="method-notes"></div>
+
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">token (required)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Authorization token default: null format: UUID</div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#Canteen">Canteen</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "address" : "address",
+  "phone" : "phone",
+  "name" : "name",
+  "openingHours" : "openingHours",
+  "email" : "email"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Canteen info
+        <a href="#Canteen">Canteen</a>
+    <h4 class="field-label">400</h4>
+    Invalid token
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="apiCreditGet"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /api/credit</code></pre></div>
+    <div class="method-summary">Get remaining credit (<span class="nickname">apiCreditGet</span>)</div>
+    <div class="method-notes"></div>
+
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">token (required)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Authorization token default: null format: UUID</div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#_api_credit_get_200_response">_api_credit_get_200_response</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "credit" : 0
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Success, responding with credit remaining
+        <a href="#_api_credit_get_200_response">_api_credit_get_200_response</a>
+    <h4 class="field-label">400</h4>
+    Error, invalid auth token
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="apiCreditPost"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /api/credit</code></pre></div>
+    <div class="method-summary">Charge credit (<span class="nickname">apiCreditPost</span>)</div>
+    <div class="method-notes"></div>
+
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">_api_credit_post_request <a href="#_api_credit_post_request">_api_credit_post_request</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Credit was successfully charged
+        <a href="#"></a>
+    <h4 class="field-label">400</h4>
+    Invalid token or invalid credit
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="apiDishGet"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /api/dish</code></pre></div>
+    <div class="method-summary">Get detail for a dish (<span class="nickname">apiDishGet</span>)</div>
+    <div class="method-notes"></div>
+
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">token (required)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Authorization token default: null format: UUID</div><div class="param">dishId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Id of the dish default: null </div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#DishDetail">DishDetail</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "photoPath" : "photoPath",
+  "price" : 1,
+  "averageRating" : 5.637377,
+  "name" : "name",
+  "ingredients" : "ingredients",
+  "weight" : 0,
+  "category" : 5,
+  "allergens" : [ {
+    "code" : 6,
+    "name" : "name"
+  }, {
+    "code" : 6,
+    "name" : "name"
+  } ]
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Success, responding with dish detail
+        <a href="#DishDetail">DishDetail</a>
+    <h4 class="field-label">400</h4>
+    Error, invalid auth token or bad dish id
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="apiDishRatingDeletePost"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /api/dish/rating/delete</code></pre></div>
+    <div class="method-summary">Delete a rating (<span class="nickname">apiDishRatingDeletePost</span>)</div>
+    <div class="method-notes"></div>
+
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">_api_dish_rating_delete_post_request <a href="#_api_dish_rating_delete_post_request">_api_dish_rating_delete_post_request</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Rating has been successfully deleted
+        <a href="#"></a>
+    <h4 class="field-label">400</h4>
+    Invalid token or no such rating
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="apiDishRatingGeneralGet"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /api/dish/rating/general</code></pre></div>
+    <div class="method-summary">Get ratings for a dish (<span class="nickname">apiDishRatingGeneralGet</span>)</div>
+    <div class="method-notes">Get average rating and at most 10 newest reviews</div>
+
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">token (required)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Authorization token default: null format: UUID</div><div class="param">dishId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Id of the dish default: null </div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#_api_dish_rating_general_get_200_response">_api_dish_rating_general_get_200_response</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "reviews" : [ {
+    "rating" : 1,
+    "reviewText" : "reviewText",
+    "username" : "username"
+  }, {
+    "rating" : 1,
+    "reviewText" : "reviewText",
+    "username" : "username"
+  } ],
+  "numOfRatings" : 6,
+  "averageRating" : 0.4004141
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Success, responding with ratings
+        <a href="#_api_dish_rating_general_get_200_response">_api_dish_rating_general_get_200_response</a>
+    <h4 class="field-label">400</h4>
+    Error, invalid auth token or bad dish id
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="apiDishRatingGet"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /api/dish/rating</code></pre></div>
+    <div class="method-summary">Get user's rating for a dish (<span class="nickname">apiDishRatingGet</span>)</div>
+    <div class="method-notes"></div>
+
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">token (required)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Authorization token default: null format: UUID</div><div class="param">dishId (required)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Id of the dish default: null </div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#Rating">Rating</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "rating" : 0,
+  "comment" : "comment"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Success, responding with rating
+        <a href="#Rating">Rating</a>
+    <h4 class="field-label">400</h4>
+    Error, invalid auth token or bad dish id or this user hasn't rated the dish yet
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="apiDishRatingPost"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /api/dish/rating</code></pre></div>
+    <div class="method-summary">Rate a dish (<span class="nickname">apiDishRatingPost</span>)</div>
+    <div class="method-notes">If user already rated, his rating will be overwritten with the new one, otherwise it will be newly created</div>
+
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">_api_dish_rating_post_request <a href="#_api_dish_rating_post_request">_api_dish_rating_post_request</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Rating has been successfully created/edited
+        <a href="#"></a>
+    <h4 class="field-label">400</h4>
+    Invalid token or invalid credit
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="apiMenuGet"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /api/menu</code></pre></div>
+    <div class="method-summary">Get menu for a specific user at a specific day (<span class="nickname">apiMenuGet</span>)</div>
+    <div class="method-notes"></div>
+
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">token (required)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Authorization token default: null format: UUID</div><div class="param">date (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Date for the menu, when not specified current date is used default: null format: date</div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#Dishes">Dishes</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "dishes" : [ {
+    "price" : 1,
+    "name" : "name",
+    "weight" : 5,
+    "orders" : [ 5, 5 ],
+    "id" : 0,
+    "category" : "category",
+    "allergens" : "allergens",
+    "itemsLeft" : 6
+  }, {
+    "price" : 1,
+    "name" : "name",
+    "weight" : 5,
+    "orders" : [ 5, 5 ],
+    "id" : 0,
+    "category" : "category",
+    "allergens" : "allergens",
+    "itemsLeft" : 6
+  } ]
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Array of dishes for the day
+        <a href="#Dishes">Dishes</a>
+    <h4 class="field-label">400</h4>
+    Invalid token
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="apiOrderCreatePost"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /api/order/create</code></pre></div>
+    <div class="method-summary">Create order (<span class="nickname">apiOrderCreatePost</span>)</div>
+    <div class="method-notes"></div>
+
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">_api_order_create_post_request <a href="#_api_order_create_post_request">_api_order_create_post_request</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#_api_order_create_post_200_response">_api_order_create_post_200_response</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "dishId" : 0
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Order was created
+        <a href="#_api_order_create_post_200_response">_api_order_create_post_200_response</a>
+    <h4 class="field-label">400</h4>
+    Invalid token or no such order available
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="apiOrderDeletePost"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="post"><code class="huge"><span class="http-method">post</span> /api/order/delete</code></pre></div>
+    <div class="method-summary">Delete an order (<span class="nickname">apiOrderDeletePost</span>)</div>
+    <div class="method-notes"></div>
+
+
+    <h3 class="field-label">Consumes</h3>
+    This API call consumes the following media types via the <span class="header">Content-Type</span> request header:
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Request body</h3>
+    <div class="field-items">
+      <div class="param">_api_order_delete_post_request <a href="#_api_order_delete_post_request">_api_order_delete_post_request</a> (required)</div>
+
+      <div class="param-desc"><span class="param-type">Body Parameter</span> &mdash;  </div>
+
+    </div>  <!-- field-items -->
+
+
+
+
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Order was deleted
+        <a href="#"></a>
+    <h4 class="field-label">400</h4>
+    Invalid token or no such order
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="apiOrderHistoryGet"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /api/order/history</code></pre></div>
+    <div class="method-summary">Get order history of a given user (<span class="nickname">apiOrderHistoryGet</span>)</div>
+    <div class="method-notes"></div>
+
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">token (required)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Authorization token default: null format: UUID</div><div class="param">date (optional)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Filter history by a given date default: null </div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#_api_order_history_get_200_response">_api_order_history_get_200_response</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "orders" : [ {
+    "orderId" : 0,
+    "price" : 1,
+    "dishId" : 6,
+    "name" : "name",
+    "weight" : 5,
+    "category" : "category",
+    "orderDate" : "2000-01-23T04:56:07.000+00:00",
+    "allergens" : "allergens"
+  }, {
+    "orderId" : 0,
+    "price" : 1,
+    "dishId" : 6,
+    "name" : "name",
+    "weight" : 5,
+    "category" : "category",
+    "orderDate" : "2000-01-23T04:56:07.000+00:00",
+    "allergens" : "allergens"
+  } ]
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    Array of history items
+        <a href="#_api_order_history_get_200_response">_api_order_history_get_200_response</a>
+    <h4 class="field-label">400</h4>
+    Invalid token
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+  <div class="method"><a name="apiUserGet"/>
+    <div class="method-path">
+    <a class="up" href="#__Methods">Up</a>
+    <pre class="get"><code class="huge"><span class="http-method">get</span> /api/user</code></pre></div>
+    <div class="method-summary">Get information about a user (<span class="nickname">apiUserGet</span>)</div>
+    <div class="method-notes"></div>
+
+
+
+
+
+    <h3 class="field-label">Query parameters</h3>
+    <div class="field-items">
+      <div class="param">token (required)</div>
+
+      <div class="param-desc"><span class="param-type">Query Parameter</span> &mdash; Authorization token default: null format: UUID</div>
+    </div>  <!-- field-items -->
+
+
+    <h3 class="field-label">Return type</h3>
+    <div class="return-type">
+      <a href="#User">User</a>
+      
+    </div>
+
+    <!--Todo: process Response Object and its headers, schema, examples -->
+
+    <h3 class="field-label">Example data</h3>
+    <div class="example-data-content-type">Content-Type: application/json</div>
+    <pre class="example"><code>{
+  "canteenName" : "canteenName",
+  "priceCategory" : "priceCategory",
+  "email" : "email",
+  "username" : "username"
+}</code></pre>
+
+    <h3 class="field-label">Produces</h3>
+    This API call produces the following media types according to the <span class="header">Accept</span> request header;
+    the media type will be conveyed by the <span class="header">Content-Type</span> response header.
+    <ul>
+      <li><code>application/json</code></li>
+    </ul>
+
+    <h3 class="field-label">Responses</h3>
+    <h4 class="field-label">200</h4>
+    User info
+        <a href="#User">User</a>
+    <h4 class="field-label">400</h4>
+    Invalid token
+        <a href="#Error">Error</a>
+  </div> <!-- method -->
+  <hr/>
+
+  <h2><a name="__Models">Models</a></h2>
+  [ Jump to <a href="#__Methods">Methods</a> ]
+
+  <h3>Table of Contents</h3>
+  <ol>
+    <li><a href="#Canteen"><code>Canteen</code> - </a></li>
+    <li><a href="#Dish"><code>Dish</code> - </a></li>
+    <li><a href="#DishDetail"><code>DishDetail</code> - </a></li>
+    <li><a href="#DishDetail_allergens_inner"><code>DishDetail_allergens_inner</code> - </a></li>
+    <li><a href="#DishHistoryItem"><code>DishHistoryItem</code> - </a></li>
+    <li><a href="#Dishes"><code>Dishes</code> - </a></li>
+    <li><a href="#Error"><code>Error</code> - </a></li>
+    <li><a href="#Order"><code>Order</code> - </a></li>
+    <li><a href="#Rating"><code>Rating</code> - </a></li>
+    <li><a href="#Reviews_inner"><code>Reviews_inner</code> - </a></li>
+    <li><a href="#User"><code>User</code> - </a></li>
+    <li><a href="#_api_auth_post_200_response"><code>_api_auth_post_200_response</code> - </a></li>
+    <li><a href="#_api_auth_post_request"><code>_api_auth_post_request</code> - </a></li>
+    <li><a href="#_api_credit_get_200_response"><code>_api_credit_get_200_response</code> - </a></li>
+    <li><a href="#_api_credit_post_request"><code>_api_credit_post_request</code> - </a></li>
+    <li><a href="#_api_dish_rating_delete_post_request"><code>_api_dish_rating_delete_post_request</code> - </a></li>
+    <li><a href="#_api_dish_rating_general_get_200_response"><code>_api_dish_rating_general_get_200_response</code> - </a></li>
+    <li><a href="#_api_dish_rating_post_request"><code>_api_dish_rating_post_request</code> - </a></li>
+    <li><a href="#_api_order_create_post_200_response"><code>_api_order_create_post_200_response</code> - </a></li>
+    <li><a href="#_api_order_create_post_request"><code>_api_order_create_post_request</code> - </a></li>
+    <li><a href="#_api_order_delete_post_request"><code>_api_order_delete_post_request</code> - </a></li>
+    <li><a href="#_api_order_history_get_200_response"><code>_api_order_history_get_200_response</code> - </a></li>
+  </ol>
+
+  <div class="model">
+    <h3><a name="Canteen"><code>Canteen</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">name </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">email </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  format: email</div>
+<div class="param">phone </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">openingHours </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">address </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="Dish"><code>Dish</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">id </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  </div>
+<div class="param">name </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">category </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">allergens </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">itemsLeft </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  </div>
+<div class="param">price </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  </div>
+<div class="param">weight </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  </div>
+<div class="param">orders </div><div class="param-desc"><span class="param-type"><a href="#integer">array[Integer]</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="DishDetail"><code>DishDetail</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">name </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">ingredients </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">weight </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  </div>
+<div class="param">photoPath </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">allergens </div><div class="param-desc"><span class="param-type"><a href="#DishDetail_allergens_inner">array[DishDetail_allergens_inner]</a></span>  </div>
+<div class="param">price </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  </div>
+<div class="param">category </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  </div>
+<div class="param">averageRating (optional)</div><div class="param-desc"><span class="param-type"><a href="#float">Float</a></span>  format: float</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="DishDetail_allergens_inner"><code>DishDetail_allergens_inner</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">name </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">code </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="DishHistoryItem"><code>DishHistoryItem</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">orderId </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  </div>
+<div class="param">dishId </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  </div>
+<div class="param">name </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">category </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">allergens </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">orderDate </div><div class="param-desc"><span class="param-type"><a href="#DateTime">Date</a></span>  format: date-time</div>
+<div class="param">price </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  </div>
+<div class="param">weight </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="Dishes"><code>Dishes</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">dishes </div><div class="param-desc"><span class="param-type"><a href="#Dish">array[Dish]</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="Error"><code>Error</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">code </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span> 0 = no database, 1 = logic error, 2 = bad request </div>
+<div class="param">message </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="Order"><code>Order</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">orderId </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  </div>
+<div class="param">dishId </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="Rating"><code>Rating</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">rating </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  </div>
+<div class="param">comment (optional)</div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="Reviews_inner"><code>Reviews_inner</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">username </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">reviewText </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">rating (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="User"><code>User</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">username </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">email </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">priceCategory </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">canteenName </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="_api_auth_post_200_response"><code>_api_auth_post_200_response</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">token (optional)</div><div class="param-desc"><span class="param-type"><a href="#UUID">UUID</a></span>  format: UUID</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="_api_auth_post_request"><code>_api_auth_post_request</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">email </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+<div class="param">password </div><div class="param-desc"><span class="param-type"><a href="#string">String</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="_api_credit_get_200_response"><code>_api_credit_get_200_response</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">credit (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="_api_credit_post_request"><code>_api_credit_post_request</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">token </div><div class="param-desc"><span class="param-type"><a href="#UUID">UUID</a></span>  format: UUID</div>
+<div class="param">credit </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="_api_dish_rating_delete_post_request"><code>_api_dish_rating_delete_post_request</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">token </div><div class="param-desc"><span class="param-type"><a href="#UUID">UUID</a></span>  format: UUID</div>
+<div class="param">dishId </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="_api_dish_rating_general_get_200_response"><code>_api_dish_rating_general_get_200_response</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">averageRating (optional)</div><div class="param-desc"><span class="param-type"><a href="#float">Float</a></span>  format: float</div>
+<div class="param">numOfRatings (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  </div>
+<div class="param">reviews (optional)</div><div class="param-desc"><span class="param-type"><a href="#Reviews_inner">array[Reviews_inner]</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="_api_dish_rating_post_request"><code>_api_dish_rating_post_request</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">token </div><div class="param-desc"><span class="param-type"><a href="#UUID">UUID</a></span>  format: UUID</div>
+<div class="param">dishId </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  </div>
+<div class="param">rating </div><div class="param-desc"><span class="param-type"><a href="#Rating">Rating</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="_api_order_create_post_200_response"><code>_api_order_create_post_200_response</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">dishId (optional)</div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="_api_order_create_post_request"><code>_api_order_create_post_request</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">token </div><div class="param-desc"><span class="param-type"><a href="#UUID">UUID</a></span>  format: UUID</div>
+<div class="param">dishId </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  </div>
+<div class="param">date (optional)</div><div class="param-desc"><span class="param-type"><a href="#date">date</a></span>  format: date</div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="_api_order_delete_post_request"><code>_api_order_delete_post_request</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">token </div><div class="param-desc"><span class="param-type"><a href="#UUID">UUID</a></span>  format: UUID</div>
+<div class="param">orderId </div><div class="param-desc"><span class="param-type"><a href="#integer">Integer</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  <div class="model">
+    <h3><a name="_api_order_history_get_200_response"><code>_api_order_history_get_200_response</code> - </a> <a class="up" href="#__Models">Up</a></h3>
+    <div class='model-description'></div>
+    <div class="field-items">
+      <div class="param">orders (optional)</div><div class="param-desc"><span class="param-type"><a href="#DishHistoryItem">array[DishHistoryItem]</a></span>  </div>
+    </div>  <!-- field-items -->
+  </div>
+  </body>
+</html>

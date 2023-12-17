@@ -145,6 +145,12 @@ paths:
       responses:
         200:
           description: "Order was created"
+          content:
+            application/json:
+              schema:
+                properties:
+                  dishId: # Id of newly created order
+                    type: integer
         400:
           description: "Invalid token or no such order available"
           content:
@@ -162,16 +168,13 @@ paths:
               type: "object"
               required:
                 - token
-                - dishId
+                - orderId
               properties:
                 token:
                   type: "string"
                   format: "UUID"
-                dishId:
+                orderId:
                   type: "integer"
-                date: # When not specified, today is used
-                  type: "string"
-                  format: "date"
       responses:
         200:
           description: "Order was deleted"
@@ -228,11 +231,7 @@ paths:
           content:
             application/json:
               schema:
-                properties:
-                  rating:
-                    type: integer
-                    minimum: 0
-                    maximum: 5
+                $ref: "#/components/schemas/Rating"
         400:
           description: "Error, invalid auth token or bad dish id or this user hasn't rated the dish yet"
           content:
@@ -259,21 +258,20 @@ paths:
                 dishId:
                   type: "integer"
                 rating:
-                  type: "integer"
-                  minimum: 0
-                  maximum: 5
+                  $ref: "#/components/schemas/Rating"
       responses:
         200:
-          description: "Rating has been successfully "
+          description: "Rating has been successfully created/edited"
         400:
           description: "Invalid token or invalid credit"
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /api/dish/rating/average:
+  /api/dish/rating/general:
     get:
-      summary: "Get average rating for a dish"
+      summary: "Get ratings for a dish"
+      description: "Get average rating and at most 10 newest reviews"
       parameters:
         - name: "token"
           in: "query"
@@ -290,7 +288,7 @@ paths:
             type: "integer"
       responses:
         200:
-          description: "Success, responding with rating"
+          description: "Success, responding with ratings"
           content:
             application/json:
               schema:
@@ -302,8 +300,125 @@ paths:
                     maximum: 5
                   numOfRatings:
                     type: integer
+                  reviews:
+                    $ref: "#/components/schemas/Reviews"
         400:
           description: "Error, invalid auth token or bad dish id"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/dish/rating/delete:
+    post:
+      summary: "Delete a rating"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "object"
+              required:
+                - token
+                - dishId
+              properties:
+                token:
+                  type: "string"
+                  format: "UUID"
+                dishId:
+                  type: "integer"
+      responses:
+        200:
+          description: "Rating has been successfully deleted"
+        400:
+          description: "Invalid token or no such rating"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/dish:
+    get:
+      summary: "Get detail for a dish"
+      parameters:
+        - name: "token"
+          in: "query"
+          description: "Authorization token"
+          required: true
+          schema:
+            type: "string"
+            format: "UUID"
+        - name: "dishId"
+          in: "query"
+          description: "Id of the dish"
+          required: true
+          schema:
+            type: "integer"
+      responses:
+        200:
+          description: "Success, responding with dish detail"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DishDetail"
+        400:
+          description: "Error, invalid auth token or bad dish id"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/order/history:
+    get:
+      summary: "Get order history of a given user"
+      parameters:
+        - name: "token"
+          in: "query"
+          description: "Authorization token"
+          required: true
+          schema:
+            type: "string"
+            format: "UUID"
+        - name: "date"
+          in: "query"
+          description: "Filter history by a given date"
+          required: false
+          schema:
+            type: "string"
+      responses:
+        200:
+          description: "Array of history items"
+          content:
+            application/json:
+              schema:
+                properties:
+                  orders:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/DishHistoryItem"
+        400:
+          description: "Invalid token"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/canteen:
+    get:
+      summary: "Get canteen info for user"
+      parameters:
+        - name: "token"
+          in: "query"
+          description: "Authorization token"
+          required: true
+          schema:
+            type: "string"
+            format: "UUID"
+      responses:
+        200:
+          description: "Canteen info"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Canteen"
+        400:
+          description: "Invalid token"
           content:
             application/json:
               schema:
@@ -311,6 +426,15 @@ paths:
 components:
   schemas:
     Dish:
+      required:
+        - id
+        - name
+        - category
+        - allergens
+        - itemsLeft
+        - price
+        - weight
+        - orders
       properties:
         id:
           type: integer
@@ -326,9 +450,30 @@ components:
           type: integer
         weight:
           type: integer
-        ordered: # True if user has ordered the specified dish
-          type: boolean
+        orders:
+          type: array
+          items: # OrderIds
+            type: integer
+    Reviews:
+      type: array
+      items: # Reviews
+        type: object
+        required:
+          - username
+          - reviewText
+        properties:
+          username:
+            type: "string"
+          reviewText:
+            type: "string"
+          rating:
+            type: "integer"
     User:
+      required:
+        - username
+        - email
+        - priceCategory
+        - canteenName
       properties:
         username:
           type: string
@@ -339,30 +484,76 @@ components:
         canteenName:
           type: string
     Dishes:
+      required:
+        - dishes
       properties:
         dishes:
           type: array
           items:
             $ref: "#/components/schemas/Dish"
-    # DishDetails: - TODO
-    #   properties:
-    #     id:
-    #       type: integer
-    #     name:
-    #       type: string
-    #     constitutions:
-    #       type: string
-    #     allergens:
-    #       type: string
-    #     price:
-    #       type: integer
-    #     weight:
-    #       type: integer
-    #     rating:
-    #       type: number
-    #       minimum: 0
-    #       minimum: 5
+    DishDetail:
+      required:
+        - name
+        - ingredients
+        - weight
+        - photoPath
+        - allergens
+        - price
+        - category
+      properties:
+        name:
+          type: string
+        ingredients:
+          type: string
+        weight:
+          type: integer
+        photoPath: # For downloading the dish photo
+          type: string
+        allergens:
+          type: array
+          items:
+            type: object
+            required:
+              - name
+              - code
+            properties:
+              name:
+                type: "string"
+              code:
+                type: "integer"
+        price:
+          type: integer
+        category:
+          type: integer
+        averageRating:
+          type: number
+          format: float
+    Order:
+      required:
+        - orderId
+        - dishId
+      properties:
+        orderId:
+          type: integer
+          nullable: false
+        dishId:
+          type: integer
+          nullable: false
+    Rating:
+      required:
+        - rating
+      properties:
+        rating:
+          type: integer
+          minimum: 0
+          maximum: 5
+          nullable: false
+        comment:
+          type: string
     Error:
+      required:
+        - code
+        - message
       properties:
         code:
           description: "0 = no database, 1 = logic error, 2 = bad request"
@@ -371,3 +562,50 @@ components:
         message:
           nullable: false
           type: "string"
+    DishHistoryItem:
+      required:
+        - orderId
+        - dishId
+        - name
+        - category
+        - allergens
+        - orderDate
+        - price
+        - weight
+      properties:
+        orderId:
+          type: integer
+        dishId:
+          type: integer
+        name:
+          type: string
+        category:
+          type: string
+        allergens:
+          type: string
+        orderDate:
+          type: string
+          format: date-time
+        price:
+          type: integer
+        weight:
+          type: integer
+    Canteen:
+      required:
+        - name
+        - email
+        - phone
+        - openingHours
+        - address
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        openingHours:
+          type: string
+        address:
+          type: string

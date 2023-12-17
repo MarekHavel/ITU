@@ -1,0 +1,7 @@
+// Vybrání týdne a dne
+#datePicker
+  include datePicker.pug
+#dishesContent.container.mt-3
+  p.text-center Prosím zvolte den
+#logoutButton(hx-swap-oob="innerHTML")
+  button.btn.btn-light(type='button' hx-post='/webapp/auth/logout') Odhlásit se

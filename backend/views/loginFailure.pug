@@ -1,0 +1,15 @@
+.row
+  .col
+  .col-4
+    form.form-signin.text-center
+      h1.h3.mb-3.mt-5.fw-normal Přihlášení
+      .form-floating
+        input#loginEmail.form-control(type='email' name='email' autocomplete='email')
+        label(for='loginEmail') Email
+      .form-floating
+        input#loginPassword.form-control(type='password' name='password' autocomplete='current-password')
+        label(for='loginPassword') Heslo
+      #errorMessage
+        p Nesprávné přihlašovací údaje
+      button.w-100.btn.btn-lg.btn-primary.mt-3(hx-post='/webapp/login' hx-target='#mainContent') Přihlásit
+  .col
