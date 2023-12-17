@@ -1,5 +1,6 @@
 package eu.havy.canteen.ui.order_food;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.os.Handler;
 import android.os.Looper;
@@ -15,10 +16,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import eu.havy.canteen.MainActivity;
 import eu.havy.canteen.api.Api;
 import eu.havy.canteen.model.Dish;
 import eu.havy.canteen.model.User;
@@ -51,7 +55,7 @@ public class OrderFoodViewModel extends AndroidViewModel {
                     Dish dish = new Dish(obj.getInt("id"),obj.getString("name"),
                             obj.getString("category"),obj.getString("allergens"),
                             obj.getInt("price"), obj.getInt("itemsLeft"),
-                            obj.getInt("weight"), null);
+                            obj.getInt("weight"), null, -1);
                     dishList.add(dish);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -69,7 +73,7 @@ public class OrderFoodViewModel extends AndroidViewModel {
         dishes = new MutableLiveData<>();
         dishes.setValue(null);
 
-        new Api(handler).getMenu(User.getCurrentUser().getToken(), "2023-11-13");
+        refresh();
     }
 
     public LiveData<List<Dish>> getAllDishes() {
@@ -82,5 +86,13 @@ public class OrderFoodViewModel extends AndroidViewModel {
         } catch (NullPointerException e) {
             return 0;
         }
+    }
+    public void refresh(){
+        Date date = MainActivity.getInstance().getSelectedDate().getValue();
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // API has specific date format
+        String dateText = sdf.format(Objects.requireNonNull(date));
+        Log.d("Canteen", "Refreshing dish list for date: " + dateText);
+        new Api(handler).getMenu(User.getCurrentUser().getToken(), dateText);
+
     }
 }

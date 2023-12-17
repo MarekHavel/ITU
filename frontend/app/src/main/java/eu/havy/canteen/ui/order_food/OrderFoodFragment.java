@@ -41,10 +41,19 @@ public class OrderFoodFragment extends Fragment {
                 return true;
             }
         };
+
+        // todo add calendar items and current date selector
+
+        //calendarAdapter = new calendarAdapter(homeViewModel);
+        //binding.calendarRecycler.setAdapter(calendarAdapter);
+
         binding.foodCardRecycler.setLayoutManager(layoutManager);
         binding.foodCardRecycler.setHasFixedSize(true);
         dishAdapter adapter = new dishAdapter(homeViewModel);
         binding.foodCardRecycler.setAdapter(adapter);
+
+        orderAdapter orders = new orderAdapter(homeViewModel);
+        binding.orderCardRecycler.setAdapter(orders);
 
         homeViewModel.getAllDishes().observe(this.getViewLifecycleOwner(), new Observer<List<Dish>>() {
             @Override
@@ -56,36 +65,29 @@ public class OrderFoodFragment extends Fragment {
         return binding.getRoot();
     }
 
-    private class dishAdapter extends RecyclerView.Adapter<dishAdapter.MyViewHolder>{
-
-        //private List<String> items;
+    //todo fixup - update of dataset does nothing
+    private class dishAdapter extends RecyclerView.Adapter<dishAdapter.MyViewHolder> {
         OrderFoodViewModel src;
-
-        private class MyViewHolder extends RecyclerView.ViewHolder{
-
-            CardDishBinding binding; //Name of the test_list_item.xml in camel case + "Binding"
-
-            public MyViewHolder(CardDishBinding b){
+        private class MyViewHolder extends RecyclerView.ViewHolder {
+            CardDishBinding binding;
+            public MyViewHolder(CardDishBinding b) {
                 super(b.getRoot());
                 binding = b;
             }
         }
 
-        public dishAdapter(OrderFoodViewModel data){
+        public dishAdapter(OrderFoodViewModel data) {
             this.src = data;
         }
 
         @NonNull
         @Override
-        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
-            //todo handle categories
-            //todo handle ordered food
+        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             return new MyViewHolder(CardDishBinding.inflate(getLayoutInflater()));
         }
 
         @Override
-        public void onBindViewHolder(@NonNull MyViewHolder holder, int position){
-
+        public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
             if(src.getDishCount() > 0) {
                 Dish current = src.getAllDishes().getValue().get(position);
                 holder.binding.textViewName.setText(current.getName());
@@ -105,19 +107,18 @@ public class OrderFoodFragment extends Fragment {
             }
         }
 
-        public void setDishes(List<Dish> dishes){
+        public void setDishes(List<Dish> dishes) {
             notifyDataSetChanged();
         }
 
         @Override
-        public int getItemCount(){
+        public int getItemCount() {
             return (int) src.getDishCount();
         }
+
     }
 
-    /*
-    //todo make use of
-    private class orderAdapter extends RecyclerView.Adapter<dishAdapter.MyViewHolder> {
+    private class orderAdapter extends RecyclerView.Adapter<orderAdapter.MyViewHolder> {
 
         //private List<String> items;
         OrderFoodViewModel src;
@@ -138,36 +139,20 @@ public class OrderFoodFragment extends Fragment {
 
         @NonNull
         @Override
-        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            //todo handle categories
-            //todo handle ordered food
+        public orderAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             return new MyViewHolder(CardDishBinding.inflate(getLayoutInflater()));
+        }
+
+        @Override
+        public int getItemCount() {
+            return 0;
         }
 
         @Override
         public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
-            if (src.getDishCount() > 0) {
-                Dish current = src.getAllDishes().getValue().get(position);
-                holder.binding.textViewName.setText(current.getName());
-                holder.binding.textViewExtraInfo.setText(current.getExtraInfo());
-                holder.binding.textViewPrice.setText(current.getPrice());
-                holder.binding.textViewCount.setText(current.getRemainingAmount());
-                holder.binding.purchaseButton.setOnClickListener(view -> {
-                    Log.d("clickListener", "Kliknuto na nákup obědu " + current.getId());
-                    Bundle bundle = new Bundle();
-                    bundle.putInt("dishId", current.getId());
-                    Navigation.findNavController(MainActivity.getInstance(),
-                                    R.id.nav_host_fragment_activity_main_content)
-                            .navigate(R.id.action_nav_order_food_to_purchaseFoodFragment, bundle);
-                });
-                holder.binding.getRoot().setOnClickListener(view -> {
-                    Log.d("clickListener", "Kliknuto na detail obědu " + current.getId());
-                });
-            }
         }
     }
-     */
 
     @Override
     public void onDestroyView() {

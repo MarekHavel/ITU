@@ -11,14 +11,12 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import eu.havy.canteen.LoginActivity;
@@ -26,13 +24,15 @@ import eu.havy.canteen.MainActivity;
 import eu.havy.canteen.api.Api;
 import eu.havy.canteen.model.Dish;
 import eu.havy.canteen.model.User;
+import eu.havy.canteen.ui.order_food.OrderFoodViewModel;
+import eu.havy.canteen.ui.order_history.OrderHistoryViewModel;
 
 public class PurchaseFoodViewModel extends AndroidViewModel {
 
     private final MutableLiveData<Dish> dish;
     private final MutableLiveData<Integer> dishId;
 
-    Handler handler = new Handler(Objects.requireNonNull(Looper.myLooper())) {
+    Handler getDishHandler = new Handler(Objects.requireNonNull(Looper.myLooper())) {
         @Override
         public void handleMessage(Message msg) {
             JSONObject jsonObject;
@@ -49,10 +49,54 @@ public class PurchaseFoodViewModel extends AndroidViewModel {
                 return;
             }
             try {
+                String allergensString = "";
+                JSONArray allergens = jsonObject.getJSONArray("allergens");
+                for (int i = 0; i < allergens.length(); i++) {
+                    allergensString += allergens.getJSONObject(i).getString("name");
+                    if (i != allergens.length() - 1) {
+                        allergensString += "\n";
+                    }
+                }
                 dish.setValue(new Dish(Objects.requireNonNull(dishId.getValue()),jsonObject.getString("name"),jsonObject.getString("category"),
-                        null,jsonObject.getInt("price"),-1,jsonObject.getInt("weight"),null));
+                        allergensString,jsonObject.getInt("price"),-1,jsonObject.getInt("weight"),null,jsonObject.getInt("averageRating")));
             } catch (JSONException | NullPointerException e) {
                 e.printStackTrace();
+            }
+
+        }
+    };
+
+    Handler orderDishHandler = new Handler(Objects.requireNonNull(Looper.myLooper())) {
+        @Override
+        public void handleMessage(Message msg) { // todo redo for orders
+            JSONObject jsonObject;
+            try {
+                jsonObject = (JSONObject) msg.obj;
+                String error = jsonObject.has("exception") ? jsonObject.getString("exception") : (jsonObject.has("message") ? jsonObject.getString("message") : "");
+                if (!error.isEmpty()) {
+                    Toast.makeText(MainActivity.getInstance() != null ? MainActivity.getInstance() : LoginActivity.getInstance(), "Failed to load data", Toast.LENGTH_SHORT).show();
+                    Log.e("Canteen", "FAILURE, request: " + Api.Request.toString(msg.what) + " code: " + msg.arg1 + " message: " + error);
+                    return;
+                } else {
+                    Log.d("Canteen", "SUCCESS, request: " + Api.Request.toString(msg.what) + " code: " + msg.arg1 + " message: " + error);
+
+                    // refresh credits
+                    User.getCurrentUser().updateData();
+
+                    // todo refresh order list
+
+                    // refresh dish list
+                    ViewModelProvider provider = new ViewModelProvider(MainActivity.getInstance());
+                    OrderFoodViewModel orderFoodViewModel = provider.get(OrderFoodViewModel.class);
+                    orderFoodViewModel.refresh();
+
+                    // refresh order history
+                    OrderHistoryViewModel orderHistoryViewModel = provider.get(OrderHistoryViewModel.class);
+                    orderHistoryViewModel.refresh();
+                }
+            } catch (JSONException e) {
+                Log.e("JSON", "Invalid JSON response");
+                return;
             }
 
         }
@@ -67,7 +111,7 @@ public class PurchaseFoodViewModel extends AndroidViewModel {
         dishId = new MutableLiveData<>();
         dishId.setValue(null);
 
-        //todo dishId observer launches handler instead of the setDishId function which locks the app
+        // todo dishId observer launches handler instead of the setDishId function which locks the app
 
     }
 
@@ -76,8 +120,12 @@ public class PurchaseFoodViewModel extends AndroidViewModel {
     }
 
     public void setDishId(int dishn){
-        //todo fetch data about single dish
         dishId.setValue(dishn);
-        new Api(handler).getDish(User.getCurrentUser().getToken(),dishn);
+        new Api(getDishHandler).getDish(User.getCurrentUser().getToken(),dishn);
+    }
+
+    public void orderDish(){
+        new Api(orderDishHandler).orderDish(User.getCurrentUser().getToken(),dishId.getValue());
+        // todo wait for arrival
     }
 }

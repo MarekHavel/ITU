@@ -7,7 +7,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import android.util.Log;
@@ -49,19 +48,26 @@ public class PurchaseFoodFragment extends Fragment {
         mViewModel.getDish().observe(this.getViewLifecycleOwner(), dish -> {
             if (dish != null) {
                 Log.d("Canteen", "Picked dish changed: " + dish.getName());
+
                 TextView text = binding.findViewById(R.id.buyFoodName);
                 text.setText(dish.getName());
+
                 text = binding.findViewById(R.id.buyFoodRating);
-                text.setText("0.0"); //todo fixup data source
+                text.setText(String.format("%.1f/5", dish.getRating()));
+
                 text = binding.findViewById(R.id.buyFoodAllergyHeader);
-                text.setText(getString(R.string.allergies));
-                text = binding.findViewById(R.id.buyFoodRating);
-                text.setText(dish.getAllergensLite()); //todo fixup data source
+                text.setText(getString(R.string.allergies_colon));
+
+                text = binding.findViewById(R.id.buyFoodAllergyList);
+                text.setText(dish.getAllergensLite());
+
+                //todo inflate picture
+
                 Button button = binding.findViewById(R.id.buyFoodButton);
                 button.setOnClickListener(view->{
-                    Log.e("Canteen","Order submission not supported at the moment.");
-                    Navigation.findNavController(MainActivity.getInstance(), R.id.nav_host_fragment_activity_main_content).popBackStack();
+                    mViewModel.orderDish(); // todo wait for order to finish
 
+                    Navigation.findNavController(MainActivity.getInstance(), R.id.nav_host_fragment_activity_main_content).popBackStack();
                 });
             } else {
                 Log.d("Canteen","Picked dish changed: null");

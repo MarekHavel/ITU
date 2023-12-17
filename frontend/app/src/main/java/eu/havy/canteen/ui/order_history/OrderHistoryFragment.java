@@ -5,7 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -14,12 +13,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
-import java.util.Date;
 import java.util.List;
 
 import eu.havy.canteen.databinding.CardDishHistoryBinding;
@@ -84,7 +77,7 @@ public class OrderHistoryFragment extends Fragment {
 
         @NonNull
         @Override
-        public dishAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){ //todo handle categories
+        public dishAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
             return new dishAdapter.MyViewHolder(CardDishHistoryBinding.inflate(getLayoutInflater()));
         }
 
@@ -107,7 +100,7 @@ public class OrderHistoryFragment extends Fragment {
         }
 
         public void setDishes(List<Dish> dishes){
-            notifyDataSetChanged();
+            notifyDataSetChanged(); //todo fixup: this doesn't work
         }
 
         @Override
@@ -115,7 +108,6 @@ public class OrderHistoryFragment extends Fragment {
             return (int) src.getDishCount();
         }
     }
-
 
     @Override
     public void onDestroyView() {

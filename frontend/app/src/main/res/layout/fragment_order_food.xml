@@ -8,16 +8,8 @@
     tools:context=".ui.order_food.OrderFoodFragment"
     android:orientation="vertical">
 
-        <!--<androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/calendarRecycler"
-            android:layout_width="10dp"
-            android:layout_height="10dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp" />-->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/calendarCardRecycler"
+        android:id="@+id/calendar_recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
