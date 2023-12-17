@@ -52,7 +52,7 @@ public class OrderHistoryViewModel extends ViewModel {
                     JSONObject obj = jsonArray.getJSONObject(i);
                     Dish dish = new Dish(obj.getInt("dishId"),obj.getString("name"),
                             obj.getString("category"),obj.getString("allergens"),
-                            obj.getInt("price"), -1,obj.getInt("weight"), obj.getString("orderDate"),-1);
+                            obj.getInt("price"), -1,obj.getInt("weight"), obj.getString("orderDate"),-1, null);
                     dishList.add(dish);
                 } catch (JSONException e) {
                     e.printStackTrace();

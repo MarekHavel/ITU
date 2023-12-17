@@ -62,14 +62,24 @@ public class PurchaseFoodFragment extends Fragment {
                 //todo inflate picture
 
                 Button button = binding.findViewById(R.id.buyFoodButton);
-                button.setOnClickListener(view->{
-                    String date = this.getArguments().getString("date");
-                    if(date != null) {
-                        mViewModel.orderDish(this.getArguments().getString("date"));
-                        Navigation.findNavController(MainActivity.getInstance(), R.id.nav_host_fragment_activity_main_content).popBackStack();
-                    }
 
-                });
+                int remaining = this.getArguments() == null ? 0 : this.getArguments().getInt("remainingAmount");
+
+                if(remaining == 0) {
+                    button.setEnabled(false);
+                    button.setText("Sold out");
+                } else {
+                    button.setEnabled(true);
+                    button.setOnClickListener(view->{
+                        String date = this.getArguments().getString("date");
+                        if(date != null) {
+                            button.setEnabled(false);
+                            mViewModel.orderDish(date);
+                            Navigation.findNavController(MainActivity.getInstance(), R.id.nav_host_fragment_activity_main_content).popBackStack();
+                        }
+
+                    });
+                }
             } else {
                 Log.d("Canteen","Picked dish changed: null");
             }

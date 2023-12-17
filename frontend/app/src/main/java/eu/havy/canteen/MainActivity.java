@@ -5,23 +5,17 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-
-
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 import eu.havy.canteen.databinding.ActivityMainBinding;
@@ -34,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
     private static MainActivity instance;
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
-
 
     public static MainActivity getInstance() {
         return instance;
