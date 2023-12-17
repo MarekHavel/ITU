@@ -30,4 +30,8 @@
     <string name="_200">+ 200</string>
     <string name="_500">+ 500</string>
     <string name="clear">Clear</string>
+    <string name="fragment_purchase_food_name">Purchase food</string>
+    <string name="loading">Loading</string>
+    <string name="allergies">Allergies</string>
+    <string name="order_command">Order!</string>
 </resources>
