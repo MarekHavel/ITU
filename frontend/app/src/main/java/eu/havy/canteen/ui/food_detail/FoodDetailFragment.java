@@ -56,19 +56,21 @@ public class FoodDetailFragment extends Fragment {
                 if (error.isEmpty() ) {
                     switch (Api.Request.getEnum(msg.what)) {
                         case GET_DISH:
+                            binding.foodDetail.foodWeight.setText(String.format("%s g", jsonObject.getString("weight")));
                             binding.foodDetail.foodName.setText(jsonObject.getString("name"));
                             binding.foodDetail.foodPrice.setText(String.format("%s Kč", jsonObject.getString("price")));
-                            binding.foodDetail.foodIngridients.setText(jsonObject.getString("ingredients").replace(", ", "\n"));
+                            binding.foodDetail.foodIngredients.setText(jsonObject.getString("ingredients").replace(", ", "\n"));
                             JSONArray allergens = new JSONArray(jsonObject.getString("allergens"));
                             StringBuilder allergensString = new StringBuilder();
                             for (int i = 0; i < allergens.length(); i++) {
                                 allergensString.append(allergens.getJSONObject(i).getString("code"));
                                 allergensString.append(" ");
                                 allergensString.append(allergens.getJSONObject(i).getString("name"));
-                                allergensString.append("\n");
+                                if (i != allergens.length() - 1) {
+                                    allergensString.append("\n");
+                                }
                             }
                             binding.foodDetail.foodAllergens.setText(allergensString);
-                            //binding.foodWeight.setText(String.format("%s g", jsonObject.getString("weight")));
                             //TODO set image
                             break;
                         case ADD_REVIEW:
