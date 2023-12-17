@@ -57,6 +57,7 @@ public class User {
                             break;
                         case GET_CANTEEN_INFO:
                             MainActivity.updateCanteenInfo(jsonObject.getString("name"), jsonObject.getString("email"), jsonObject.getString("phone"), jsonObject.getString("openingHours"), jsonObject.getString("address"));
+                            break;
                         case ADD_USER_CREDIT:
                             new Api(this).getUserCredit(token);
                             break;

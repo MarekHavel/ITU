@@ -1,6 +1,5 @@
 package eu.havy.canteen.ui.order_food;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,15 +10,12 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
-import androidx.navigation.NavDirections;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import eu.havy.canteen.MainActivity;
 import eu.havy.canteen.R;
 import eu.havy.canteen.databinding.CardDishBinding;
 import eu.havy.canteen.databinding.FragmentOrderFoodBinding;
@@ -96,16 +92,15 @@ public class OrderFoodFragment extends Fragment {
                 holder.binding.textViewExtraInfo.setText(current.getExtraInfo());
                 holder.binding.textViewPrice.setText(current.getPrice());
                 holder.binding.textViewCount.setText(current.getRemainingAmount());
+                Bundle bundle = new Bundle();
+                bundle.putInt("dishId", current.getId());
                 holder.binding.purchaseButton.setOnClickListener(view->{
                     Log.d("clickListener","Kliknuto na nákup obědu " + current.getId());
-                    Bundle bundle = new Bundle();
-                    bundle.putInt("dishId", current.getId());
-                    Navigation.findNavController(MainActivity.getInstance(),
-                                    R.id.nav_host_fragment_activity_main_content)
-                            .navigate(R.id.action_nav_order_food_to_purchaseFoodFragment,bundle);
+                    Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_main_content).navigate(R.id.nav_purchase_food, bundle);
                 });
                 holder.binding.getRoot().setOnClickListener(view->{
                     Log.d("clickListener","Kliknuto na detail obědu " + current.getId());
+                    Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_main_content).navigate(R.id.nav_food_detail, bundle);
                 });
             }
         }
