@@ -642,6 +642,7 @@ exports.orderHistoryGet = asyncHandler(async (req, res, next) => {
       continue;
     }
 
+    resOrder.orderId = order.id;
     resOrder.dishId = dish.id;
     resOrder.name = dish.name;
     resOrder.weight = dish.weight;
