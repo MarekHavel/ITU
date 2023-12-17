@@ -50,7 +50,7 @@ async function generateDayPickerInfo(week, year) {
   let dayButtons = [];
   for(let i = 0; i < 7; i++) {
     let dayButton = {};
-    dayButton.urlDate = addDays(weekStartdate, 1).toISOString().split('T')[0]; // YYYY-MM-DD
+    dayButton.urlDate = weekStartdate.toISOString().split('T')[0]; // YYYY-MM-DD
     dayButton.dateHumanReadable = weekStartdate.toLocaleDateString("cs-CZ");
     dayButton.dayName = weekDayNames[i];
 
