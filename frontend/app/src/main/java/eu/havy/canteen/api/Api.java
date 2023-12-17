@@ -1,3 +1,4 @@
+// authors: Marek Gergel <xgerge01@vutbr.cz>, Marek Havel <xhavel46@vutbr.cz>
 package eu.havy.canteen.api;
 
 import android.annotation.SuppressLint;
@@ -112,11 +113,13 @@ public class Api {
         }
     }
 
+    // Date to API date format
     @SuppressLint("SimpleDateFormat")
     public static String DateToApiDate(Date date) {
         return new SimpleDateFormat("yyyy-MM-dd").format(date);
     }
 
+    // Get User Token from API
     public void authenticateUser(String email, String password) {
         executor.execute(() -> {
             //Background work here
@@ -129,6 +132,7 @@ public class Api {
         });
     }
 
+    // Get User Info from API
     public void getUserInfo(String token) {
         executor.execute(() -> {
             //Background work here
@@ -140,6 +144,7 @@ public class Api {
         });
     }
 
+    // Get a day's menu from API
     public void getMenu(String token, Date date) {
         executor.execute(() -> {
             //Background work here
@@ -151,6 +156,7 @@ public class Api {
         });
     }
 
+    // Get data about particular dish from API
     public void getDish(String token, int dishId){
         executor.execute(() -> {
             //Background work here
@@ -163,6 +169,7 @@ public class Api {
 
     }
 
+    // Get all orders of user from API
     public void getOrderHistory(String token) {
         executor.execute(() -> {
             JSONObject response = request(Method.GET, server_api_url+"order/history?token="+token, null);
@@ -170,6 +177,7 @@ public class Api {
         });
     }
 
+    // Get credit of user from API
     public void getUserCredit(String token) {
         executor.execute(() -> {
             //Background work here
@@ -181,6 +189,7 @@ public class Api {
         });
     }
 
+    // Add credit to user's account from API
     public void addUserCredit(String token, int amount) {
         executor.execute(() -> {
             //Background work here
@@ -193,6 +202,7 @@ public class Api {
         });
     }
 
+    // Sell dish from API
     public void orderDish(String token, int dishId, String date) {
         executor.execute(() -> {
             //Background work here
@@ -205,6 +215,7 @@ public class Api {
         });
     }
 
+    // get info about user's canteen
     public void getCanteenInfo(String token) {
         executor.execute(() -> {
             //Background work here
@@ -216,6 +227,7 @@ public class Api {
         });
     }
 
+    // add review to dish
     public void addReview(String token, int dishId, int rating, String detail) {
         executor.execute(() -> {
             //Background work here
@@ -228,6 +240,7 @@ public class Api {
         });
     }
 
+    // get dish's general rating
     public void getGeneralRating(String token, int dishId) {
         executor.execute(() -> {
             //Background work here
@@ -250,6 +263,7 @@ public class Api {
         });
     }
 
+    // delete particular order via API
     public void deleteOrder(String token, String orderId) {
         executor.execute(() -> {
             //Background work here
@@ -262,6 +276,7 @@ public class Api {
         });
     }
 
+    // build JSON body from Map
     private JSONObject buildBody(Map<String, Object> params) {
         JSONObject body = new JSONObject();
         for (Map.Entry<String, Object> entry : params.entrySet()) {
@@ -274,6 +289,7 @@ public class Api {
         return body;
     }
 
+    // get response code from JSON response
     private int getResponseCode(JSONObject response) {
         int responseCode = HttpURLConnection.HTTP_INTERNAL_ERROR;
         try {

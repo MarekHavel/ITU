@@ -1,3 +1,4 @@
+// author: Marek Havel <xhavel46@vutbr.cz>
 package eu.havy.canteen.ui.order_food;
 
 import android.os.Bundle;
@@ -36,6 +37,7 @@ public class OrderFoodFragment extends Fragment {
     private FragmentOrderFoodBinding binding;
     public MutableLiveData<Date> selectedDate;
 
+    //selects current date on app start
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +45,8 @@ public class OrderFoodFragment extends Fragment {
         selectedDate.setValue(Calendar.getInstance().getTime());
     }
 
+    // creates both adapters and sets them to recycler views, attaches observers to view models
+    // also handles date changes
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         binding = FragmentOrderFoodBinding.inflate(inflater, container, false);
@@ -148,7 +152,7 @@ public class OrderFoodFragment extends Fragment {
         selectedDate.setValue(date);
     }
 
-    //todo fixup - update of dataset does nothing
+    // adapter attaches dish data to card_dish
     private class dishAdapter extends RecyclerView.Adapter<dishAdapter.MyViewHolder> {
         OrderFoodViewModel src;
         private class MyViewHolder extends RecyclerView.ViewHolder {
@@ -169,6 +173,8 @@ public class OrderFoodFragment extends Fragment {
             return new MyViewHolder(CardDishBinding.inflate(getLayoutInflater()));
         }
 
+        //databinding + button listeners - order creation and detail navigation
+
         @Override
         public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
             if(src.getDishCount() > 0) {
@@ -184,6 +190,9 @@ public class OrderFoodFragment extends Fragment {
                 if(current.getRemainingAmount() == 0) {
                     holder.binding.purchaseButton.setEnabled(false);
                     holder.binding.purchaseButton.setBackgroundColor(getResources().getColor(R.color.grey_500, getActivity().getTheme()));
+                } else {
+                    holder.binding.purchaseButton.setEnabled(true);
+                    holder.binding.purchaseButton.setBackgroundColor(getResources().getColor(R.color.red_900, getActivity().getTheme()));
                 }
                 holder.binding.purchaseButton.setOnClickListener(view->{
                     Log.d("clickListener","Kliknuto na nákup obědu " + current.getId());
@@ -207,6 +216,7 @@ public class OrderFoodFragment extends Fragment {
 
     }
 
+    // adapter attaches order data stored in dish object to card_dish_ordered
     private class orderAdapter extends RecyclerView.Adapter<orderAdapter.MyViewHolder> {
         OrderFoodViewModel src;
 
@@ -239,6 +249,7 @@ public class OrderFoodFragment extends Fragment {
             return (int) src.getOrderCount();
         }
 
+        //databinding + button listeners - order deletion and detail navigation
         @Override
         public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
             if(src.getOrderCount() > 0) {

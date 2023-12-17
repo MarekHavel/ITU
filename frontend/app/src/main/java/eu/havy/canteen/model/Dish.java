@@ -1,3 +1,4 @@
+// author: Marek Havel <xhavel46@vutbr.cz>
 package eu.havy.canteen.model;
 
 import java.util.Objects;
@@ -55,6 +56,7 @@ public class Dish {
         return allergensLite;
     }
 
+    // for printing via UI
     public String getExtraInfo() {
         if(Objects.equals(allergensLite, "")){
             return weight + "g";

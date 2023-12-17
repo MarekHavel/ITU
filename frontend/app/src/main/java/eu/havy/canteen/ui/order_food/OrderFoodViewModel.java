@@ -1,3 +1,4 @@
+// author: Marek Havel <xhavel46@vutbr.cz>
 package eu.havy.canteen.ui.order_food;
 
 import android.annotation.SuppressLint;
@@ -34,6 +35,7 @@ public class OrderFoodViewModel extends AndroidViewModel {
 
     private Date lastRefresh;
 
+    // Handler for API responses
     Handler handler = new Handler(Objects.requireNonNull(Looper.myLooper())) {
         @Override
         public void handleMessage(Message msg) {
@@ -107,7 +109,7 @@ public class OrderFoodViewModel extends AndroidViewModel {
         }
     };
 
-
+    //constructor
     public OrderFoodViewModel(@NonNull Application application) {
         super(application);
 
@@ -119,6 +121,7 @@ public class OrderFoodViewModel extends AndroidViewModel {
 
     }
 
+    //return observables
     public LiveData<List<Dish>> getAllDishes() {
         return dishes;
     }
@@ -127,6 +130,7 @@ public class OrderFoodViewModel extends AndroidViewModel {
         return orders;
     }
 
+    //used by Adapters
     public long getDishCount() {
         try {
             return Objects.requireNonNull(dishes.getValue()).size();
@@ -142,6 +146,8 @@ public class OrderFoodViewModel extends AndroidViewModel {
             return 0;
         }
     }
+
+    //explicit refreshes - requests to model
     public void refresh(Date date) {
         lastRefresh = date;
         Log.d("Canteen", "Refreshing dish list for date: " + date.toString());
@@ -149,6 +155,7 @@ public class OrderFoodViewModel extends AndroidViewModel {
         new Api(handler).getMenu(User.getCurrentUser().getToken(), date);
     }
 
+    //request wrapper when date not available in static context
     public void refresh() {
         if (lastRefresh != null) {
             refresh(lastRefresh);
@@ -157,6 +164,7 @@ public class OrderFoodViewModel extends AndroidViewModel {
         }
     }
 
+    // forward deletion request
     public void deleteOrder(String orderId) {
         new Api(handler).deleteOrder(User.getCurrentUser().getToken(), orderId);
     }

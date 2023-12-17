@@ -1,4 +1,5 @@
 #! /usr/bin/env node
+// Autor: Robin Volf (xvolfr00)
 
 const sequelize = require("../models");
 const { startOfISOWeek, setISOWeek, getISOWeek, addDays, addWeeks } = require("date-fns");
