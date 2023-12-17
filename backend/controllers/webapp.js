@@ -38,10 +38,6 @@ async function getAvailablePresets() {
 // @param year - rok
 // @return Objekt s informacemi pro vykreslení týdne
 async function generateDayPickerInfo(week, year) {
-  console.log({
-    week: week,
-    year: year
-  })
   const weekDate = setISOWeek(new Date(year, 1, 1), week);
   let weekStartdate = startOfISOWeek(weekDate);
 
@@ -70,8 +66,6 @@ async function generateDayPickerInfo(week, year) {
     nextWeek: nextWeekYear.toString() + "-W" + nextWeekNumber,
     prevWeek: prevWeekYear.toString() + "-W" + prevWeekNumber,
   };
-
-  console.log(resData);
 
   return resData;
 }
@@ -153,7 +147,6 @@ exports.day = asyncHandler(async (req, res, next) => {
       canteenId: user.canteenId,
       date: day
   };
-  console.log(info);
 
   res.render("dishes", {
     dishesMenu: resMenus,
@@ -305,7 +298,6 @@ exports.savePreset = asyncHandler(async (req, res, next) => {
   preset.save();
 
   const message = "Šablona '" + req.body.presetName + "' byla úspěšně " + (created ? "vytvořena" : "modifikována")
-  console.log("Success")
 
   res.render("savePresetSuccess", {
     successMessage: message,
