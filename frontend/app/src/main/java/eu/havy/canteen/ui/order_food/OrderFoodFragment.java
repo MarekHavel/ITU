@@ -1,3 +1,4 @@
+// author: Marek Havel <xhavel46@vutbr.cz>
 package eu.havy.canteen.ui.order_food;
 
 import android.os.Bundle;
@@ -183,6 +184,9 @@ public class OrderFoodFragment extends Fragment {
                 if(current.getRemainingAmount() == 0) {
                     holder.binding.purchaseButton.setEnabled(false);
                     holder.binding.purchaseButton.setBackgroundColor(getResources().getColor(R.color.grey_500, getActivity().getTheme()));
+                } else {
+                    holder.binding.purchaseButton.setEnabled(true);
+                    holder.binding.purchaseButton.setBackgroundColor(getResources().getColor(R.color.red_900, getActivity().getTheme()));
                 }
                 holder.binding.purchaseButton.setOnClickListener(view->{
                     Log.d("clickListener","Kliknuto na nákup obědu " + current.getId());
