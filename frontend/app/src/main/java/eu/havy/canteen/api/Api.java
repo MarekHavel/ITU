@@ -54,7 +54,9 @@ public class Api {
         GET_ORDERS_FOR_DAY,
         ORDER_DISH,
         SELL_DISH,
-        GET_CANTEEN_INFO;
+        GET_CANTEEN_INFO,
+        GET_GENERAL_RATING,
+        ADD_REVIEW;
 
         public static Request getEnum(int i) {
             return Request.values()[i];
@@ -211,6 +213,29 @@ public class Api {
             //UI Thread work here
             //handler.post(() -> {});
             handler.obtainMessage(Request.GET_CANTEEN_INFO.ordinal(), getResponseCode(response), 0, response).sendToTarget();
+        });
+    }
+
+    public void addReview(String token, int dishId, int rating, String detail) {
+        executor.execute(() -> {
+            //Background work here
+            JSONObject body = buildBody(Map.of("token", token, "dishId", dishId, "rating", buildBody(Map.of("rating", rating, "comment", detail))));
+            JSONObject response = request(Method.POST, server_api_url+"dish/rating", body);
+
+            //UI Thread work here
+            //handler.post(() -> {});
+            handler.obtainMessage(Request.ADD_REVIEW.ordinal(), getResponseCode(response), 0, response).sendToTarget();
+        });
+    }
+
+    public void getGeneralRating(String token, int dishId) {
+        executor.execute(() -> {
+            //Background work here
+            JSONObject response = request(Method.GET, server_api_url+"dish/rating/general?token="+token+"&dishId="+dishId, null);
+
+            //UI Thread work here
+            //handler.post(() -> {});
+            handler.obtainMessage(Request.GET_GENERAL_RATING.ordinal(), getResponseCode(response), 0, response).sendToTarget();
         });
     }
 
