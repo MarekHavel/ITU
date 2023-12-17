@@ -39,12 +39,14 @@ public class LoginActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = instance.getSharedPreferences("eu.havy.canteen", MODE_PRIVATE);
 
         //save token of logged in user for automatic login
-        sharedPreferences.edit().putString("token", User.getCurrentUser().getToken()).apply();
+        if (sharedPreferences.getString("token", null) == null) {
+            sharedPreferences.edit().putString("token", User.getCurrentUser().getToken()).apply();
+        }
 
         //start main activity
         Intent intent = new Intent(instance, MainActivity.class);
-        instance.startActivity(intent);
         instance.finish();
+        instance.startActivity(intent);
         instance = null;
     }
 

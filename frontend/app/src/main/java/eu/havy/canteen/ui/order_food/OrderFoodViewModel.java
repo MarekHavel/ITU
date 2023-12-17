@@ -6,7 +6,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -23,7 +22,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import eu.havy.canteen.LoginActivity;
 import eu.havy.canteen.MainActivity;
 import eu.havy.canteen.api.Api;
 import eu.havy.canteen.model.Dish;
@@ -43,7 +41,6 @@ public class OrderFoodViewModel extends AndroidViewModel {
                 jsonObject = (JSONObject) msg.obj;
                 String error = jsonObject.has("exception") ? jsonObject.getString("exception") : (jsonObject.has("message") ? jsonObject.getString("message") : "");
                 if (!error.isEmpty()) {
-                    Toast.makeText(MainActivity.getInstance() != null ? MainActivity.getInstance() : LoginActivity.getInstance(), "Failed to load data", Toast.LENGTH_SHORT).show();
                     Log.e("User", "FAILURE, request: " + Api.Request.toString(msg.what) + " code: " + msg.arg1 + " message: " + error);
                     return;
                 }
@@ -58,7 +55,7 @@ public class OrderFoodViewModel extends AndroidViewModel {
                     Dish dish = new Dish(obj.getInt("id"),obj.getString("name"),
                             obj.getString("category"),obj.getString("allergens"),
                             obj.getInt("price"), obj.getInt("itemsLeft"),
-                            obj.getInt("weight"), null,-1);
+                            obj.getInt("weight"), null, -1);
                     dishList.add(dish);
                 } catch (JSONException e) {
                     e.printStackTrace();

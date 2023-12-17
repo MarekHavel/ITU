@@ -1,8 +1,6 @@
 package eu.havy.canteen.ui.order_food;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import eu.havy.canteen.MainActivity;
 import eu.havy.canteen.R;
 import eu.havy.canteen.databinding.CardDishBinding;
 import eu.havy.canteen.databinding.FragmentOrderFoodBinding;
@@ -61,7 +58,6 @@ public class OrderFoodFragment extends Fragment {
         homeViewModel.getAllDishes().observe(this.getViewLifecycleOwner(), new Observer<List<Dish>>() {
             @Override
             public void onChanged(List<Dish> dishes) {
-                binding.foodCardRecycler.invalidate(); // todo this was not enough
                 adapter.setDishes(dishes);
             }
         });
@@ -70,57 +66,53 @@ public class OrderFoodFragment extends Fragment {
     }
 
     //todo fixup - update of dataset does nothing
-    private class dishAdapter extends RecyclerView.Adapter<dishAdapter.MyViewHolder>{
+    private class dishAdapter extends RecyclerView.Adapter<dishAdapter.MyViewHolder> {
         OrderFoodViewModel src;
-        private class MyViewHolder extends RecyclerView.ViewHolder{
+        private class MyViewHolder extends RecyclerView.ViewHolder {
             CardDishBinding binding;
-            public MyViewHolder(CardDishBinding b){
+            public MyViewHolder(CardDishBinding b) {
                 super(b.getRoot());
                 binding = b;
             }
         }
 
-        public dishAdapter(OrderFoodViewModel data){
+        public dishAdapter(OrderFoodViewModel data) {
             this.src = data;
         }
 
         @NonNull
         @Override
-        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
+        public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             return new MyViewHolder(CardDishBinding.inflate(getLayoutInflater()));
         }
 
         @Override
-        public void onBindViewHolder(@NonNull MyViewHolder holder, int position){
+        public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
             if(src.getDishCount() > 0) {
                 Dish current = src.getAllDishes().getValue().get(position);
                 holder.binding.textViewName.setText(current.getName());
                 holder.binding.textViewExtraInfo.setText(current.getExtraInfo());
                 holder.binding.textViewPrice.setText(current.getPrice());
                 holder.binding.textViewCount.setText(current.getRemainingAmount());
+                Bundle bundle = new Bundle();
+                bundle.putInt("dishId", current.getId());
                 holder.binding.purchaseButton.setOnClickListener(view->{
                     Log.d("clickListener","Kliknuto na nákup obědu " + current.getId());
-                    Bundle bundle = new Bundle();
-                    bundle.putInt("dishId", current.getId());
-                    Navigation.findNavController(MainActivity.getInstance(),
-                                    R.id.nav_host_fragment_activity_main_content)
-                            .navigate(R.id.action_nav_order_food_to_purchaseFoodFragment,bundle);
+                    Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_main_content).navigate(R.id.nav_purchase_food, bundle);
                 });
                 holder.binding.getRoot().setOnClickListener(view->{
                     Log.d("clickListener","Kliknuto na detail obědu " + current.getId());
+                    Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_main_content).navigate(R.id.nav_food_detail, bundle);
                 });
             }
         }
 
-        public void setDishes(List<Dish> dishes){
-            Handler handler = new Handler(Looper.getMainLooper());
-            handler.post(() -> {
-                notifyDataSetChanged(); // Notify the adapter that the data has changed
-            });
+        public void setDishes(List<Dish> dishes) {
+            notifyDataSetChanged();
         }
 
         @Override
-        public int getItemCount(){
+        public int getItemCount() {
             return (int) src.getDishCount();
         }
 

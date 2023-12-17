@@ -11,7 +11,6 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -20,14 +19,8 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Objects;
@@ -65,8 +58,8 @@ public class MainActivity extends AppCompatActivity {
 
         //start login activity
         Intent intent = new Intent(instance, LoginActivity.class);
-        instance.startActivity(intent);
         instance.finish();
+        instance.startActivity(intent);
         instance = null;
     }
 
@@ -93,13 +86,10 @@ public class MainActivity extends AppCompatActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
         setSupportActionBar(binding.appBarMain.toolbar);
-        DrawerLayout drawer = binding.drawerLayout;
-        NavigationView navigationView = binding.navView;
 
+        //set up logout button
         MenuHeaderBinding headerBinding = MenuHeaderBinding.bind(binding.navView.getHeaderView(0));
-
         headerBinding.logoutButton.setOnClickListener(view -> {
             logOut();
             User.logout();
@@ -109,10 +99,17 @@ public class MainActivity extends AppCompatActivity {
         int[] menuItems = {R.id.nav_order_food, R.id.nav_recharge_credit, R.id.nav_order_history};
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
-        mAppBarConfiguration = new AppBarConfiguration.Builder(menuItems).setOpenableLayout(drawer).build();
+        mAppBarConfiguration = new AppBarConfiguration.Builder(menuItems).setOpenableLayout(binding.drawerLayout).build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main_content);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-        NavigationUI.setupWithNavController(navigationView, navController);
+        NavigationUI.setupWithNavController(binding.navView, navController);
+
+        //credit toolbar click listener
+        binding.appBarMain.toolbarCredit.setOnClickListener(view -> {
+            if (navController.getCurrentDestination().getId() != R.id.nav_recharge_credit) {
+                navController.navigate(R.id.nav_recharge_credit);
+            }
+        });
     }
 
     public LiveData<Date> getSelectedDate() {
@@ -139,7 +136,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public View onCreateView(@NonNull String name, @NonNull Context context, @NonNull AttributeSet attrs) {
         //load user data
-        User.getCurrentUser().updateData();
+        if (User.getCurrentUser() != null) {
+            User.getCurrentUser().updateData();
+        }
 
         return super.onCreateView(name, context, attrs);
     }
@@ -172,6 +171,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static void updateCredit() {
-        instance.binding.appBarMain.toolbarCredit.setText(User.getCurrentUser().getCredit());
+        instance.binding.appBarMain.toolbarCredit.setText(String.format("%s Kč", User.getCurrentUser().getCredit()));
+    }
+
+    public static void updateCanteenInfo(String name, String email, String phone, String openingHours, String address) {
+        instance.binding.canteenName.setText(name);
+        instance.binding.canteenOpeningHours.setText(openingHours);
+        instance.binding.canteenPhone.setText(phone);
+        instance.binding.canteenEmail.setText(email);
+        instance.binding.canteenAddress.setText(address.replaceAll(",", "\n"));
     }
 }

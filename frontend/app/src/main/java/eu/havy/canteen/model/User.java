@@ -4,7 +4,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,26 +30,15 @@ public class User {
     private String priceCategory;
     private String credit;
 
-    private final Handler creditUpdateLoop = new Handler(Objects.requireNonNull(Looper.myLooper()));
-    private final Runnable creditUpdate = new Runnable() {
-        @Override
-        public void run() {
-            creditUpdateLoop.postDelayed(this, 30000);
-            new Api(handler).getUserCredit(token);
-        }
-    };
-
     private final Handler handler = new Handler(Objects.requireNonNull(Looper.myLooper())) {
         @Override
         public void handleMessage(Message msg) {
             JSONObject jsonObject;
+            String error = "";
             try {
                 jsonObject = (JSONObject) msg.obj;
-                String error = jsonObject.has("exception") ? jsonObject.getString("exception") : (jsonObject.has("message") ? jsonObject.getString("message") : "");
-                if (!error.isEmpty()) {
-                    Toast.makeText(MainActivity.getInstance() != null ? MainActivity.getInstance() : LoginActivity.getInstance(), "Failed to load data", Toast.LENGTH_SHORT).show();
-                    Log.e("User", "FAILURE, request: " + Api.Request.toString(msg.what) +" code: " + msg.arg1 + " message: " + error);
-                } else {
+                error = jsonObject.has("exception") ? jsonObject.getString("exception") : (jsonObject.has("message") ? jsonObject.getString("message") : "");
+                if (error.isEmpty()) {
                     switch (Api.Request.getEnum(msg.what)) {
                         case AUTHENTICATE_USER:
                             token = jsonObject.getString("token");
@@ -66,18 +54,18 @@ public class User {
                         case GET_USER_CREDIT:
                             credit = jsonObject.getString("credit");
                             MainActivity.updateCredit();
-                            creditUpdateLoop.removeCallbacks(creditUpdate);
-                            creditUpdateLoop.postDelayed(creditUpdate, 30000);
+                            break;
+                        case GET_CANTEEN_INFO:
+                            MainActivity.updateCanteenInfo(jsonObject.getString("name"), jsonObject.getString("email"), jsonObject.getString("phone"), jsonObject.getString("openingHours"), jsonObject.getString("address"));
                             break;
                         case ADD_USER_CREDIT:
-                            creditUpdateLoop.removeCallbacks(creditUpdate);
-                            creditUpdateLoop.post(creditUpdate);
+                            new Api(this).getUserCredit(token);
                             break;
                     }
                 }
             } catch (JSONException e) {
-                Toast.makeText(MainActivity.getInstance() != null ? MainActivity.getInstance() : LoginActivity.getInstance(), "Request failed", Toast.LENGTH_SHORT).show();
-                Log.e("User", "FAILURE, request: " + Api.Request.toString(msg.what) +" code: " + msg.arg1 + " message: " + msg.obj);
+                error = msg.obj.toString();
+                e.printStackTrace();
             } finally {
                 switch (Api.Request.getEnum(msg.what)) {
                     case AUTHENTICATE_USER:
@@ -91,6 +79,20 @@ public class User {
                     case ADD_USER_CREDIT:
                         RechargeCreditFragment.requestFinished();
                         break;
+                    case GET_USER_INFO:
+                    case GET_USER_CREDIT:
+                    case GET_CANTEEN_INFO:
+                    case GET_MENU:
+                    case GET_ORDER_HISTORY:
+                        if (msg.arg1 == HttpURLConnection.HTTP_BAD_REQUEST) {
+                            if (MainActivity.getInstance() != null) {
+                                MainActivity.logOut();
+                            }
+                            User.logout();
+                        }
+                }
+                if (!error.isEmpty()) {
+                    Log.e("User", "FAILURE, request: " + Api.Request.toString(msg.what) +" code: " + msg.arg1 + " message: " + error);
                 }
             }
         }
@@ -170,8 +172,10 @@ public class User {
     }
 
     public void updateData() {
-        new Api(handler).getUserInfo(token);
-        new Api(handler).getUserCredit(token);
+        Api api = new Api(handler);
+        api.getUserInfo(token);
+        api.getUserCredit(token);
+        api.getCanteenInfo(token);
     }
 
     /**
@@ -180,7 +184,6 @@ public class User {
      */
     public static synchronized boolean logout() {
         if (currentUser != null) {
-            currentUser.creditUpdateLoop.removeCallbacks(currentUser.creditUpdate);
             currentUser = null;
             return true;
         }
