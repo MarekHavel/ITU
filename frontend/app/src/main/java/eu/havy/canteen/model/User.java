@@ -1,3 +1,4 @@
+// author: Marek Gergel <xgerge01@vutbr.cz>
 package eu.havy.canteen.model;
 
 import android.os.Handler;

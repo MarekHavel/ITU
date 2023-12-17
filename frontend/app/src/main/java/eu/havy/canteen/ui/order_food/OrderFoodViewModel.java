@@ -1,3 +1,4 @@
+// author: Marek Havel <xhavel46@vutbr.cz>
 package eu.havy.canteen.ui.order_food;
 
 import android.annotation.SuppressLint;

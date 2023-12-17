@@ -1,3 +1,4 @@
+// authors: Marek Gergel <xgerge01@vutbr.cz>, Marek Havel <xhavel46@vutbr.cz>
 package eu.havy.canteen.api;
 
 import android.annotation.SuppressLint;

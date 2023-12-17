@@ -1,3 +1,4 @@
+// author: Marek Gergel <xgerge01@vutbr.cz>
 package eu.havy.canteen.ui.recharge_credit;
 
 import android.view.View;

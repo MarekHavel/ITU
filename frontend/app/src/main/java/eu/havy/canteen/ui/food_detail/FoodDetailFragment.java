@@ -1,3 +1,4 @@
+// author: Marek Gergel <xgerge01@vutbr.cz>
 package eu.havy.canteen.ui.food_detail;
 
 import android.os.Bundle;
