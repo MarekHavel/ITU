@@ -481,7 +481,7 @@ exports.dishRatingGeneralGet = asyncHandler(async (req, res, next) => {
     where: {
       dishId: dish.id
     },
-    order: ["updatedAt"]
+    order: [["updatedAt", "DESC"]]
   });
 
   let resReviews = [];
