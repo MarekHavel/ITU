@@ -490,7 +490,7 @@ exports.dishRatingGeneralGet = asyncHandler(async (req, res, next) => {
     let r = {
       rating: review.stars,
       reviewText: review.comment,
-      author: reviewAuthor.username
+      username: reviewAuthor.username
     }
     resReviews.push(r);
   }
