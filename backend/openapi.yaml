@@ -376,6 +376,12 @@ paths:
           schema:
             type: "string"
             format: "UUID"
+        - name: "date"
+          in: "query"
+          description: "Filter history by a given date"
+          required: false
+          schema:
+            type: "string"
       responses:
         200:
           description: "Array of history items"

@@ -626,7 +626,8 @@ exports.orderHistoryGet = asyncHandler(async (req, res, next) => {
   }
 
   // Objednávky seřazené od nejnovějších
-  const userOrders = await user.getOrders({ order: ["createdAt"] });
+  const userOrders = 
+  await user.getOrders({ order: ["createdAt"] });
 
   let resData = { orders: [] };
   for(const order of userOrders) {
@@ -634,6 +635,11 @@ exports.orderHistoryGet = asyncHandler(async (req, res, next) => {
     resOrder.orderDate = order.createdAt;
 
     const dish = await (await order.getMenu()).getDish();
+
+    // Pokud byl zadán optional parametr datum, skipni všechny ostatní objednávky
+    if(req.query.date && (await order.getMenu()).date !== req.query.date) {
+      continue;
+    }
 
     resOrder.dishId = dish.id;
     resOrder.name = dish.name;
