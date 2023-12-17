@@ -1,5 +1,6 @@
 package eu.havy.canteen.api;
 
+import android.annotation.SuppressLint;
 import android.os.Handler;
 
 import org.json.JSONException;
@@ -9,6 +10,8 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -105,6 +108,11 @@ public class Api {
         }
     }
 
+    @SuppressLint("SimpleDateFormat")
+    public static String DateToApiDate(Date date) {
+        return new SimpleDateFormat("yyyy-MM-dd").format(date);
+    }
+
     public void authenticateUser(String email, String password) {
         executor.execute(() -> {
             //Background work here
@@ -128,10 +136,10 @@ public class Api {
         });
     }
 
-    public void getMenu(String token, String date) {
+    public void getMenu(String token, Date date) {
         executor.execute(() -> {
             //Background work here
-            JSONObject response = request(Method.GET, server_api_url+"menu?token="+token+"&date="+date, null);
+            JSONObject response = request(Method.GET, server_api_url+"menu?token="+token+"&date="+ DateToApiDate(date), null);
 
             //UI Thread work here
             //handler.post(() -> {});
@@ -181,10 +189,10 @@ public class Api {
         });
     }
 
-    public void orderDish(String token, int dishId) {
+    public void orderDish(String token, int dishId, String date) {
         executor.execute(() -> {
             //Background work here
-            JSONObject body = buildBody(Map.of("token", token, "dishId", dishId, "date","2023-11-13"));
+            JSONObject body = buildBody(Map.of("token", token, "dishId", dishId, "date",date));
             JSONObject response = request(Method.POST, server_api_url+"order/create", body);
 
             //UI Thread work here

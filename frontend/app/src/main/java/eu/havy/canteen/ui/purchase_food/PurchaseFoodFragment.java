@@ -63,9 +63,12 @@ public class PurchaseFoodFragment extends Fragment {
 
                 Button button = binding.findViewById(R.id.buyFoodButton);
                 button.setOnClickListener(view->{
-                    mViewModel.orderDish(); // todo wait for order to finish
+                    String date = this.getArguments().getString("date");
+                    if(date != null) {
+                        mViewModel.orderDish(this.getArguments().getString("date"));
+                        Navigation.findNavController(MainActivity.getInstance(), R.id.nav_host_fragment_activity_main_content).popBackStack();
+                    }
 
-                    Navigation.findNavController(MainActivity.getInstance(), R.id.nav_host_fragment_activity_main_content).popBackStack();
                 });
             } else {
                 Log.d("Canteen","Picked dish changed: null");
