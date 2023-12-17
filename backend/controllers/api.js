@@ -64,7 +64,7 @@ exports.menuGet = asyncHandler(async (req, res, next) => {
   if(!user) {
     res.status(400).json({
       code: 1,
-      message: "Unknown token"
+      message: "Ivalid authentication token"
     });
     return;
   }
@@ -622,7 +622,7 @@ exports.orderHistoryGet = asyncHandler(async (req, res, next) => {
   if(!user) {
     res.status(400).json({
       code: 1,
-      message: "Unknown token"
+      message: "Ivalid authentication token"
     });
     return;
   }
@@ -684,7 +684,7 @@ exports.canteenGet = asyncHandler(async (req, res, next) => {
   if(!user) {
     res.status(400).json({
       code: 1,
-      message: "Unknown token"
+      message: "Ivalid authentication token"
     });
     return;
   }
