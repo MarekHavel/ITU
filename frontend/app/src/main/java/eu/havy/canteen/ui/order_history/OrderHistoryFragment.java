@@ -29,6 +29,8 @@ public class OrderHistoryFragment extends Fragment {
         OrderHistoryViewModel orderHistoryViewModel =
                 new ViewModelProvider(this).get(OrderHistoryViewModel.class);
 
+        orderHistoryViewModel.refresh();
+
         binding = FragmentOrderHistoryBinding.inflate(inflater, container, false);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getContext()){

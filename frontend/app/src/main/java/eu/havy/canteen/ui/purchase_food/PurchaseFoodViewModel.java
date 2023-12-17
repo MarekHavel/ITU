@@ -79,20 +79,8 @@ public class PurchaseFoodViewModel extends AndroidViewModel {
                     return;
                 } else {
                     Log.d("Canteen", "SUCCESS, request: " + Api.Request.toString(msg.what) + " code: " + msg.arg1 + " message: " + error);
-
                     // refresh credits
                     User.getCurrentUser().updateData();
-
-                    // todo refresh order list
-
-                    // refresh dish list
-                    ViewModelProvider provider = new ViewModelProvider(MainActivity.getInstance());
-                    OrderFoodViewModel orderFoodViewModel = provider.get(OrderFoodViewModel.class);
-                    orderFoodViewModel.refresh();
-
-                    // refresh order history
-                    OrderHistoryViewModel orderHistoryViewModel = provider.get(OrderHistoryViewModel.class);
-                    orderHistoryViewModel.refresh();
                 }
             } catch (JSONException e) {
                 Log.e("JSON", "Invalid JSON response");
@@ -111,8 +99,6 @@ public class PurchaseFoodViewModel extends AndroidViewModel {
         dishId = new MutableLiveData<>();
         dishId.setValue(null);
 
-        // todo dishId observer launches handler instead of the setDishId function which locks the app
-
     }
 
     public LiveData<Dish> getDish() {
@@ -124,8 +110,8 @@ public class PurchaseFoodViewModel extends AndroidViewModel {
         new Api(getDishHandler).getDish(User.getCurrentUser().getToken(),dishn);
     }
 
-    public void orderDish(){
-        new Api(orderDishHandler).orderDish(User.getCurrentUser().getToken(),dishId.getValue());
+    public void orderDish(String date){
+        new Api(orderDishHandler).orderDish(User.getCurrentUser().getToken(), Objects.requireNonNull(dishId.getValue()), date); //todo add date
         // todo wait for arrival
     }
 }

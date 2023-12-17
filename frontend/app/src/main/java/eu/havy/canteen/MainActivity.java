@@ -19,9 +19,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -34,11 +32,9 @@ import eu.havy.canteen.ui.settings.SettingsFragment;
 public class MainActivity extends AppCompatActivity {
 
     private static MainActivity instance;
-    private Date date;
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
 
-    private MutableLiveData<Date> selectedDate;
 
     public static MainActivity getInstance() {
         return instance;
@@ -68,22 +64,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         instance = this;
 
-        selectedDate = new MutableLiveData<>();
-
-        //selectedDate.setValue(Calendar.getInstance().getTime());
-
-        // todo replace with above
-        String dateString = "2023-11-13";
-        DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        try {
-            Date date = sdf.parse(dateString);
-            selectedDate.setValue(date);
-            Log.d("Canteen", "Selected date: " + sdf.format(Objects.requireNonNull(selectedDate.getValue())));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         setSupportActionBar(binding.appBarMain.toolbar);
@@ -110,14 +90,6 @@ public class MainActivity extends AppCompatActivity {
                 navController.navigate(R.id.nav_recharge_credit);
             }
         });
-    }
-
-    public LiveData<Date> getSelectedDate() {
-        return selectedDate;
-    }
-
-    public void selectDate(Date date) {
-        selectedDate.setValue(date);
     }
 
     @Override

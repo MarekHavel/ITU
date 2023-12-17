@@ -57,7 +57,6 @@ public class OrderHistoryViewModel extends ViewModel {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
             }
             dishes.setValue(dishList);
         }
@@ -67,8 +66,6 @@ public class OrderHistoryViewModel extends ViewModel {
     public OrderHistoryViewModel() {
         dishes = new MutableLiveData<>();
         dishes.setValue(null);
-
-        refresh();
     }
 
     public void refresh() {

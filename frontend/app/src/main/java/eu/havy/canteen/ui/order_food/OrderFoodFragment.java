@@ -8,28 +8,55 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import eu.havy.canteen.R;
+import eu.havy.canteen.api.Api;
 import eu.havy.canteen.databinding.CardDishBinding;
 import eu.havy.canteen.databinding.FragmentOrderFoodBinding;
 import eu.havy.canteen.model.Dish;
+import eu.havy.canteen.model.User;
 
 public class OrderFoodFragment extends Fragment {
 
     private FragmentOrderFoodBinding binding;
+    public MutableLiveData<Date> selectedDate;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        OrderFoodViewModel homeViewModel = new ViewModelProvider(this).get(OrderFoodViewModel.class);
-
         binding = FragmentOrderFoodBinding.inflate(inflater, container, false);
+        if(User.getCurrentUser() == null) return binding.getRoot();
+
+        selectedDate = new MutableLiveData<>();
+
+        selectedDate.setValue(Calendar.getInstance().getTime());
+
+        /* // use me if you need to set date manually for testing
+        String dateString = "2023-11-13";
+        DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date date = sdf.parse(dateString);
+            selectedDate.setValue(date);
+            Log.d("Canteen", "Selected date: " + sdf.format(Objects.requireNonNull(selectedDate.getValue())));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        */
+
+        OrderFoodViewModel orderFoodViewModel = new ViewModelProvider(this).get(OrderFoodViewModel.class);
+        orderFoodViewModel.refresh(selectedDate.getValue());
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this.getContext()){
             @Override
@@ -42,27 +69,56 @@ public class OrderFoodFragment extends Fragment {
             }
         };
 
-        // todo add calendar items and current date selector
-
-        //calendarAdapter = new calendarAdapter(homeViewModel);
-        //binding.calendarRecycler.setAdapter(calendarAdapter);
+        //todo move dates around
 
         binding.foodCardRecycler.setLayoutManager(layoutManager);
         binding.foodCardRecycler.setHasFixedSize(true);
-        dishAdapter adapter = new dishAdapter(homeViewModel);
+        dishAdapter adapter = new dishAdapter(orderFoodViewModel);
         binding.foodCardRecycler.setAdapter(adapter);
 
-        orderAdapter orders = new orderAdapter(homeViewModel);
+        orderAdapter orders = new orderAdapter(orderFoodViewModel);
         binding.orderCardRecycler.setAdapter(orders);
 
-        homeViewModel.getAllDishes().observe(this.getViewLifecycleOwner(), new Observer<List<Dish>>() {
+        orderFoodViewModel.getAllDishes().observe(this.getViewLifecycleOwner(), new Observer<List<Dish>>() {
             @Override
             public void onChanged(List<Dish> dishes) {
                 adapter.setDishes(dishes);
             }
         });
 
+        selectedDate.observe(this.getViewLifecycleOwner(), new Observer<Date>() {
+            @Override
+            public void onChanged(Date date) {
+                DateFormat sdf = DateFormat.getDateInstance();
+                String dateText = sdf.format(date);
+                Log.d("Canteen", "Selected date: " + dateText);
+                binding.Date.setText(dateText);
+                orderFoodViewModel.refresh(date);
+            }
+        });
+
+        binding.dateOneDown.setOnClickListener(view -> {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(selectedDate.getValue());
+            cal.add(Calendar.DATE, -1);
+            selectedDate.setValue(cal.getTime());
+        });
+        binding.dateOneUp.setOnClickListener(view -> {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(selectedDate.getValue());
+            cal.add(Calendar.DATE, 1);
+            selectedDate.setValue(cal.getTime());
+        });
+
         return binding.getRoot();
+    }
+
+    public LiveData<Date> getSelectedDate() {
+        return selectedDate;
+    }
+
+    public void selectDate(Date date) {
+        selectedDate.setValue(date);
     }
 
     //todo fixup - update of dataset does nothing
@@ -96,6 +152,7 @@ public class OrderFoodFragment extends Fragment {
                 holder.binding.textViewCount.setText(current.getRemainingAmount());
                 Bundle bundle = new Bundle();
                 bundle.putInt("dishId", current.getId());
+                bundle.putString("date", Api.DateToApiDate(selectedDate.getValue()));
                 holder.binding.purchaseButton.setOnClickListener(view->{
                     Log.d("clickListener","Kliknuto na nákup obědu " + current.getId());
                     Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_main_content).navigate(R.id.nav_purchase_food, bundle);

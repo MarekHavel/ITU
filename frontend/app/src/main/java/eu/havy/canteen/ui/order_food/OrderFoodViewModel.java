@@ -72,8 +72,6 @@ public class OrderFoodViewModel extends AndroidViewModel {
 
         dishes = new MutableLiveData<>();
         dishes.setValue(null);
-
-        refresh();
     }
 
     public LiveData<List<Dish>> getAllDishes() {
@@ -87,12 +85,9 @@ public class OrderFoodViewModel extends AndroidViewModel {
             return 0;
         }
     }
-    public void refresh(){
-        Date date = MainActivity.getInstance().getSelectedDate().getValue();
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // API has specific date format
-        String dateText = sdf.format(Objects.requireNonNull(date));
-        Log.d("Canteen", "Refreshing dish list for date: " + dateText);
-        new Api(handler).getMenu(User.getCurrentUser().getToken(), dateText);
+    public void refresh(Date date) {
+        Log.d("Canteen", "Refreshing dish list for date: " + date.toString());
+        new Api(handler).getMenu(User.getCurrentUser().getToken(), date);
 
     }
 }
