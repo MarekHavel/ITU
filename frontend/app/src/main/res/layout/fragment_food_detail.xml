@@ -13,10 +13,22 @@
 
     <com.google.android.material.divider.MaterialDivider
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"/>
 
     <include
-        android:id="@+id/food_rewiew"
+        android:id="@+id/food_review"
         layout="@layout/food_review"/>
+
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"/>
+
+    <include
+        android:id="@+id/food_review_list"
+        layout="@layout/food_review_list"/>
 
 </LinearLayout>
