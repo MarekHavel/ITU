@@ -68,7 +68,7 @@ public class PurchaseFoodViewModel extends AndroidViewModel {
 
     Handler orderDishHandler = new Handler(Objects.requireNonNull(Looper.myLooper())) {
         @Override
-        public void handleMessage(Message msg) { // todo redo for orders
+        public void handleMessage(Message msg) {
             JSONObject jsonObject;
             try {
                 jsonObject = (JSONObject) msg.obj;
@@ -111,7 +111,6 @@ public class PurchaseFoodViewModel extends AndroidViewModel {
     }
 
     public void orderDish(String date){
-        new Api(orderDishHandler).orderDish(User.getCurrentUser().getToken(), Objects.requireNonNull(dishId.getValue()), date); //todo add date
-        // todo wait for arrival
+        new Api(orderDishHandler).orderDish(User.getCurrentUser().getToken(), Objects.requireNonNull(dishId.getValue()), date);
     }
 }

@@ -148,7 +148,6 @@ public class OrderFoodFragment extends Fragment {
         selectedDate.setValue(date);
     }
 
-    //todo fixup - update of dataset does nothing
     private class dishAdapter extends RecyclerView.Adapter<dishAdapter.MyViewHolder> {
         OrderFoodViewModel src;
         private class MyViewHolder extends RecyclerView.ViewHolder {
