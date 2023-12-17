@@ -64,11 +64,23 @@ async function main() {
     authToken: "ac752c76-5c8d-4642-ba3a-e5bc4548bce4" // Pro testování
   });
 
+  const user3 = await models.user.create({
+    username: "Vašek Večeřa",  
+    email: "vecera@gmail.com",  
+    password: "password",  // Custom setter to zahešuje
+    credit: "99",  
+    role: "customer",  
+    authToken: "597a9b5c-7b12-4e9c-87d3-71527d29e8d1" // Pro testování
+  });
+
   await user1.setCanteen(canteen1);
   await user1.setPrice_category(studentCategory);
 
   await user2.setCanteen(canteen1);
   await user2.setPrice_category(studentCategory);
+
+  await user3.setCanteen(canteen1);
+  await user3.setPrice_category(studentCategory);
 
   const admin = await models.user.create({
     username: "Karel Pořízek",  
