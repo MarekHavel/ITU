@@ -246,7 +246,8 @@ exports.orderCreate = asyncHandler(async (req, res, next) => {
       priceCategoryId: user.priceCategoryId,
       dishId: dish.id
     }})
-    await user.decrement("credit", {price});
+
+    await user.decrement("credit", {by: price});
 
     res.status(200).json({
       orderId: order.id
@@ -303,7 +304,7 @@ exports.orderDelete = asyncHandler(async (req, res, next) => {
     }})
 
     await order.destroy();
-    await user.decrement("credit", {by: price});
+    await user.increment("credit", {by: price});
 
     res.status(200).end();
   }
