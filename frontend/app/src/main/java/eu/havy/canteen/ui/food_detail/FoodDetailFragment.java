@@ -50,10 +50,11 @@ public class FoodDetailFragment extends Fragment {
                 if (error.isEmpty() ) {
                     switch (Api.Request.getEnum(msg.what)) {
                         case GET_DISH:
-                            binding.foodName.setText(jsonObject.getString("name"));
-                            binding.foodPrice.setText(String.format("%s Kč", jsonObject.getString("price")));
-                            binding.foodRating.setText(String.format("%s/5", jsonObject.getString("averageRating")));
-                            binding.foodIngridients.setText(jsonObject.getString("ingredients").replace(",", "\n"));
+
+                            binding.foodDetail.foodName.setText(jsonObject.getString("name"));
+                            binding.foodDetail.foodPrice.setText(String.format("%s Kč", jsonObject.getString("price")));
+                            binding.foodDetail.foodRating.setText(String.format("%s/5", jsonObject.getString("averageRating")));
+                            binding.foodDetail.foodIngridients.setText(jsonObject.getString("ingredients").replace(",", "\n"));
                             JSONArray allergens = new JSONArray(jsonObject.getString("allergens"));
                             StringBuilder allergensString = new StringBuilder();
                             for (int i = 0; i < allergens.length(); i++) {
@@ -62,7 +63,7 @@ public class FoodDetailFragment extends Fragment {
                                 allergensString.append(allergens.getJSONObject(i).getString("name"));
                                 allergensString.append("\n");
                             }
-                            binding.foodAllergens.setText(allergensString);
+                            binding.foodDetail.foodAllergens.setText(allergensString);
                             //binding.foodWeight.setText(String.format("%s g", jsonObject.getString("weight")));
                             //TODO set image
                             break;

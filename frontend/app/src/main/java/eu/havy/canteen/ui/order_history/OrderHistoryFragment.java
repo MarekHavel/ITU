@@ -10,11 +10,13 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import eu.havy.canteen.R;
 import eu.havy.canteen.databinding.CardDishHistoryBinding;
 import eu.havy.canteen.databinding.FragmentOrderHistoryBinding;
 import eu.havy.canteen.model.Dish;
@@ -94,6 +96,9 @@ public class OrderHistoryFragment extends Fragment {
                     holder.binding.textViewDate.setText(dateSplit[0]);
                     holder.binding.getRoot().setOnClickListener(view -> {
                         Log.d("test", "onBindViewHolder: dish id " + current.getId());
+                        Bundle bundle = new Bundle();
+                        bundle.putInt("dishId", current.getId());
+                        Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_main_content).navigate(R.id.nav_food_detail, bundle);
                     });
                 }
             }
