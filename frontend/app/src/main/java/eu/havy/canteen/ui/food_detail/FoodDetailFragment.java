@@ -113,6 +113,9 @@ public class FoodDetailFragment extends Fragment {
         }
     };
 
+    /**
+     * Adapter for reviews
+     */
     private class ReviewsAdapter extends RecyclerView.Adapter<ReviewsAdapter.ReviewHolder> {
         private class ReviewHolder extends RecyclerView.ViewHolder {
             CardFoodReviewBinding binding;
@@ -206,6 +209,9 @@ public class FoodDetailFragment extends Fragment {
         binding = null;
     }
 
+    /**
+     * Called when request is finished
+     */
     public static void requestFinished() {
         long timePassed = System.currentTimeMillis() - visibleFrom;
         viewHandler.postDelayed(() -> {
@@ -214,6 +220,10 @@ public class FoodDetailFragment extends Fragment {
         }, MINIMUM_VISIBLE_TIME - timePassed < 0 ? 0 : MINIMUM_VISIBLE_TIME - timePassed);
     }
 
+    /**
+     * Updates the rating stars
+     * @param rating rating to set
+     */
     private void updateRating(int rating) {
         binding.foodReview.reviewStars.star1.setImageResource(rating >= 1 ? R.drawable.star_full : R.drawable.star_outline);
         binding.foodReview.reviewStars.star2.setImageResource(rating >= 2 ? R.drawable.star_full : R.drawable.star_outline);
