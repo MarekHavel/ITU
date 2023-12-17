@@ -167,7 +167,10 @@ exports.deleteMenu = asyncHandler(async (req, res, next) => {
     await menu.destroy()
     const availableDishes = await getAvailableDishes(date, canteen);
 
-    res.render("dishDatalist", {availableDishes: availableDishes});
+    res.render("deleteDish", {
+      availableDishes: availableDishes,
+      successMessage: "Pokrm byl úspěšně odstraněn z nabídky"
+    });
     return;
   } else {
     res.status(400).end();
