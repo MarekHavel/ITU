@@ -13,6 +13,6 @@
         android:id="@+id/review_list_recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:listitem="@layout/card_food_review" />
+        tools:listitem="@layout/food_review_item" />
 
 </LinearLayout>
