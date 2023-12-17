@@ -226,7 +226,7 @@ async function main() {
 
   await models.dish_preset.create({
     name: "moje šablona",
-    dishIds: [platek.id, lusk.id, svickova.id, buchty.id].toString()
+    dishIds: "[{\"id\":1,\"pieces\":47},{\"id\":2,\"pieces\":44},{\"id\":6,\"pieces\":30},{\"id\":8,\"pieces\":40},{\"id\":10,\"pieces\":42}]"
   });
 
   await sequelize.close();

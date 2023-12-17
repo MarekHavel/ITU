@@ -49,14 +49,16 @@
         button#savePreset.btn.btn-success(type='button' hx-post='/webapp/auth/preset/save/' + createDishInfo.date hx-swap='none') Uložit
     form.row.mt-5
       .input-group
-        input.form-control(type='text' list='presetDatalist' autocomplete='off')
-        button#loadPreset.btn.btn-primary(type='button') Aplikovat
-    form.row.mt-5
-      .input-group
-        select.form-select
+        select#presetApplySelect.form-select(name='presetName')
           each preset in dishPresets
             option(value=preset) #{preset}
-        button#deletePreset.btn.btn-primary(type='button') Smazat
+        button#loadPreset.btn.btn-primary(type='button' hx-post='/webapp/auth/preset/apply/' + createDishInfo.date hx-swap='none') Aplikovat
+    form.row.mt-5
+      .input-group
+        select#presetDeleteSelect.form-select(name='presetName')
+          each preset in dishPresets
+            option(value=preset) #{preset}
+        button#deletePreset.btn.btn-primary(type='button' hx-post='/webapp/auth/preset/delete/' hx-swap='none') Smazat
   .col
 #errorToast.toast-container.position-fixed.top-50.start-50.translate-middle.p-3
 #successToast.toast-container.position-fixed.bottom-0.end-0.p-3

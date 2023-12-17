@@ -1,0 +1,51 @@
+//- Notifikace o úspěšném přidání/editu
+#successToast.toast-container.position-fixed.bottom-0.end-0.p-3(hx-swap-oob="true")
+  .toast.show(role='alert')
+    .toast-header
+      svg.bi.bi-info-circle-fill.me-1(xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='currentColor' viewBox='0 0 16 16')
+        path(d='M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2')
+      strong.me-auto Info
+      button.btn-close(type='button' data-bs-dismiss='toast')
+    .toast-body #{successMessage}
+
+//- Error bude prázdný
+#errorToast.toast-container.position-fixed.bottom-0.end-0.p-3(hx-swap-oob="true")
+
+//- Updatovaná jídla
+#dishList.col-6.overflow-auto.border.p-2.rounded-start(style='height: 600px;' hx-swap-oob="true")
+  #addDishCard.card.p-3.mb-2
+    // Přidat jídlo
+    form.row
+      .col
+        .mb-3
+          label.form-label(for='dishName') Název jídla
+          input#dishName.form-control(type='text' list='dishesDatalist' name="dishName" autocomplete='off')
+          datalist#dishesDatalist
+            each dishName in availableDishes
+              option(value=dishName)
+        .mb-3
+          label.form-label(for='dishAmount') Počet kusů
+          input#dishAmount.form-control(type='number' min='0' max='1000' name="dishAmount")
+      .col-4.text-center
+        button.btn.btn-success.h-75.w-75.mt-3(hx-post="/webapp/auth/menuItem/" + createDishInfo.date + "/" + createDishInfo.canteenId hx-target="#addDishCard" hx-swap="afterend")
+          svg.bi.bi-plus-circle(xmlns='http://www.w3.org/2000/svg' width='32' height='32' fill='currentColor' viewBox='0 0 16 16')
+            path(d='M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16')
+            path(d='M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4')
+  // Jednotlivé kartičky
+  each dish in dishesMenu
+    .card.p-3.mb-2
+      // Začátek kartičky
+      form.row
+        .col-8
+          .mb-3
+            label.form-label Název jídla
+            input.form-control(type='text' list='dishesDatalist' value=dish.name readonly)
+          .mb-3
+            label.form-label Počet kusů
+            input.form-control(type='number' value=dish.count readonly)
+        .col-4.text-center
+          button.btn.btn-primary.h-75.w-75.mt-3(hx-delete="/webapp/auth/menuItem/" + dish.id hx-swap="delete" hx-target="closest .card.p-3.mb-2")
+            // Tlačítko pro odstranění
+            svg.bi.bi-trash3-fill(xmlns='http://www.w3.org/2000/svg' width='32' height='32' fill='currentColor' viewBox='0 0 16 16')
+              path(d='M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5m-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5M4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5')
+

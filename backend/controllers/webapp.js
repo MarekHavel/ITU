@@ -287,14 +287,16 @@ exports.savePreset = asyncHandler(async (req, res, next) => {
     }
   })
 
-  const dishIds = menus.map((m) => m.dishId).toString();
+  const menuInfo = JSON.stringify(menus.map((m) => (
+    { id: m.dishId, pieces: m.pieces }
+  )));
 
   const [preset, created] = await sequelize.models.dish_preset.findOrBuild({
     where: {
       name: req.body.presetName
     }
   });
-  preset.dishIds = dishIds;
+  preset.dishIds = menuInfo;
   preset.save();
 
   const message = "Šablona '" + req.body.presetName + "' byla úspěšně " + (created ? "vytvořena" : "modifikována")
@@ -304,3 +306,79 @@ exports.savePreset = asyncHandler(async (req, res, next) => {
     dishPresets: await getAvailablePresets()
   })
 })
+
+exports.applyPreset = asyncHandler(async (req, res, next) => {
+  const date = req.params.date;
+  const name = req.body.presetName;
+
+  const user = await sequelize.models.user.findByPk(req.session.userId);
+  const originalMenus = await sequelize.models.menu.findAll({where: {
+    date: date,
+    canteenId: user.canteenId
+  }})
+  const preset = await sequelize.models.dish_preset.findOne({where: {
+    name: name
+  }})
+
+  // Smazání všech původních nabídek
+  for(const menu of originalMenus) {
+    await menu.destroy();
+  }
+
+  const menusInfo = JSON.parse(preset.dishIds);
+  console.log(menusInfo)
+
+  for (const info of menusInfo) {
+    await sequelize.models.menu.create({
+      date: date,
+      pieces: info.pieces,
+      dishId: info.id,
+      canteenId: user.canteenId
+    })
+  }
+
+  // Informace pro vykreslení nové nabídky
+  const menus = await sequelize.models.menu.findAll({where: {
+    date: date,
+    canteenId: user.canteenId
+  }})
+  const resMenus = await Promise.all(menus.map(
+    async (menu) => ({
+      name: (await menu.getDish()).name,
+      count: menu.pieces,
+      id: menu.id
+    })
+  ));
+
+  const message = "Šablona '" + req.body.presetName + "' byla úspěšně aplikována";
+
+  const info = {
+      canteenId: user.canteenId,
+      date: date
+  };
+
+  res.render("applyPreset", {
+    successMessage: message,
+    dishesMenu: resMenus,
+    availableDishes: await getAvailableDishes(date, user.canteenId),
+    createDishInfo: info
+  })
+})
+
+exports.deletePreset = asyncHandler(async (req, res, next) => {
+  const name = req.body.presetName;
+
+  const preset = await sequelize.models.dish_preset.findOne({ where: {
+    name: name
+  }})
+
+  preset.destroy();
+
+  const message = "Šablona '" + req.body.presetName + "' byla úspěšně smazána";
+
+  res.render("savePresetSuccess", {
+    successMessage: message,
+    dishPresets: await getAvailablePresets()
+  })
+})
+
