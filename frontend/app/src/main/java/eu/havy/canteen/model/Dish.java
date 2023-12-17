@@ -6,9 +6,11 @@ public class Dish {
     private final String name, category, allergensLite, purchaseDate;
     private final int id, weight, price;
 
+    private final float rating;
+
     private int remainingAmount;
 
-    public Dish(int id, String name, String category, String allergensLite, int price, int remainingAmount, int weight, String purchaseDate){
+    public Dish(int id, String name, String category, String allergensLite, int price, int remainingAmount, int weight, String purchaseDate, float rating){
         this.id = id;
         this.name = name;
         this.category = category;
@@ -17,6 +19,7 @@ public class Dish {
         this.remainingAmount = remainingAmount;
         this.weight = weight;
         this.purchaseDate = purchaseDate;
+        this.rating = rating;
     }
 
     public int getId() {
@@ -39,6 +42,10 @@ public class Dish {
 
     public int getWeight() {
         return weight;
+    }
+
+    public float getRating() {
+        return rating;
     }
 
     public String getAllergensLite() {

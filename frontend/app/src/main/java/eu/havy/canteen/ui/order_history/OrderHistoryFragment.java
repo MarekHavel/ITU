@@ -84,7 +84,7 @@ public class OrderHistoryFragment extends Fragment {
 
         @NonNull
         @Override
-        public dishAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){ //todo handle categories
+        public dishAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType){
             return new dishAdapter.MyViewHolder(CardDishHistoryBinding.inflate(getLayoutInflater()));
         }
 
@@ -107,7 +107,7 @@ public class OrderHistoryFragment extends Fragment {
         }
 
         public void setDishes(List<Dish> dishes){
-            notifyDataSetChanged();
+            notifyDataSetChanged(); //todo fixup: this doesn't work
         }
 
         @Override

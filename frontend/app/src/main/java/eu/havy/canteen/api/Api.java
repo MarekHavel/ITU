@@ -47,7 +47,8 @@ public class Api {
         GET_USER_CREDIT,
         ADD_USER_CREDIT,
         GET_ORDER_HISTORY,
-        GET_DISH;
+        GET_DISH,
+        ORDER_DISH;
 
         public static Request getEnum(int i) {
             return Request.values()[i];
@@ -176,6 +177,18 @@ public class Api {
             //UI Thread work here
             //handler.post(() -> {});
             handler.obtainMessage(Request.ADD_USER_CREDIT.ordinal(), getResponseCode(response), 0, response).sendToTarget();
+        });
+    }
+
+    public void orderDish(String token, int dishId) {
+        executor.execute(() -> {
+            //Background work here
+            JSONObject body = buildBody(Map.of("token", token, "dishId", dishId, "date","2023-11-13"));
+            JSONObject response = request(Method.POST, server_api_url+"order/create", body);
+
+            //UI Thread work here
+            //handler.post(() -> {});
+            handler.obtainMessage(Request.ORDER_DISH.ordinal(), getResponseCode(response), 0, response).sendToTarget();
         });
     }
 
