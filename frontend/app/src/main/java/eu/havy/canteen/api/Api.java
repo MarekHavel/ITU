@@ -23,7 +23,7 @@ public class Api {
         this.handler = handler;
     }
 
-    String server_api_url = "http://gargi.ddns.net:3000/api/"; //"https://canteen.havy.eu/api/"
+    public static String server_url = "http://gargi.ddns.net:3000/"; //"https://canteen.havy.eu/api/"
     ExecutorService executor = Executors.newSingleThreadExecutor();
     Handler handler;
 
@@ -124,7 +124,7 @@ public class Api {
         executor.execute(() -> {
             //Background work here
             JSONObject body = buildBody(Map.of("email", email, "password", password));
-            JSONObject response = request(Method.POST, server_api_url+"auth", body);
+            JSONObject response = request(Method.POST, server_url +"api/auth", body);
 
             //UI Thread work here
             //handler.post(() -> {})
@@ -136,7 +136,7 @@ public class Api {
     public void getUserInfo(String token) {
         executor.execute(() -> {
             //Background work here
-            JSONObject response = request(Method.GET, server_api_url+"user?token="+token, null);
+            JSONObject response = request(Method.GET, server_url +"api/user?token="+token, null);
 
             //UI Thread work here
             //handler.post(() -> {})
@@ -148,7 +148,7 @@ public class Api {
     public void getMenu(String token, Date date) {
         executor.execute(() -> {
             //Background work here
-            JSONObject response = request(Method.GET, server_api_url+"menu?token="+token+"&date="+DateToApiDate(date), null);
+            JSONObject response = request(Method.GET, server_url +"api/menu?token="+token+"&date="+DateToApiDate(date), null);
 
             //UI Thread work here
             //handler.post(() -> {});
@@ -160,7 +160,7 @@ public class Api {
     public void getDish(String token, int dishId){
         executor.execute(() -> {
             //Background work here
-            JSONObject response = request(Method.GET, server_api_url+"dish?token="+token+"&dishId="+dishId, null);
+            JSONObject response = request(Method.GET, server_url +"api/dish?token="+token+"&dishId="+dishId, null);
 
             //UI Thread work here
             //handler.post(() -> {});
@@ -172,7 +172,7 @@ public class Api {
     // Get all orders of user from API
     public void getOrderHistory(String token) {
         executor.execute(() -> {
-            JSONObject response = request(Method.GET, server_api_url+"order/history?token="+token, null);
+            JSONObject response = request(Method.GET, server_url +"api/order/history?token="+token, null);
             handler.obtainMessage(Request.GET_ORDER_HISTORY.ordinal(), getResponseCode(response), 0, response).sendToTarget();
         });
     }
@@ -181,7 +181,7 @@ public class Api {
     public void getUserCredit(String token) {
         executor.execute(() -> {
             //Background work here
-            JSONObject response = request(Method.GET, server_api_url+"credit?token="+token, null);
+            JSONObject response = request(Method.GET, server_url +"api/credit?token="+token, null);
 
             //UI Thread work here
             //handler.post(() -> {});
@@ -194,7 +194,7 @@ public class Api {
         executor.execute(() -> {
             //Background work here
             JSONObject body = buildBody(Map.of("token", token, "credit", amount));
-            JSONObject response = request(Method.POST, server_api_url+"credit", body);
+            JSONObject response = request(Method.POST, server_url +"api/credit", body);
 
             //UI Thread work here
             //handler.post(() -> {});
@@ -207,7 +207,7 @@ public class Api {
         executor.execute(() -> {
             //Background work here
             JSONObject body = buildBody(Map.of("token", token, "dishId", dishId, "date",date));
-            JSONObject response = request(Method.POST, server_api_url+"order/create", body);
+            JSONObject response = request(Method.POST, server_url +"api/order/create", body);
 
             //UI Thread work here
             //handler.post(() -> {});
@@ -219,7 +219,7 @@ public class Api {
     public void getCanteenInfo(String token) {
         executor.execute(() -> {
             //Background work here
-            JSONObject response = request(Method.GET, server_api_url+"canteen?token="+token, null);
+            JSONObject response = request(Method.GET, server_url +"api/canteen?token="+token, null);
 
             //UI Thread work here
             //handler.post(() -> {});
@@ -232,7 +232,7 @@ public class Api {
         executor.execute(() -> {
             //Background work here
             JSONObject body = buildBody(Map.of("token", token, "dishId", dishId, "rating", buildBody(Map.of("rating", rating, "comment", detail))));
-            JSONObject response = request(Method.POST, server_api_url+"dish/rating", body);
+            JSONObject response = request(Method.POST, server_url +"api/dish/rating", body);
 
             //UI Thread work here
             //handler.post(() -> {});
@@ -244,7 +244,7 @@ public class Api {
     public void getGeneralRating(String token, int dishId) {
         executor.execute(() -> {
             //Background work here
-            JSONObject response = request(Method.GET, server_api_url+"dish/rating/general?token="+token+"&dishId="+dishId, null);
+            JSONObject response = request(Method.GET, server_url +"api/dish/rating/general?token="+token+"&dishId="+dishId, null);
 
             //UI Thread work here
             //handler.post(() -> {});
@@ -255,7 +255,7 @@ public class Api {
     public void getOrdersForDay(String token,Date date) {
         executor.execute(() -> {
             //Background work here
-            JSONObject response = request(Method.GET, server_api_url+"order/history?token="+token+"&date="+DateToApiDate(date), null);
+            JSONObject response = request(Method.GET, server_url +"api/order/history?token="+token+"&date="+DateToApiDate(date), null);
 
             //UI Thread work here
             //handler.post(() -> {});
@@ -268,7 +268,7 @@ public class Api {
         executor.execute(() -> {
             //Background work here
             JSONObject body = buildBody(Map.of("token", token, "orderId", orderId));
-            JSONObject response = request(Method.POST, server_api_url+"order/delete", body);
+            JSONObject response = request(Method.POST, server_url +"api/order/delete", body);
 
             //UI Thread work here
             //handler.post(() -> {});

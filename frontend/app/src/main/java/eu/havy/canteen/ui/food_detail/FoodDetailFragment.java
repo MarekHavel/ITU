@@ -17,6 +17,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -72,7 +74,7 @@ public class FoodDetailFragment extends Fragment {
                                 }
                             }
                             binding.foodDetail.foodAllergens.setText(allergensString);
-                            //TODO set image
+                            Glide.with(FoodDetailFragment.this).load(Api.server_url+jsonObject.getString("photoPath")).into(binding.foodDetail.foodImage);
                             break;
                         case ADD_REVIEW:
                             new Api(this).getGeneralRating(User.getCurrentUser().getToken(), getArguments().getInt("dishId"));
