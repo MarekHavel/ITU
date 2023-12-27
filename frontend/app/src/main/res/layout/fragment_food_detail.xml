@@ -1,35 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- author: Marek Gergel <xgerge01@vutbr.cz> -->
-<LinearLayout
+
+<androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".ui.food_detail.FoodDetailFragment">
+    android:layout_height="match_parent">
 
-    <include
-        android:id="@+id/food_detail"
-        layout="@layout/food_detail"/>
-
-    <com.google.android.material.divider.MaterialDivider
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"/>
+        android:orientation="vertical"
+        tools:context=".ui.food_detail.FoodDetailFragment">
 
-    <include
-        android:id="@+id/food_review"
-        layout="@layout/food_review"/>
+        <include
+            android:id="@+id/food_detail"
+            layout="@layout/food_detail"/>
 
-    <com.google.android.material.divider.MaterialDivider
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"/>
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"/>
 
-    <include
-        android:id="@+id/food_review_list"
-        layout="@layout/food_review_list"/>
+        <include
+            android:id="@+id/food_review"
+            layout="@layout/food_review"/>
 
-</LinearLayout>
+        <com.google.android.material.divider.MaterialDivider
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"/>
+
+        <include
+            android:id="@+id/food_review_list"
+            layout="@layout/food_review_list"/>
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>
