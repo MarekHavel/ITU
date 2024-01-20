@@ -17,4 +17,5 @@ pro licence knihoven přiložených s IDE navštivte sekci 'Help->Licenses'.
 ## Výsledek
 
 Návrh: 7z10
+
 Implementace: 32z33
