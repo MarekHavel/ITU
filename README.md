@@ -13,3 +13,8 @@ Knihovny použité pro backend a webUI jsou popsány v souboru backend/README.md
 
 Se zdrojovým kódem Android aplikace není distribuován zdrojový kód žádné externí Knihovny,
 pro licence knihoven přiložených s IDE navštivte sekci 'Help->Licenses'.
+
+## Výsledek
+
+Návrh: 7z10
+Implementace: 32z33
